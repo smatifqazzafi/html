@@ -1,0 +1,1675 @@
+<body>
+        <div id="mainHeader">
+            <div id="mainHeaderLeft" style="float: left;">
+
+            </div>
+            <div id="mainHeaderActions">
+                <div id="textRowsSelected">   </div>
+                <!-- <button id="buttonDoActionOnSelected" > Unmatch All </button> -->
+                <div id="buttonDoActionOnSelectedContainer">
+                    <c class="buttonDoAction" id="buttonDoActionOnSelected" > No action </c>
+                    <c class="buttonDoAction" id="buttonDoSecondaryActionOnSelected" > No action </c>
+                </div>
+            </div>
+        </div>
+        <div id='tableFixHead' class='tableFixHead'>
+            <table class="mainGridStyle header-fixed"><thead id="mainHead"></thead><tbody id="mainGrid"></tbody></table>
+        </div>
+        <div id='paginationBarContainer'>
+            <div class="gx_usercontrol" id="GRIDPAGINATIONBARContainer">
+                <div id="GRIDPAGINATIONBARContainer_DVPaginationBar" class="PaginationBar" style="display: table; width: 100%;">
+                    <div class="PaginationBarButtons" style="float: right;">
+                        <ul id="PaginationBarUl" class="pagination">
+                            <li class="prev disabled"><a>Prev</a></li>
+                            <li class="active"><a href="#">1</a></li>
+                            <li class="next disabled"><a>Next</a></li>
+                        </ul>
+                    </div>
+                    <div class="PaginationBarCaption dropdown" style="float: left;">
+                        <div class="dropdown rowsperpage dropup"><button id="PagingLabel" class="btn btn-primary dropdown-toggle" type="button"
+                                data-toggle="dropdown" aria-expanded="false">Page 1 of 1<span class="caret"></span></button>
+                            <ul class="dropdown-menu">
+                                <li class="caption"><span href="#">Rows per page:</span></li>
+                                <li onclick="selectRowsPerPage(5);" val="5"><a ><span>5 rows</span></a></li>
+                                <li onclick="selectRowsPerPage(10);" val="10"><a ><span>10 rows</span></a></li>
+                                <li onclick="selectRowsPerPage(20);" val="20"><a ><span>20 rows</span></a></li>
+                                <li onclick="selectRowsPerPage(50);" val="50"><a ><span>50 rows</span></a></li>
+                                <li class="divider"></li>
+                                <li class="caption"><span href="#">Go to page:</span></li>
+                                <li class="goTo"><input type="number" value="1" max="999"><i class="fas fa-redo"
+                                        title="Refresh"></i></li>
+                            </ul>
+                            <span id="GroupsCountLabel">(0 groups, 0 transactions)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="filtersPanel">
+            <div class="TextBlockTitleMaterial"> Filters </div>
+            <div id="filtersContainer"></div>
+            <div id="filtersPanelActionsContainer">
+                <button id="buttonFiltersPanelApply" class="ButtonMaterial btn btn-default">Apply Filters</button>
+                <button id="buttonFiltersPanelReset" class="ButtonMaterial btn btn-default">Reset all Filters</button>
+                <button id="buttonFiltersPanelCancel" class="ButtonMaterialDefault btn btn-default">Cancel</button>
+            </div>
+        </div>
+
+        <div id="fullScreenDiv">
+            <div id="grayContainer"></div>
+        </div>
+        
+        <div id="floatingContainerHistory" class="floatingContainerClass">
+            <div id="floatingContainerHistoryTitle" class="TextBlockTitleMaterial">
+                Transaction History
+            </div>
+            <div style="margin-top: 20px; font-size: 12px;">
+                <div id="HistoryContainer">
+                </div>
+            </div>
+            <div style="margin-top: 20px;">
+                <button id="buttonFloatingContainerHistoryAccept" class="ButtonMaterial btn btn-default">Close</button>
+            </div>
+        </div>
+
+        <div id="floatingContainer" class="floatingContainerClass">
+            <div id="floatingContainerTitle" class="TextBlockTitleMaterial">
+                You are about to force the matching of several transactions
+            </div>
+            <div style="margin-top: 20px; font-size: 12px;">
+                <div>Comments: </div>
+                <textarea id="floatingContainerComments" rows="6" style="resize: none; width: 98%;"></textarea>
+                <div id="floatingContainerDescription">
+                    By clicking on "Continue", I accept to force the matching of the selected transactions.
+                </div>
+            </div>
+            <div style="margin-top: 20px;">
+                <button id="buttonFloatingContainerAccept" class="ButtonMaterial btn btn-default">Continue</button>
+                <button id="buttonFloatingContainerCancel" class="ButtonMaterialDefault btn btn-default">Cancel</button>
+            </div>
+        </div>
+
+        <div id="floatingContainerStartInvestigation" class="floatingContainerClass">
+            <div id="floatingContainerTitleStartInvestigation" class="TextBlockTitleMaterial">
+                Start Investigation
+            </div>
+            <div style="margin-top: 20px; font-size: 12px;">
+                <div>To: </div>
+                <div class="tag-input-container" id="tag-input-container">
+                    <!-- Tags will be dynamically added here -->
+                    <input list="deparments" type="text" id="tag-input" class="tag-input" placeholder="Add one or more recipients" onkeydown="inputCheckSpace(this.value, event);">
+                    <datalist id="deparments">
+                        <option value="IT" label="IT Department">
+                        <option value="Branch" label="Branch Manager">
+                        <option value="Accounting" label="Accounting Department">
+                        <option value="General" label="General Management">
+                    </datalist>
+                </div>
+
+                <div>Subject: </div>
+                <div class="tag-input-container">
+                    CASE ID #XXXXXX 
+                    <input type="text" id="caseIdSubject" class="tag-input" placeholder="">
+                </div>
+
+                <div>Comments: </div>
+                <textarea id="floatingContainerCommentsStartInvestigation" rows="6" style="resize: none; width: 98%;"></textarea>
+                <div>
+                    By clicking on "Continue", I accept to start an investigation over the selected transactions.
+                </div>
+            </div>
+            <div style="margin-top: 20px;">
+                <button id="buttonFloatingContainerStartInvestigationAccept" class="ButtonMaterial btn btn-default">Continue</button>
+                <button id="buttonFloatingContainerStartInvestigationCancel" class="ButtonMaterialDefault btn btn-default">Cancel</button>
+            </div>
+        </div>
+
+        <div id="customContextMenuHelper" class="context-menu-helper" onclick="hideContextMenu();" oncontextmenu="hideContextMenu();">
+
+        </div>
+        <div id="customContextMenu" class="context-menu">
+            <a class="context-menu-item" href="#">
+              <img src="http://puu.sh/nr60s/42df867bf3.png" /> Force match... <span>Ctrl + M</span>
+            </a>
+            <hr />
+            <a class="context-menu-item" href="#">
+              <i class="fa fa-fort-awesome"></i> Go to Investigation Case <span> Ctrl + I</span>
+            </a>
+            <a class="context-menu-item" href="#">
+              <i class="fa fa-search"></i> View History... <span>Ctrl + H</span>
+            </a>
+        </div>
+    </body>
+    <style>
+        .context-menu-helper
+        {
+            display: none;
+            position: fixed;
+            height: 100%;
+            width: 100%;
+            top: 0;
+            left: 0;
+            z-index: 9;
+        }
+
+        .context-menu {
+            display: none;
+            position: fixed;
+            background: #fff;
+            color: #555;
+            font-family: sans-serif;
+            font-size: 11px;
+            -webkit-transition: opacity .5s ease-in-out;
+            -moz-transition: opacity .5s ease-in-out;
+            -ms-transition: opacity .5s ease-in-out;
+            -o-transition: opacity .5s ease-in-out;
+            transition: opacity .5s ease-in-out;
+            -webkit-box-shadow: 2px 2px 2px 0px rgba(143, 144, 145, 1);
+            -moz-box-shadow: 2px 2px 2px 0px rgba(143, 144, 145, 1);
+            box-shadow: 2px 2px 2px 0px rgba(143, 144, 145, 1);
+            padding: 0px;
+            border: 1px solid #C6C6C6;
+            z-index: 10;
+        }
+
+        .context-menu-item {
+            display: block;
+            color: #555;
+            text-decoration: none;
+            padding: 10px 8px 10px 30px;
+            width: 250px;
+            position: relative;
+        }
+
+        .context-menu a img,
+        .context-menu a i.fa {
+            height: 20px;
+            font-size: 17px;
+            width: 20px;
+            position: absolute;
+            left: 8px;
+            top: 8px;
+        }
+
+        .context-menu a span {
+            color: #BCB1B3;
+            float: right;
+        }
+
+        .context-menu a:hover {
+            background: #F2F2F2;
+        }
+
+        .context-menu hr {
+            border: 1px solid #EBEBEB;
+            border-bottom: 0;
+            margin-top: 0px;
+            margin-bottom: 0px;
+        }
+        
+        .tableFixHead          { overflow: auto; max-height: 400px; }
+        .tableFixHead thead th { position: sticky; top: 0; z-index: 1; }
+
+        .tag-input-container {
+            display: flex;
+            flex-wrap: wrap;
+            border: 1px solid rgb(150,150,150);
+            padding: 5px;
+            border-radius: 5px;
+        width: 98%; /* Set the width as needed */
+        }
+
+        .tag {
+        border: 1px solid #aaa;
+        color: #000;
+        padding: 5px 10px;
+        margin: 5px;
+        border-radius: 5px;
+        display: flex;
+        align-items: center;
+        }
+
+        .tag .close {
+        cursor: pointer;
+        margin-left: 5px;
+        }
+
+        .tag-input {
+        border: none;
+        outline: none;
+        flex-grow: 1;
+        }
+        
+        #mainHeaderActions
+        {
+            display: block;
+            position: fixed;
+            z-index: 10;
+            bottom: 0px;
+            right: 25px;
+            background: white;
+            opacity: 0;
+            left: 20%;
+            right: 20%;
+            padding: 15px;
+            border: 1px solid var(--colors_basecolor); /* #f87f6a; */
+            transition: 0.3s ease-out all;
+            font-size: 14px;
+        }
+
+        .floatingContainerClass
+        {            
+            background: white;
+            z-index: 20;
+            position: fixed;
+            left: 20%;
+            width: 60%;
+            top: 0;
+            padding: 10px;
+            opacity: 0;
+            transition: all 0.3s ease-out;
+            display: block;
+            z-index: -1;
+        }
+
+        #fullScreenDiv 
+        {            
+            top: 0;
+            left: 0;
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            display: none;
+            z-index: 15;
+        }
+
+        #grayContainer
+        {
+            top: 0;
+            left: 0;
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        #filtersPanel {
+            position: fixed;
+            bottom: 0%;
+            left: 25%;
+            background: white;
+            width: 50%;
+            height: 70%;
+            padding: 10px;
+            opacity: 0;
+            border: 1px solid #fad3cc;
+            transition: 0.3s ease-out all;
+            z-index: -1;
+            width: fit-content;
+        }
+
+        #filtersPanelActionsContainer
+        {
+            text-align: -webkit-center;
+        }
+
+        #filtersContainer
+        {
+            height: 80%;
+            overflow: auto;
+        }
+
+        #textRowsSelected
+        {
+            float: left;
+            margin-right: 10px;
+        }
+
+        #buttonDoActionOnSelectedContainer
+        {
+            float: right;
+        }
+
+        .buttonDoAction
+        {
+            margin-right: 8px;
+            text-decoration: underline;
+            cursor: pointer;
+            color: var(--colors_basecolor); /* #f87f6a; */
+        }
+
+        .cNotCommon
+        {
+            visibility: visible;
+        }
+
+        .cNotOurs
+        {
+            visibility: visible;
+        }
+
+        .thS
+        {
+            padding: 2px;
+            padding-right: 20px;
+            padding-left: 8px;
+            background: var(--colors_basecolor); /* #2F4858; */
+            color: white;
+            font-weight: 500;
+        }
+
+        .cTdPad
+        {
+            padding-left: 8px;
+            padding-right: 20px;
+            border: 1px solid;
+        }
+
+        .cType_text
+        {
+            text-align: start;
+        }
+
+        .cType_number
+        {
+            text-align: end;
+        }
+
+        .cType_date
+        {
+            text-align: start;
+        }
+
+        .mainGridStyle
+        {
+            /*table-layout: fixed;
+            display: block;*/
+            
+            font-size: 14px;
+            border-collapse: collapse;
+            cursor: pointer;
+            overflow: auto;
+            background: white;
+        }
+
+        .cHoveredRow
+        {
+            background-color: var(--colors_basecolor30);
+            color: black;
+            transition: all 0.1s linear;
+        }
+
+        .cSelectedRow
+        {
+            background-color: var(--colors_basecolorshadow);;
+            color: white;
+            transition: all 0.1s linear;
+        }
+
+        .inputFilter
+        {
+            width: 95%;
+        }
+    </style>
+    <script>
+        var p_TrLifeCycleName = '';
+        var p_TrCurCode = '';
+        var p_fromDate = '';
+        var p_untilDate = '';
+        var p_isUngrouped = '';
+        var p_pageSize = 0;
+        var p_pageCount = 0;
+        var p_pageNumber = 0;
+        var p_rowsCount = 0;
+        var p_displayType = 0;
+        var p_TrLifeCycleRoles = [];
+        var p_MatchStat = [0,1,2,3,4];
+        var authorizationPanel = false;
+        var acceptForceMatch = false;
+
+        var groupsCount = 0;
+        var GroupMatchCount = 0;
+        var transactionsCount = 0;
+
+        const columnOffset = -1;
+        var rowsSelected = 0;
+        var rowKeysSelected = [];
+        var selectedLifeCycle = '';
+        var SDT_InvTemplate = []; 
+
+        const panelModeActionLabel = ['', 'Unmatch All', 'Force Match', 'Force Match', 'Closed Match', ''];
+        const panelModeSecondaryActionLabel = ['', '', '', 'Start Investigation', 'Start Investigation', ''];
+        const TrLifeCycleRolesLabel = ['', 'Initiate Match', 'Authorize Match', 'Approve Match'];
+        const TrLifeCycleRolesActionLabel  = ['', 'initiate', 'authorize', 'approve'];
+
+        function selectRowsPerPage(nrows)
+        {
+            p_pageSize = nrows;
+            let auxRemainder = 0;
+
+            if(p_rowsCount%p_pageSize > 0) auxRemainder = 1;
+
+            p_pageCount = Math.floor(p_rowsCount/p_pageSize) + auxRemainder;
+            p_pageNumber = 1;
+            getTDataGroupMatchFilters(); //getTDataGroupMatch();
+        }
+
+        function selectGridPage(npage)
+        {
+            p_pageNumber = npage;
+            getTDataGroupMatchFilters(); //getTDataGroupMatch();
+        }
+
+        function renderPaginationBar()
+        {
+            let PagBarUl = ''
+            let firstPage = 1;
+            let lastPage = p_pageCount;
+            let auxDisabled = '';
+            let liClass = '';
+
+            if(p_pageNumber - 3 > 1) firstPage = p_pageNumber - 3;
+            if(p_pageNumber + 3 < p_pageCount) lastPage = p_pageNumber + 3;
+
+            if(p_pageNumber == 1) auxDisabled = 'class="prev disabled"'; else auxDisabled = `onclick="selectGridPage(1);"`;
+            pagBarUl = `<li ${auxDisabled}><a>Prev</a></li>`;
+
+            for(let i = firstPage; i <= lastPage; i++)
+            {
+                if(p_pageNumber == i) liClass = `class="active"`; else liClass = `onclick="selectGridPage(${i});"`;
+                pagBarUl = pagBarUl + `<li ${liClass}><a>${i}</a></li>`;
+            }
+
+            if(p_pageNumber == p_pageCount) auxDisabled = `class="next disabled"`; else auxDisabled = `onclick="selectGridPage(${p_pageCount});"`;
+            pagBarUl = pagBarUl + `<li ${auxDisabled}><a>Last</a></li>`;
+            
+            document.getElementById("PaginationBarUl").innerHTML = pagBarUl;
+        }
+
+        function setGridColumnsDisplay()
+        {
+            var cols = document.getElementsByClassName('cNotCommon');
+            for(i = 0; i < cols.length; i++)
+            {
+                cols[i].style.display = 'table-cell';
+            }
+
+            var cols = document.getElementsByClassName('cNotOurs');
+            for(i = 0; i < cols.length; i++)
+            {
+                cols[i].style.display = 'table-cell';
+            }
+
+            if(p_displayType == 1)
+            {
+                var cols = document.getElementsByClassName('cNotCommon');
+                for(i = 0; i < cols.length; i++)
+                {
+                    cols[i].style.display = 'none';
+                }
+            }
+
+            if(p_displayType == 2)
+            {
+                var cols = document.getElementsByClassName('cNotOurs');
+                for(i = 0; i < cols.length; i++)
+                {
+                    cols[i].style.display = 'none';
+                }
+            }
+        }
+
+        function renderTable()
+        {
+            var TrLifeCycleName = '';
+            var GridRender = '';
+            var GridHeader = '';
+            var GridContent = '';
+            //var GroupMatchCount = 0;
+            //var transactionsCount = 0;
+            rowKeysSelected = [];
+            renderHeader();
+            renderFiltersContainer();
+            renderPaginationBar();
+
+            if(panelMode == 5 || authorizationPanel == true)
+            {
+                document.getElementById('paginationBarContainer').style.display = 'none';
+            }
+
+            document.getElementById("PagingLabel").innerHTML = `Page ${p_pageNumber} of ${p_pageCount} <span class="caret"></span>`;
+
+            if(TDataGroupMatch.TDataGroupMatch !== undefined)
+            {
+                TrLifeCycle.TrLifeCycle.forEach(x => {
+                    GridHeader = `<tr style="/*border-bottom: 2px solid #FF6347;*/"><th class="thS">No.</th><th class="thS">Source</th>`;
+                    GridContent = '';
+                    
+                    x.TrLifeCycleHeader.forEach(y => {
+                        var thClass = 'thS';
+                        if(!y.isCommon) {thClass = thClass + ' cNotCommon';}
+                        if(!y.isOurs) {thClass = thClass + ' cNotOurs';}
+
+                        var headerClass = getHeaderClass(y.TrLifeCycleHeaderName);
+                        GridHeader = GridHeader + `<th class="${thClass} ${headerClass}" gridfilterattribute="${y.TrLifeCycleHeaderName}">${y.TrLifeCycleHeaderNameUser}</th>`;
+                    });
+
+                    GridHeader = GridHeader + '</tr>';
+                    GroupMatchCount = 1;
+
+                    TDataGroupMatch.TDataGroupMatch.forEach(y => {
+                        if(y.TrLifeCycleName == x.TrLifeCycleName)
+                        {
+                            var cRowClass = `cRow_${y.TDataGroupMatchKey}`;
+                            var onclick = `onclick="lineToggleSelect('${cRowClass}');"`;
+                            var auxContent = '';
+                            var auxActionsColumn = '';
+
+                            if(y.TDataGroupInvestigationLevel > 0)
+                            {
+                                auxActionsColumn = auxActionsColumn + `<i class="fa fa-search"></i>`;
+                            }
+
+                            if(y.TDataGroupMatchMatchStat == 2)
+                            {
+                                auxActionsColumn = auxActionsColumn + `<i class="fa fa-check-circle"></i>`;
+                            }
+                            else
+                            {
+                                if(y.TDataGroupMatchMatchStat == 0 && y.TDataGroupForceMatchLevel > 0)
+                                {
+                                    if(y.TDataGroupForceMatchLevel + 1 == p_TrLifeCycleRoles[0])
+                                    {
+                                        auxActionsColumn = auxActionsColumn + `<i class="fa fa-user-pen"></i> (${y.TDataGroupForceMatchLevel})`;
+                                    }
+                                    else
+                                    {
+                                        auxActionsColumn = auxActionsColumn + `<i class="fa fa-user"></i> (${y.TDataGroupForceMatchLevel})`;
+                                    }
+                                }
+                            }
+
+                            auxContent = auxContent + `<tr class="${cRowClass}" ${onclick} oncontextmenu="renderContextmenu('${cRowClass}');" onmouseover="lineHover('${cRowClass}', true)"; onmouseout="lineHover('${cRowClass}', false);" ><td class="cTdPad" rowspan="${y.TDataMatch.length}">${GroupMatchCount} ${auxActionsColumn}</td>`
+                            
+                            var extraCol = "";
+                            var matchesFilters = false;
+                            var auxtransactionsCount = 0;
+
+                            y.TDataMatch.forEach(z => {
+                                let aux_getRowHTML = getRowHTML(x.TrLifeCycleName, z.TDataMatchSourceName, z.TDataMatchRecord);
+                                auxtransactionsCount++;
+
+                                if(aux_getRowHTML.matchesFilters) matchesFilters = true;
+                                auxContent = auxContent + `${extraCol}` + aux_getRowHTML.html + '</tr>';
+                                extraCol = `<tr class="${cRowClass}" ${onclick} oncontextmenu="renderContextmenu('${cRowClass}');" onmouseover="lineHover('${cRowClass}', true);" onmouseout="lineHover('${cRowClass}', false);">`;
+                            });
+
+                            if(1==1) //(matchesFilters)
+                            {
+                                GridContent = GridContent + auxContent + `<tr style="height: 8px;"></tr>`;
+                                GroupMatchCount++;
+                            }
+                        }
+                    });
+                });
+
+                document.getElementById("mainHead").innerHTML = GridHeader;
+                document.getElementById("mainGrid").innerHTML = GridContent;
+                document.getElementById("GroupsCountLabel").innerHTML = ` (${groupsCount} groups, ${transactionsCount} transactions)</span>`;
+                
+                setHeaderFunctionality();
+                setGridColumnsDisplay();
+            }
+            else
+            {
+                document.getElementById("mainGrid").innerHTML = "<div>No records matching the entered filters. </div>";
+                document.getElementById("GroupsCountLabel").innerHTML = ` (0 groups, 0 transactions)</span>`;
+            }
+
+            getDepartments();
+        }
+
+        function getRowHTML(TrLifeCycleName, TDataMatchSourceName, TDataMatchRecord)
+        {
+            var html = `<td class="cTdPad"> ${TDataMatchSourceName} </td>`;
+            var auxCol = new Map([]);
+            var matchesFilters = true;
+            var type = 0;
+
+            TrLifeCycle.DSrc.forEach(x => {
+                if(x.DSrcName == TDataMatchSourceName)
+                {
+                    x.SrCfg.forEach(y => {
+                        auxCol.set(y.SrCfgHeader, TDataMatchRecord.split(",")[y.SrCfgcol + columnOffset]);
+                        //type = y.SrCfgColType;
+                    });
+                }
+            });
+
+            TrLifeCycle.TrLifeCycle.forEach(x => {
+                if(x.TrLifeCycleName == TrLifeCycleName)
+                {
+                    x.TrLifeCycleHeader.forEach(y => {
+                        var tdClass = '';
+                        if(!y.isCommon) {tdClass = tdClass + ' cNotCommon';}
+                        if(!y.isOurs) {tdClass = tdClass + ' cNotOurs';}
+
+                        tdClass = tdClass + ' cType_' + getTypeDescription(y.type);
+
+                        let fromFilterName = 'fil_from_' + y.TrLifeCycleHeaderName.replace(' ','_');
+                        let untilFilterName = 'fil_until_' + y.TrLifeCycleHeaderName.replace(' ','_');
+                        let fromFilter = document.getElementById(fromFilterName);
+                        let untilFilter = document.getElementById(untilFilterName);
+                        let currentValue = auxCol.get(y.TrLifeCycleHeaderName)
+
+                        if(currentValue)
+                        {
+                            html = html + `<td class="cTdPad ${tdClass}"> ${gridDisplayValue(currentValue, y.type)}</td>`;
+
+                            if(!evaluateFilter(fromFilter.value, untilFilter.value, currentValue, y.type))
+                            {
+                                matchesFilters = false;
+                            }
+                        }
+                        else
+                        {
+                            html = html + `<td class="cTdPad ${tdClass}"> </td>`;
+
+                            if(fromFilter.value != '' || untilFilter.value != '') matchesFilters = false;
+                        }
+                    });
+                }
+            });
+
+            return {html: html, matchesFilters: matchesFilters};
+        }
+
+        function gridDisplayValue(value, type)
+        {
+            switch(type)
+            {
+                case 0:     // Amount
+                    value = value.trim().replaceAll('0', ' ').trimLeft().replaceAll(' ', '0');
+                    
+                    return value;
+                    break;
+                case 1:     // Date
+                    //return value.substring(0, 2) + '/' + value.substring(2, 4) + '/' + value.substring(4, 8);
+                    return value.substring(4, 6) + '/' + value.substring(6, 8) + '/' + value.substring(0, 4);
+                    break;
+            }
+
+            return value;
+        }
+
+        function evaluateFilter(fromFilter, untilFilter, value, type)
+        {
+            let auxFrom;
+            let auxUntil;
+            let auxVal;
+
+            // TEST STRUCTURE:
+            if(!value && (fromFilter || untilFilter)) return false;
+
+            switch(type)
+            {
+                case 0:     // Amount
+                    auxFrom = parseFloat(fromFilter);
+                    auxUntil = parseFloat(untilFilter);
+                    auxVal = parseFloat(value);
+                    break;
+                case 1:     // Date
+                    if(fromFilter) auxFrom = '.' + fromFilter.substring(0, 4) + fromFilter.substring(5, 7) + fromFilter.substring(8, 10);
+                    if(untilFilter) auxUntil = '.' + untilFilter.substring(0, 4) + untilFilter.substring(5, 7) + untilFilter.substring(8, 10);
+                    auxVal = '.' + value.substring(4, 8) + value.substring(0, 2) + value.substring(2, 4);
+                    break;
+                case 2:     // Text
+                    auxFrom = fromFilter;
+                    auxUntil = untilFilter;
+                    auxVal = value;
+                    break;
+            }
+
+            return ((!auxFrom || auxFrom <= auxVal) && (!auxUntil || auxUntil >= auxVal));
+        }
+        
+        function lineHover(colorClass, mouseIn)
+        {
+            var elements = document.getElementsByClassName(colorClass);
+
+            for(var i = 0; i < elements.length; i++)
+            {
+                if(mouseIn)
+                {
+                    elements[i].classList.add("cHoveredRow");
+                }
+                else
+                {
+                    elements[i].classList.remove("cHoveredRow");
+                }
+            }
+        }
+        
+        function lineToggleSelect(colorClass)
+        {
+            if(panelMode != 5)
+            {
+                var elements = document.getElementsByClassName(colorClass);
+
+                for(var i = 0; i < elements.length; i++)
+                {
+                    var doSelectRow = true;
+
+                    for(let j = 0; j < elements[i].classList.length; j++)
+                    {
+                        if(elements[i].classList[j] == 'cSelectedRow')
+                        {
+                            elements[i].classList.remove("cSelectedRow");
+                            doSelectRow = false;
+                            break;
+                        }
+                    }
+                    
+                    if(doSelectRow) {elements[i].classList.add("cSelectedRow");}
+                }
+
+                if(doSelectRow) {rowsSelected++; rowKeysSelected.push(colorClass.replace('cRow_', ''));}
+                else{rowsSelected--; rowKeysSelected.splice(rowKeysSelected.indexOf(colorClass.replace('cRow_', '')), 1);}
+
+                renderHeader();
+            }
+        }
+
+        function renderHeader()
+        {
+            document.getElementById("buttonDoActionOnSelected").innerHTML = ''; //panelModeActionLabel[panelMode];
+            document.getElementById("buttonDoSecondaryActionOnSelected").innerHTML = ''; // panelModeSecondaryActionLabel[panelMode];
+
+            if(rowKeysSelected.length > 0)
+            {
+                document.getElementById("mainHeaderActions").style.opacity = 1;
+                document.getElementById("mainHeaderActions").style.bottom = '25px';
+                document.getElementById("textRowsSelected").innerHTML = rowKeysSelected.length + ' rows selected';
+            }
+            else
+            {
+                document.getElementById("mainHeaderActions").style.bottom = '0px';
+                document.getElementById("mainHeaderActions").style.opacity = 0;
+            }
+        }
+
+        function getTypeDescription(type)
+        {
+            switch(type)
+            {
+                case 0:     // Amount
+                    return 'number';
+                    break;
+                case 1:     // Date
+                    return 'date';
+                    break;
+                case 2:     // Text
+                    return 'text';
+                    break;
+            }
+        }
+
+        function addHyphensToYYYYMMDD(ymd)
+        {
+            return ymd.substring(0, 4) + '-' + ymd.substring(4, 6) + '-' + ymd.substring(6, 8);
+        }
+
+        function renderFiltersContainer(filterName)
+        {
+            var toRender = '<table style="font-size: 12px; border-collapse: collapse;"><tbody><tr><th></th><th>Filter from:</th><th>Filter until:</th></tr>';
+            
+            TrLifeCycle.TrLifeCycle.forEach(x => {
+                if(selectedLifeCycle == '' || x.TrLifeCycleName == selectedLifeCycle)
+                {
+                    x.TrLifeCycleHeader.forEach(y => {
+                        let filterId = y.TrLifeCycleHeaderName.replace(' ','_');
+                        let filterClass = '';
+                        let filterType = getTypeDescription(y.type);
+
+                        if(filterName == y.TrLifeCycleHeaderName) {filterClass = `style="background: var(--colors_basecolor30);"`;}
+                        
+                        let auxFilterFrom;
+                        let auxFilterUntil;
+
+                        if(y.type == 1)
+                        {
+                            auxFilterFrom = addHyphensToYYYYMMDD(y.filterFrom);
+                            auxFilterUntil = addHyphensToYYYYMMDD(y.filterUntil);
+                        }
+                        else
+                        {
+                            auxFilterFrom = y.filterFrom;
+                            auxFilterUntil = y.filterUntil;
+                        }
+                        
+                        toRender = toRender + `<tr ${filterClass}>
+                                                <td>${y.TrLifeCycleHeaderNameUser}</td>
+                                                <td><input id='fil_from_${filterId}' class='inputFilter' type='${filterType}' value='${auxFilterFrom}'></td>
+                                                <td><input id='fil_until_${filterId}' class='inputFilter' type='${filterType}' value='${auxFilterUntil}'></td>
+                                            </tr>`;
+                    });
+                }
+            });
+
+            document.getElementById("filtersContainer").innerHTML = toRender + '</tbody></table>';
+            
+            if(filterName)
+            {
+                document.getElementById('fil_from_' + filterName.replace(' ','_')).focus();
+            }
+        }
+
+        function getHeaderClass(header)
+        {
+            return 'header_' + header.replace(' ', '_');
+        }
+
+        function setHeaderFunctionality()
+        {
+            var elements = document.getElementsByClassName("thS");
+
+            for(var i = 0; i < elements.length; i++)
+            {
+                let elem = elements[i];
+
+                elem.addEventListener("click", 
+                    (ev) => {
+                        ev.preventDefault();
+                        editFilter(elem.getAttribute('gridfilterattribute'));
+                    }
+                , false);
+            }
+        }
+
+        function editFilter(filterName)
+        {
+            if(panelMode != 5)
+            {
+                renderFiltersContainer(filterName);
+                document.getElementById("filtersPanel").style.opacity = 1;
+                document.getElementById("filtersPanel").style.bottom = '15%';
+                document.getElementById("filtersPanel").style.zIndex = '20';
+            }
+        }
+
+        function hideFiltersPanel()
+        {
+            document.getElementById("filtersPanel").style.opacity = 0;
+            document.getElementById("filtersPanel").style.bottom = '0%';
+            document.getElementById("filtersPanel").style.zIndex = '-1';
+        }
+
+        function formatNumberToStandard(input) 
+        {
+            // Convert input to string
+            let inputStr = input.toString();
+
+            // Split the input into whole and decimal parts
+            let parts = inputStr.split('.');
+
+            // Ensure there is at least one whole part
+            let wholePart = parts[0] || '0';
+
+            // Ensure the whole part has at least 8 digits, pad with zeroes if necessary
+            wholePart = wholePart.padStart(8, '0');
+
+            // If there is a decimal part, ensure it has at least 4 digits, pad with zeroes if necessary
+            let decimalPart = (parts[1] || '').padEnd(4, '0');
+
+            // Concatenate the whole and decimal parts with a period
+            let result = `${wholePart}.${decimalPart}`;
+
+            return result;
+        }
+
+        function getEventDescription(eventTypeId)
+        {
+            switch(eventTypeId)
+            {
+                case 'CRE':
+                    return 'Case start';
+                    break;
+                case 'COM':
+                    return 'Comment';
+                    break;
+                case 'FWD':
+                    return 'Forward Case';
+                    break;
+                case 'ESC':
+                    return 'Escalation';
+                    break;
+                case 'CLO':
+                    return 'Case Close';
+                    break;
+                case 'INV':
+                    return 'Investigation';
+                    break;
+                case 'UNM':
+                    return 'Unmatch';
+                    break;
+                case 'FOR':
+                    return 'Force Match: Complete';
+                    break;
+                case 'FM1':
+                    return 'Force Match: Initiate';
+                    break;
+                case 'FM2':
+                    return 'Force Match: Authorize';
+                    break;
+                case 'FM3':
+                    return 'Force Match: Approve';
+                    break;
+                case 'FMR':
+                    return 'Force Match: Reject';
+                    break;
+                default:
+                    return 'Unknown';
+            }
+        }
+
+        function renderHistory(r, TDataKey)
+        {
+            let allEvents = r.SDT_TDataGroupEvent.map(
+                function (x){
+                    return {
+                        InvestigationEventComments: x.TDataGroupEventComments,
+                        InvestigationEventDateTime: x.TDataGroupEventDateTime,
+                        InvestigationEventId: x.TDataGroupEventId,
+                        InvestigationEventType: x.TDataGroupEventType,
+                        InvestigationEventUser: x.TDataGroupEventUserId,
+                        InvestigationEventUserName: x.TDataGroupEventUserName,
+                        InvestigationEventIsMe: false
+                    }
+            }).concat(r.SDT_InvestigationCase.Event).sort(function (a, b) {
+                if (a.InvestigationEventDateTime < b.InvestigationEventDateTime) 
+                {
+                    return -1;
+                } 
+                else
+                {
+                    return 1;
+                }
+            });
+
+            let auxHTML = `<table style="display: block;" class="mainGridStyle header-fixed"><thead><tr><th class="thS">Creation Date</th><th class="thS">Match success(%)</th></tr></thead>
+                    <tbody><tr><td class="cTdPad">${r.TDataGroupDate}</td><td class="cTdPad">${r.TDataGroupMPercent}</td></tr></tbody></table> <br><br>`;
+            
+            auxHTML = auxHTML + `<table style="display: block;" class="mainGridStyle header-fixed"><thead><tr><th class="thS">Date/Time</th><th class="thS">Event</th><th class="thS">User</th><th class="thS">Comments</th></tr></thead><tbody>`;
+            
+            try
+            {
+                allEvents.forEach(x => {
+                    let typeDescription = getEventDescription(x.InvestigationEventType);
+                    
+                    let tr = `<tr>
+                                <td class="cTdPad">${x.InvestigationEventDateTime.replace('T', ' ')}</td>
+                                <td class="cTdPad">${typeDescription}</td>
+                                <td class="cTdPad">${x.InvestigationEventUserName}</td>
+                                <td class="cTdPad">${x.InvestigationEventComments}</td>
+                            </tr>`;
+                    auxHTML = auxHTML + tr;
+                });
+            }
+            catch(err)
+            {
+                //
+            }
+
+            auxHTML = auxHTML + `</tbody></table>`;
+            document.getElementById('HistoryContainer').innerHTML = auxHTML;
+        }
+
+        function applyAllFilters()
+        {
+            TrLifeCycle.TrLifeCycle.forEach(x => {
+                if(selectedLifeCycle == '' || x.TrLifeCycleName == selectedLifeCycle)
+                {
+                    x.TrLifeCycleHeader.forEach(y => {
+                        let filterId = y.TrLifeCycleHeaderName.replace(' ', '_');
+                        y.filterFrom = document.getElementById('fil_from_' + filterId).value;
+                        y.filterUntil = document.getElementById('fil_until_' + filterId).value;
+
+                        // 0 Amount - 1 Date - 2 Text
+                        switch(y.type)
+                        {
+                            case 0:
+                                if(y.filterFrom != '') y.filterFrom = formatNumberToStandard(y.filterFrom);
+                                if(y.filterUntil != '') y.filterUntil = formatNumberToStandard(y.filterUntil);
+                                break;
+                            case 1:
+                                if(y.filterFrom != '') y.filterFrom = y.filterFrom.replaceAll('-', '');
+                                if(y.filterUntil != '') y.filterUntil = y.filterUntil.replaceAll('-', '');
+                                break;
+                            case 2:
+                                break;
+                        }
+                    });
+                }
+            });
+
+            getTDataGroupMatchFilters(); // xxxx
+        }
+
+        async function getTDataGroupMatchFilters()
+        {
+            let restServices = ['', 'rest/getTDataGroupMatch_index', 'rest/getTDataGroupProposedMatch_index', 'rest/getTDataGroupUnmatched_index', 'rest/getTDataGroupUnmatched_index'];
+
+            var data = {
+                SDT_LifeCycle: TrLifeCycle,
+                TrCurCode: p_TrCurCode,
+                fromDate: p_fromDate,
+                untilDate: p_untilDate,
+                MatchStat: p_MatchStat,
+                pageSize: p_pageSize,
+                pageNumber: p_pageNumber
+            };
+
+            fetch(restServices[panelMode], {
+                method: "POST",
+                mode: "no-cors",
+                body: JSON.stringify(data),
+                headers: {"Content-type": "application/json; charset=UTF-8"}
+            })
+            .then(response => response.json())
+            .then(res => {TDataGroupMatch = res.SDT_TDataGroupMatch; 
+                            p_pageCount = res.SDT_TDataGroupMatch.pageCount;
+                            groupsCount = res.SDT_TDataGroupMatch.groupCount;
+                            transactionsCount = res.SDT_TDataGroupMatch.transactionsCount;
+
+                            if(p_pageNumber > p_pageCount) p_pageNumber = 1;
+
+                            renderTable();
+                        });
+        }
+
+        function resetAllFilters()
+        {
+            TrLifeCycle.TrLifeCycle.forEach(x => {
+                if(selectedLifeCycle == '' || x.TrLifeCycleName == selectedLifeCycle)
+                {
+                    x.TrLifeCycleHeader.forEach(y => {
+                        y.filterFrom = '';
+                        y.filterUntil = '';
+                    });
+                }
+            });
+
+            getTDataGroupMatchFilters();
+        }
+
+        async function callWebService(serviceURL, inComments)
+        {
+            var data = {
+                sTDataGroupMatchKey: rowKeysSelected,
+                sTDataGroupComment: inComments,
+                acceptForceMatch: acceptForceMatch
+            };
+
+            fetch(serviceURL, {
+                method: "POST",
+                mode: "no-cors",
+                body: JSON.stringify(data),
+                headers: {"Content-type": "application/json; charset=UTF-8"}
+            })
+            .then(response => response.json())
+            .then(res => {
+                if(res.errorDescription != '')
+                {
+                    alert(res.errorDescription);
+                }  
+
+                if(res.error == 0)
+                {
+                    if(authorizationPanel)
+                    {
+                        location.reload();
+                    }
+                    else
+                    {
+                        getTDataGroupMatchFilters();
+                        hideFloatingContainer();
+                        renderTable();
+                    }
+                }
+            });
+        }
+
+        async function getTDataGroupMatch()
+        {
+            let restServices = ['', 'rest/getTDataGroupMatch', 'rest/getTDataGroupProposedMatch', 'rest/getTDataGroupUnmatched', 'rest/getTDataGroupUnmatched'];
+
+            var data = {
+                TrLifeCycleName: p_TrLifeCycleName,
+                TrCurCode: p_TrCurCode,
+                fromDate: p_fromDate,
+                untilDate: p_untilDate,
+                isUngrouped: p_isUngrouped,
+                pageSize: p_pageSize,
+                pageNumber: p_pageNumber
+            };
+
+            fetch(restServices[panelMode], {
+                method: "POST",
+                mode: "no-cors",
+                body: JSON.stringify(data),
+                headers: {"Content-type": "application/json; charset=UTF-8"}
+            })
+            .then(response => response.json())
+            .then(res => {TDataGroupMatch = res.SDT_TDataGroupMatch; renderTable();});
+        }
+
+        async function getTDataGroupMatchReport()
+        {
+            let restServices = ['', 'rest/getTDataGroupMatch', 'rest/getTDataGroupProposedMatch', 'rest/getTDataGroupUnmatched', 'rest/getTDataGroupUnmatched'];
+
+            var data = {
+                dmPanelMode: panelMode,
+                SDT_LifeCycle: TrLifeCycle,
+                TrCurCode: p_TrCurCode,
+                fromDate: p_fromDate,
+                untilDate: p_untilDate,
+                isUngrouped: p_isUngrouped,
+                pageSize: p_pageSize,
+                pageNumber: p_pageNumber
+            };
+
+            fetch('rest/getTDataGroupMatch_Excel', {
+                method: "POST",
+                mode: "no-cors",
+                body: JSON.stringify(data),
+                headers: {"Content-type": "application/json; charset=UTF-8"}
+            })
+            .then(response => response.json())
+            .then(res => {base64String = res.base64; downloadBase64String('xlsx', base64String);});
+        }
+        
+        function downloadBase64String(type, b64)
+        {
+            const linkSource = `data:application/${type};base64,${b64}`;
+            const downloadLink = document.createElement("a");
+            const fileName = "Report.xlsx";
+            downloadLink.href = linkSource;
+            downloadLink.download = fileName;
+            downloadLink.click();
+        }
+
+        function buttonDoActionOnSelected()
+        {
+            switch(panelMode)
+            {
+                case 1:
+                    callWebService('rest/wsUnmatchMatchedTransactions', '');
+                    break;
+                case 2:
+                    showFloatingContainer();
+                    break;
+                case 3:
+                    showFloatingContainer();
+                    break;
+                case 4:
+                    showFloatingContainer();
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        function buttonDoSecondaryActionOnSelected()
+        {
+            switch(panelMode)
+            {
+                case 1:
+                    alert("There is no secondary action for this mode yet.");
+                    break;
+                case 2:
+                    alert("There is no secondary action for this mode yet.");
+                    break;
+                case 3:
+                    //callWebService('rest/wsStartInvestigationForGroup', '');
+                    showFloatingContainerStartInvestigation();
+                    break;
+                case 4:
+                    //callWebService('rest/wsStartInvestigationForGroup', '');
+                    showFloatingContainerStartInvestigation();
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        document.getElementById("buttonDoActionOnSelected").addEventListener("click", 
+            (ev) => {
+                ev.preventDefault();
+                buttonDoActionOnSelected();
+            }
+        , false);
+        
+        document.getElementById("buttonDoSecondaryActionOnSelected").addEventListener("click", 
+            (ev) => {
+                ev.preventDefault();
+                buttonDoSecondaryActionOnSelected();
+            }
+        , false);
+
+        var tags = [];
+
+        function addNewTag(tagName)
+        {
+            tags.push(tagName);
+            renderTagHolder();
+        }
+
+        function deleteTag(tagName)
+        {
+            for(let i = 0; i < tags.length; i++)
+            {
+                if(tagName == tags[i])
+                {
+                tags.splice(i, 1);
+                break;
+                }
+            }
+
+            renderTagHolder();
+        }
+
+        function renderTagHolder()
+        {
+            let auxHTML = '';
+
+            tags.forEach(x => {
+            auxHTML = auxHTML + `<div class="tag">
+                                    <span>${x}</span>
+                                    <span class="close" onclick="deleteTag('${x}')"><i class="fa fa-close"></i></span>
+                                </div>`
+            });
+
+            let auxDataList = '<datalist id="departments">';
+
+            SDT_InvTemplate.forEach(x => {
+                if(tags.indexOf(x.InvTemplateId) < 0)
+                {
+                    auxDataList = auxDataList + `<option value="${x.InvTemplateId}" label="${x.InvTemplateDescription}">`;
+                }
+            });
+
+            auxDataList = auxDataList + '</datalist>';
+
+            document.getElementById("tag-input-container").innerHTML = auxHTML + `<input list="departments" type="text" id="tag-input" class="tag-input" placeholder="" onkeydown="inputCheckSpace(this.value, event);">`
+                                                            + auxDataList;
+                                                                /*
+                                                                `<datalist id="departments">
+                                                                            <option value="IT" label="IT Department">
+                                                                            <option value="Branch" label="Branch Manager">
+                                                                            <option value="Accounting" label="Accounting Department">
+                                                                            <option value="General" label="General Management">
+                                                                </datalist>`;
+                                                                */
+            document.getElementById("tag-input").focus();
+        }
+
+        async function getDepartments()
+        {
+            data = {};
+
+            fetch('rest/wsGetDepartments', {
+                method: "POST",
+                mode: "no-cors",
+                body: JSON.stringify(data),
+                headers: {"Content-type": "application/json; charset=UTF-8"}
+            })
+            .then(response => response.json())
+            .then(res => {SDT_InvTemplate = res.SDT_InvTemplate; 
+                            renderTagHolder();
+                        });
+        }
+
+        async function startInvestigation(inSubject, inComments)
+        {
+            var data = {
+                InvestigationSubject: inSubject,
+                InvestigationContent: inComments,
+                colInvTemplateId: tags,
+                sTDataGroupMatchKey: rowKeysSelected,
+            };
+
+            fetch('rest/wsStartInvestigation', {
+                method: "POST",
+                mode: "no-cors",
+                body: JSON.stringify(data),
+                headers: {"Content-type": "application/json; charset=UTF-8"}
+            })
+            .then(response => response.json())
+            .then(res => {
+                            if(res.error == 0)
+                            {
+                                alert('Investigation started: Case #' + res.InvestigationCaseId);
+                                hideFloatingContainerStartInvestigation();
+                                getTDataGroupMatchFilters();
+                            }
+                            else
+                            {
+                                alert('Could not start an investigation: ' + res.errorDescription);
+                            }
+                        });
+        }
+
+        async function viewHistory(TDataKey)
+        {
+            var data = {
+                TDataGroupEventKey: TDataKey
+            };
+
+            fetch('rest/wsGetTransactionHistory', {
+                method: "POST",
+                mode: "no-cors",
+                body: JSON.stringify(data),
+                headers: {"Content-type": "application/json; charset=UTF-8"}
+            })
+            .then(response => response.json())
+            .then(res => {
+                            renderHistory(res, TDataKey);
+                            showFloatingContainerHistory();
+                        });
+        }
+
+        function inputCheckSpace(val, event) 
+        {
+            if (event.key === 'Enter' || event.key === ',' || event.key === ' ')
+            {
+                event.preventDefault();
+                addNewTag(val);
+            }
+        }
+
+        function hideFloatingContainer()
+        {
+            document.getElementById('fullScreenDiv').style.display = 'none';
+            document.getElementById('floatingContainer').style.zIndex = '-1';
+            document.getElementById('floatingContainer').style.opacity = 0;
+            document.getElementById('floatingContainer').style.top = '0px';
+        }
+
+        function showFloatingContainer(accept)
+        {
+            acceptForceMatch = accept;
+            
+            if(accept)
+            {
+                document.getElementById('floatingContainerTitle').innerHTML = `You are about to ${TrLifeCycleRolesActionLabel[p_TrLifeCycleRoles[0]]} the matching of the selected transactions`;
+                document.getElementById('floatingContainerDescription').innerHTML = `By clicking on "Continue", I accept to ${TrLifeCycleRolesActionLabel[p_TrLifeCycleRoles[0]]} the matching of the selected transactions.`;
+            }
+            else
+            {
+                document.getElementById('floatingContainerTitle').innerHTML = 'You are about to reject the matching of the selected transactions';
+                document.getElementById('floatingContainerDescription').innerHTML = 'By clicking on "Continue", I accept to reject the matching of the selected transactions.';
+            }
+
+            document.getElementById('fullScreenDiv').style.display = 'block';
+            document.getElementById('floatingContainer').style.zIndex = '20';
+            document.getElementById('floatingContainer').style.opacity = 1;
+            document.getElementById('floatingContainer').style.top = '70px';
+        }
+        
+        function hideFloatingContainerStartInvestigation()
+        {
+            document.getElementById('fullScreenDiv').style.display = 'none';
+            document.getElementById('floatingContainerStartInvestigation').style.zIndex = '-1';
+            document.getElementById('floatingContainerStartInvestigation').style.opacity = 0;
+            document.getElementById('floatingContainerStartInvestigation').style.top = '0px';
+        }
+
+        function showFloatingContainerStartInvestigation()
+        {
+            document.getElementById('fullScreenDiv').style.display = 'block';
+            document.getElementById('floatingContainerStartInvestigation').style.zIndex = '20';
+            document.getElementById('floatingContainerStartInvestigation').style.opacity = 1;
+            document.getElementById('floatingContainerStartInvestigation').style.top = '70px';
+        }
+
+        function hideFloatingContainerHistory()
+        {
+            document.getElementById('fullScreenDiv').style.display = 'none';
+            document.getElementById('floatingContainerHistory').style.zIndex = '-1';
+            document.getElementById('floatingContainerHistory').style.opacity = 0;
+            document.getElementById('floatingContainerHistory').style.top = '0px';
+        }
+
+        function showFloatingContainerHistory()
+        {
+            document.getElementById('fullScreenDiv').style.display = 'block';
+            document.getElementById('floatingContainerHistory').style.zIndex = '20';
+            document.getElementById('floatingContainerHistory').style.opacity = 1;
+            document.getElementById('floatingContainerHistory').style.top = '70px';
+        }
+        
+        document.getElementById("buttonFiltersPanelCancel").addEventListener("click", 
+            (ev) => {
+                ev.preventDefault();
+                hideFiltersPanel();
+            }
+        , false);
+        
+        document.getElementById("buttonFiltersPanelApply").addEventListener("click", 
+            (ev) => {
+                ev.preventDefault();
+                p_pageNumber = 1;
+                applyAllFilters();
+                hideFiltersPanel();
+                //renderTable();        // XXXX
+            }
+        , false);
+
+        document.getElementById("buttonFiltersPanelReset").addEventListener("click", 
+            (ev) => {
+                ev.preventDefault();
+                resetAllFilters();
+                hideFiltersPanel();
+                //renderTable();
+            }
+        , false);
+        
+        document.getElementById("buttonFloatingContainerAccept").addEventListener("click", 
+            (ev) => {
+                ev.preventDefault();
+                let sendComments = document.getElementById('floatingContainerComments').value;
+                
+                if(sendComments)
+                {
+                    if(panelMode == 2 || panelMode == 3)
+                    {
+                        callWebService('rest/wsMatchProposedTransactions', sendComments);
+                    }
+                    
+                    if(panelMode == 1)
+                    {
+                        callWebService('rest/wsUnmatchMatchedTransactions', sendComments); // zzzz
+                    }
+                }
+                else
+                {
+                    alert('A comment must be entered in order to continue.')
+                }
+            }
+        , false);
+        
+        document.getElementById("buttonFloatingContainerStartInvestigationAccept").addEventListener("click", 
+            (ev) => {
+                ev.preventDefault();
+                
+                let sendSubject = document.getElementById('caseIdSubject').value;
+                let sendComments = document.getElementById('floatingContainerCommentsStartInvestigation').value;
+                
+                if(sendComments)
+                {
+                    if(tags.length > 0)
+                    {
+                        startInvestigation(sendSubject, sendComments)
+                    }
+                    else
+                    {
+                        alert('The field "To" must contain at least one recipient.');
+                    }
+                }
+                else
+                {
+                    alert('A comment must be entered in order to continue.');
+                }
+                
+            }
+        , false);
+        
+        
+        
+        document.getElementById("buttonFloatingContainerHistoryAccept").addEventListener("click", 
+            (ev) => {
+                ev.preventDefault();
+                hideFloatingContainerHistory();
+            }
+        , false);
+        
+
+        document.getElementById("buttonFloatingContainerCancel").addEventListener("click", 
+            (ev) => {
+                ev.preventDefault();
+                hideFloatingContainer();
+            }
+        , false);
+        
+        document.getElementById("buttonFloatingContainerStartInvestigationCancel").addEventListener("click", 
+            (ev) => {
+                ev.preventDefault();
+                hideFloatingContainerStartInvestigation();
+            }
+        , false);
+
+        document.getElementById("buttonGetTDataGroupMatch").addEventListener("click", 
+            (ev) => {
+                ev.preventDefault();
+                getTDataGroupMatch();
+            }
+        , false);
+        
+        
+
+        function goToInvestigationCase(caseKey)
+        {
+            let auxUrl = 'wpInvestigationCaseByTDataKey.aspx?TDataKey=' + caseKey;
+            window.open(auxUrl, '_blank');
+        }
+
+        function renderContextmenu(clickedKey)
+        {
+            const contextMenu = document.getElementById('customContextMenu');
+            const contextMenuHelper = document.getElementById('customContextMenuHelper');
+            
+            event.preventDefault();
+            let auxHTML = '';
+            
+            if(rowKeysSelected.length > 0 && panelMode == 1)
+            {
+                auxHTML = `<a class="context-menu-item" href="#" onclick="hideContextMenu(); showFloatingContainer(false);">
+                                <i></i> ${panelModeActionLabel[panelMode]} <span> </span>
+                            </a>`;
+            }
+            
+            if(rowKeysSelected.length > 0 && panelMode >= 2 && panelMode <= 4)
+            {
+                let showForceMatchOptions = true;
+                
+                for(let j = 0; j < rowKeysSelected.length; j++)
+                {
+                    for(let i = 0; i < TDataGroupMatch.TDataGroupMatch.length; i++)
+                    {
+                        let tdgm = TDataGroupMatch.TDataGroupMatch[i];
+
+                        if(tdgm.TDataGroupMatchKey == rowKeysSelected[j] && tdgm.TDataGroupForceMatchLevel + 1 != p_TrLifeCycleRoles[0])
+                        {
+                            showForceMatchOptions = false;
+                            break;
+                        }
+                    }
+                }
+
+                if(showForceMatchOptions)
+                {
+                    auxHTML = `<a class="context-menu-item" href="#" onclick="hideContextMenu(); showFloatingContainer(true);">
+                                    <i class="fa fa-check"></i> ${TrLifeCycleRolesLabel[p_TrLifeCycleRoles[0]]} <span> </span>
+                                </a>`;
+                }
+                else
+                {
+                    auxHTML = `<a style="color: #80808094;" class="context-menu-item" href="#"">
+                                    <i class="fa fa-check"></i> ${TrLifeCycleRolesLabel[p_TrLifeCycleRoles[0]]} <span> </span>
+                                </a>`;
+                }
+
+                if(showForceMatchOptions && p_TrLifeCycleRoles[0] > 1)
+                {
+                    auxHTML = auxHTML + `<a class="context-menu-item" href="#" onclick="hideContextMenu(); showFloatingContainer(false);">
+                                    <i class="fa fa-times"></i> Reject <span> </span>
+                                </a>`;
+                }
+                else
+                {
+                    auxHTML = auxHTML + `<a style="color: #80808094;" class="context-menu-item" href="#"">
+                                    <i class="fa fa-times"></i> Reject <span> </span>
+                                </a>`;
+                }
+            }
+
+            if(TDataGroupMatch.TDataGroupMatch.filter(x => x.TDataGroupMatchKey == clickedKey.replace('cRow_', ''))[0].TDataGroupInvestigationLevel > 0)
+            {
+                auxHTML = auxHTML + `<a class="context-menu-item" href="#" onclick="hideContextMenu(); goToInvestigationCase('${clickedKey.replace('cRow_', '')}');">
+                    <i class="fa fa-search"></i> Go to Investigation Case <span> Ctrl + I</span>
+                </a>
+                <hr />`;
+            }
+            else
+            {
+                if(rowKeysSelected.length > 0 && panelMode >= 2 && panelMode <= 4)
+                {
+                    auxHTML = auxHTML + `<a class="context-menu-item" href="#" onclick="hideContextMenu(); showFloatingContainerStartInvestigation();">
+                                <i></i> ${panelModeSecondaryActionLabel[panelMode]} <span> </span>
+                            </a>
+                            <hr />`;
+                }
+            }
+
+            auxHTML = auxHTML + `<a class="context-menu-item" href="#" onclick="hideContextMenu(); viewHistory('${clickedKey.replace('cRow_', '')}');">
+                <i class="fa fa-history"></i> View Transaction History... <span>Ctrl + H</span>
+            </a>`;
+
+            contextMenu.innerHTML = auxHTML;
+
+            const x = event.clientX;
+            const y = event.clientY;
+
+            contextMenuHelper.style.display = 'block';
+            contextMenu.style.display = 'block';
+            contextMenu.style.left = x + 'px';
+            contextMenu.style.top = y + 'px';
+        }
+
+        function hideContextMenu()
+        {
+            event.preventDefault();
+            document.getElementById('customContextMenu').style.display = 'none';
+            document.getElementById('customContextMenuHelper').style.display = 'none';
+        }
+
+        function handleMenuItemClick(option) {
+            alert('Selected option: ' + option);
+            document.getElementById('customContextMenu').style.display = 'none';
+        }
+
+
+        
+        renderTable();
+        renderHeader();
+    </script>

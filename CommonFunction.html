@@ -1,0 +1,321 @@
+<link rel="stylesheet" href="MyAssets/Scripts/css/jquery-ui.css">
+<link rel="stylesheet" href="MyAssets/Scripts/css/fixedColumns.dataTables.min.css">
+
+<script src="MyAssets/Scripts/CommonJs.js"></script>
+<script src="MyAssets/Scripts/jquery.dataTables.min.js"></script>
+
+<script src="MyAssets/Scripts/dataTables.rowGroup.min.js"></script>
+<script src="MyAssets/Scripts/jquery-ui.min.js"></script>
+<script src="MyAssets/Scripts/dataTables.colReorder.min.js"></script>
+<script src="MyAssets/Scripts/bootstrap-multiselect.min.js"></script>
+<script src="MyAssets/Scripts/CommonJs.js"></script>
+
+<script src="MyAssets/Scripts/dataTables.buttons.min.js"></script>
+<script src="MyAssets/Scripts/buttons.html5.min.js"></script>
+<script src="MyAssets/Scripts/buttons.print.min.js"></script>
+<script src="MyAssets/Scripts/buttons.colVis.min.js"></script>
+<script src="MyAssets/Scripts/jquery.contextMenu.min.js"></script>
+<script src="MyAssets/Scripts/dataTables.fixedColumns.min.js"></script>
+<style>
+    .SimpleCardTable {  
+    overflow: hidden;
+    padding-bottom: 10px !important;
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-top: 11px  !important;
+    background-color: var(--colors_databackgroundcolor);
+    border-radius: var(--radius_m);
+    border: var(--borders_xs) solid var(--colors_gray05);
+}
+
+.SimpleCardAttributeSubtitle {
+    margin-left: 1px  !important;
+    display: inline-block;
+    text-align: center  !important;
+    background-color: transparent;
+    border: var(--borders_xs) solid var(--colors_gray05);
+    font-style: normal;
+    font-variant: normal;
+    text-decoration: none;
+    text-indent: 0;
+    box-shadow: none;
+    font-weight: 600;
+    max-width: 100%;
+    border-width: 0;
+    font-size: 10px  !important;
+    color: var(--colors_gray07);
+    padding-top: 13%  !important;
+}
+ /* #CARD_TABLECONTENT_0001{
+    height: 92px;
+ } */
+ #NextButtonFilter{
+    margin-left: 120px;
+ }
+ #loader {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 20px;
+    color: #333;
+    z-index: 1000;
+}
+/* logo */
+.ImageTopHeader{
+    /* width: 100%; */
+    max-width: 90% !important;
+    max-height: 70px !important;
+    /* height: 100vh !important; */
+    /* margin-top: -18px !important;
+    margin-left: 5px !important; */
+
+}
+.TableLogo.page-content{
+    max-width: 15%;
+    top: 5px;
+}
+
+.TableLogo.page-content.menu-compact {
+    margin-left: -13px;
+    max-width: 70px;
+    /* height: 16px; */
+    top: 20px;
+}
+
+.TableLogo.page.content{
+    min-width: 250px !important;
+}
+/* Filter Dropdown button Wrap  */
+#myfilterFieldsContainer {
+    white-space: wrap !important;
+}
+
+
+</style>
+<script>
+       //submenu
+       document.addEventListener("DOMContentLoaded", function () {
+    const submenus = document.querySelectorAll('.submenu');
+
+    submenus.forEach(submenu => {
+        // Check if the current submenu is nested (not the first-level)
+        const parentSubmenu = submenu.parentElement.closest('.submenu');
+
+        if (parentSubmenu) {
+            // If the submenu is inside another submenu, add padding
+            submenu.style.paddingLeft = "20px";
+        } else {
+            // If it's a first-level submenu, no padding
+            submenu.style.paddingLeft = "0px";
+        }
+    });
+});
+
+    $(document).ready(function () {
+    //    $('#PanelBody_DVPANEL_PANELTBLContainer').css('overflow-y', 'auto');
+    //    $('#PanelBody_DVPANEL_PANELTBLContainer').css('height', '300px');
+
+    $('#TBLBUTTON').css('background', 'white');
+        $('#TBLBUTTON').css('padding', '5px');
+        $('#TBLBUTTON').css('text-align', 'center');
+        $('#TBLBUTTON').css('border-width', '0px');
+        $('#TBLBUTTON').css('box-shadow', '0 0 4px rgba(0, 0, 0, 0.3)');
+        $('#TBLBUTTON').css('border-radius', '3px');
+        
+       // jQuery to select and set the height for each CARD_TABLECONTENT element
+       $('#GridContainerDiv').find('[id^="CARD_TABLECONTENT"]').css('height', '92px');
+       $('#GridContainerDiv').find('[id^="CARD_TABLECONTENT"]').css('display','flex');
+       $('#GridContainerDiv').find('[id^="CARD_TABLECONTENT"]').css('padding-bottom', '10px','padding-top','10px','transition','transform 0.3s, box-shadow 0.3s','box-shadow','0 2px 6px rgba(0, 0, 0, 0.1)',
+        'transform','scale(1.05)');
+        $('#GridContainerDiv')
+    .find('[id^="CARD_TABLECONTENT"]')
+    .css({ 
+        'align-items': 'center', 
+        'display': 'flex' // Flex container ensure karna zaroori hai
+    });
+
+        // $('.SimpleCardTable').find('i.menu-icon').css({
+        //     'font-size': '29px',
+        //     'text-align':'center ',
+        //     'color': '#ff6347'
+        // });
+    
+
+   // Target all <i> elements with class 'menu-icon' inside SimpleCardTable
+        $('.SimpleCardTable').find('i.menu-icon').css({
+            'font-size': '30px',
+            'text-align': 'center',
+            'color': '#ff6347'
+            });
+
+        $(document).click(function (event) {
+            // Check if the clicked element is not the div or its descendant
+            if (!$(event.target).closest('#buttons-searchButton').length) {
+                // Hide the div
+                if(!$(event.target).closest('#TABLEFLOAT').length){
+                fnHidePanel();
+                }
+            }
+            $(document).ready(function () {
+                $('#TABLEFLOAT').draggable();
+                $('#funpopupModal').draggable();
+                $('#AllFunctionPopup').draggable();
+            });
+        });
+    });
+    document.addEventListener('keydown', function (event) {
+        if (event.ctrlKey) {
+            if (event.key === 'f' || event.keyCode === 70) {
+                $("#TABLEFLOAT").show();
+                $("#TEXTBLOCKCOMBO_SAVEDSETTLEMENTID").focus();
+                event.preventDefault();
+            }
+            if (event.key === 's' || event.keyCode === 83) {
+                if(savedFilterId > 0){
+                    $('#saveFilterButton').click();
+                }else{
+                $('#TABLECONTAINERSAVEFILTER').removeClass("DisplayNone");
+                document.getElementById("GRIDFILTER_GRIDFILTERNAME").focus();
+                }
+                event.preventDefault();
+            }
+
+            // if(event.keyCode === 39)
+            // {
+            //     alert('2');
+            // }
+
+            // if(event.keyCode === 37)
+            // {
+            //     alert('3');
+
+            // }
+        }
+
+        if (event.keyCode === 27) {
+            fnHidePanel();
+            $('#TABLECONTAINERSAVEFILTER').addClass("DisplayNone");
+        }
+
+        // if(event.key === 'Enter' || event.keyCode === 13)
+        // {
+        //     alert('5');
+        // }
+    });
+
+    function downloadVoucherN() {
+        // alert('testing');
+        $.ajax({
+            url: 'rest/wsFileDownload',
+            type: 'GET',
+            contentType: 'application/json; charset=UTF-8',
+            success: function (data) {
+                // alert('test');
+                var base64String = data.base64;
+                downloadBase64String('xlsx', base64String);
+            },
+            error: function (xhr, status, error) {
+                console.error('Error:', error);
+            }
+        });
+    }
+    function fnHidePanel() {
+        $("#TABLEFLOAT").hide();
+    }
+    function fnShowPanel(){
+        $("#TABLEFLOAT").show();
+        $("#TEXTBLOCKCOMBO_SAVEDSETTLEMENTID").focus();
+    }
+    function hardRedirect(url) {
+        window.location.assign(url + '?' + new Date().getTime());
+    }
+
+    function fnExportPDFBtn(procedurename, pdffilename) {
+    // Show the loader before starting the download process
+    $('#loader').show();
+
+    // Get the current URL and replace with the specified procedure name
+    let currentUrl = window.location.href;
+    let pdfUrl = currentUrl.replace(/[^/]*$/, procedurename + ".aspx");
+
+    // Fetch the PDF as a blob and trigger the download
+    fetch(pdfUrl)
+        .then(response => {
+            // Check if the response is OK (status 200-299)
+            if (!response.ok) {
+                throw new Error("Network response was not ok");
+            }
+            return response.blob();
+        })
+        .then(blob => {
+            // Create a temporary link element
+            const link = document.createElement("a");
+
+          
+            const url = URL.createObjectURL(blob);
+
+            //for pdf download code
+                //link.href = url;
+                //link.download = pdffilename + ".pdf"; // Set the desired download filename
+
+                
+                //document.body.appendChild(link);
+
+                
+                //link.click();
+                
+                
+                //URL.revokeObjectURL(url);
+                //document.body.removeChild(link);
+
+            //for pdf open on another tab 
+                window.open(url, '_blank');
+                URL.revokeObjectURL(url);
+            
+            
+
+            // Hide the loader after the download is complete
+            $('#loader').hide();
+        })
+        .catch(error => {
+            // Hide the loader and show an error message if something goes wrong
+            $('#loader').hide();
+            console.error("Error downloading PDF:", error);
+            alert("An error occurred while downloading the PDF: " + error.message);
+        });
+}
+
+    function formatDateFromString(dateString) {
+    // Extract year, month, and day from the input string
+
+    if(dateString && dateString.length > 0  && dateString != null && dateString.trim() != ''
+     && dateString != '1900-01-01' && dateString != '1900-01-01T00:00:00' 
+     && dateString != undefined){
+        
+        const date = new Date(dateString);
+        
+        if(isNaN(date)){
+            return '';
+        }
+
+        const day =String(date.getDate()).padStart(2,'0');
+        const month = String(date.getMonth() + 1).padStart(2, '0');//date.toLocaleString('en-US', { month: 'short' });
+        const year = date.getFullYear();
+         //console.log(day + month  + year)
+        let hours = date.getHours();
+        const minutes = date.getMinutes().toString().padStart(2, '0');
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+        //console.log(`${day}-${month}-${year}`)
+        hours = hours % 12;
+        hours = hours ? hours : 12; // the hour '0' should be '12'
+        // ${hours}:${minutes} ${ampm};
+        return `${day}-${month}-${year}`;
+}else{
+    return '';
+
+}
+}
+
+
+</script>

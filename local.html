@@ -1,0 +1,92 @@
+<html>
+
+<head>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        h3{
+            color: #e74c3c;
+            font-size: 24px;
+        }
+
+        p {
+            color: #555;
+            font-size: 16px;
+        }
+
+        .button {
+            padding: 10px 20px;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            display: inline-block;
+            margin-top: 20px;
+        }
+
+        .footer {
+            font-size: 12px;
+            color: #999;
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .content {
+            background-color: #f9fafb;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            padding: 5px 0;
+        }
+
+        li strong {
+            color: #333;
+        }
+    </style>
+</head>
+
+<body>
+    <div class='container'>
+        <h3>Statement Transaction Missing</h3>
+        <div class='content'>
+            <p>Dear User,</p>
+            <p>We noticed that a transaction is missing from your system. Please review the details below:</p>
+            <ul>
+                <li><strong>Issue:</strong> Transaction Missing</li>
+                <li><strong>Action Required:</strong> Please verify the missing transaction and investigate the cause.
+                </li>
+            </ul>
+            <p>To assist with the verification process, you can download the error statement from the link below:</p>
+            <a href='http://localhost:8083/TLMOCC10NETSQLServer/RejectedStatement/Statement_20241127_122036.csv'
+                class='button'>Download Error Statement</a>
+        </div>
+        <p class='footer'>If you need further assistance, please contact support.</p>
+    </div>
+</body>
+
+</html>

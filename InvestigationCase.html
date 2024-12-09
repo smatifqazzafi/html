@@ -1,0 +1,172 @@
+<body>
+        <div id="investigationContainer">
+        </div>
+    </body>
+    <style>
+        .chatMessageName
+        {
+            margin-bottom: 20px;
+        }
+
+        .chatMessageContent
+        {
+            margin-bottom: 10px;
+        }
+
+        .chatMessageContentText
+        {
+            color: white;
+            padding: 8px;
+            border-radius: 5px;
+            background-color: gray;
+        }
+
+        .chatMessageNameMine
+        {
+            margin-bottom: 20px;
+            /*text-align: right;*/
+        }
+
+        .chatMessageContentMine
+        {
+            margin-bottom: 10px;
+            /*text-align: right;*/
+        }
+
+        .chatMessageContentTextMine
+        {
+            color: white;
+            padding: 8px;
+            border-radius: 5px;
+            background-color: var(--colors_basecolor);
+        }
+
+        .eventContent
+        {
+            /*text-align: -webkit-center;*/
+            margin-top: 25px;
+            margin-bottom: 25px;
+        }
+    </style>
+    <script>
+        var InvestigationCaseId;
+        var SDT_InvestigationCase;
+        function getListWithCommasAndAnd(col)
+        {
+            if(col.length == 1) return col[0];
+            else
+            {
+                let aux = '';
+                for(let i = 0; i < col.length - 2; i++)
+                {
+                    aux = aux + col[i] + ', ';
+                }
+
+                return aux + col[col.length-2] + ' and ' + col[col.length-1];
+            }
+        }
+
+        function getMessage(self, userName, message, datetime)
+        {
+            let selfClassSuffix = '';
+            
+            if(self == true){selfClassSuffix = 'Mine';}
+            
+            return `<div class="chatMessageName${selfClassSuffix}">
+                        <b>${userName}:</b>
+                        <span class="chatMessageContentText${selfClassSuffix}">${message}</span>
+                        ${datetime.replace('T', ' ')}
+                    </div>
+                    <div class="chatMessageContent${selfClassSuffix}"></div>`
+        }
+
+        function renderInvestigationCase()
+        {
+            let auxHTML = '';
+            let escalationLevel = 1;
+            let creationMessage = '';
+            let isCreated = false;
+            let isCaseClosed = false;
+
+            SDT_InvestigationCase.Event.forEach(x => {
+                let isMe = x.InvestigationEventIsMe;
+                
+                switch(x.InvestigationEventType)
+                {
+                    case 'CRE':
+                        creationMessage = x.InvestigationEventComments;
+                        break;
+                    case 'FWD':
+                        let forwardedTo = getListWithCommasAndAnd(x.EventInvTemplate.map(item => item.InvestigationEventInvTemplateId)); 
+
+                        if(!isCreated)
+                        {
+                            auxHTML = auxHTML + `<div class="eventContent">${x.InvestigationEventUserName} has started the investigation and assigned it to ${forwardedTo} at ${x.InvestigationEventDateTime.replace('T', ' ')} </div>`;
+                            auxHTML = auxHTML + getMessage(x.InvestigationEventIsMe, x.InvestigationEventUserName, creationMessage, x.InvestigationEventDateTime);
+                            isCreated = true;
+                        }
+                        else
+                        {
+                            if(x.InvestigationEventComments != '')
+                            {
+                                auxHTML = auxHTML + getMessage(x.InvestigationEventIsMe, x.InvestigationEventUserName, x.InvestigationEventComments, x.InvestigationEventDateTime);
+                            }
+                            
+                            auxHTML = auxHTML + `<div class="eventContent">${x.InvestigationEventUserName} has forwarded the investigation to ${forwardedTo} at ${x.InvestigationEventDateTime.replace('T', ' ')} </div>`;
+                        }
+
+                        break;
+                    case 'COM':
+                        auxHTML = auxHTML + getMessage(x.InvestigationEventIsMe, x.InvestigationEventUserName, x.InvestigationEventComments, x.InvestigationEventDateTime);
+                        break;
+                    case 'ESC':
+                        escalationLevel++;
+                        auxHTML = auxHTML + `<div class="eventContent">The case has been automatically escalated to level ${escalationLevel} at ${x.InvestigationEventDateTime.replace('T', ' ')} </div>`;
+                        break;
+                    case 'CLO':
+                        escalationLevel++;
+                        auxHTML = auxHTML + `<div class="eventContent">The case has been automatically closed at ${x.InvestigationEventDateTime.replace('T', ' ')} </div>`;
+                        isCaseClosed = true;
+                        break;
+                }
+            });
+
+            if(!isCaseClosed)
+            {
+                let assignees = [];
+
+                SDT_InvestigationCase.Assignee.forEach(x => {
+                    if(x.InvestigationAssigneeUnassignationDateTime == "0000-00-00T00:00:00")
+                    {
+                        assignees.push(x.InvestigationAssigneeUserName);
+                    }
+                });
+            
+                let assigneesList = getListWithCommasAndAnd(assignees);
+                auxHTML = auxHTML + `<div class="eventContent">The case is currently assigned to ${assigneesList} </div>`;
+            }
+            
+            document.getElementById("investigationContainer").innerHTML = auxHTML;
+        }
+
+        async function updateInvestigationCase()
+        {
+            var data = {
+                InvestigationCaseId: InvestigationCaseId
+            };
+            
+            fetch('rest/wsGetInvestigationCase', {
+                method: "POST",
+                mode: "no-cors",
+                body: JSON.stringify(data),
+                headers: {"Content-type": "application/json; charset=UTF-8",'Authorization': token}
+            })
+            .then(response => response.json())
+            .then(res => {
+                            SDT_InvestigationCase = res.SDT_InvestigationCase;
+                            renderInvestigationCase();
+                        });
+        }
+        
+        const intervalId = setInterval(updateInvestigationCase, 10000);
+    </script>

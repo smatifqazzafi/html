@@ -1,0 +1,1130 @@
+<body>
+
+    <head>
+
+        <link rel="stylesheet" href="MyAssets/Scripts/css/jquery.dataTables.min.css">
+        <!-- <link rel="stylesheet" href="MyAssets/Scripts/css/buttons.dataTables.min.css"> -->
+        <link rel="stylesheet" href="MyAssets/Scripts/css/jquery.contextMenu.min.css">
+        <link rel="stylesheet" href="MyAssets/Scripts/css/MyCommonCss.css">
+        <link rel="stylesheet" href="MyAssets/Scripts/css/bootstrap-multiselect.css">
+        <style>
+            #TBLBUTTON {
+
+                margin-bottom: 15px;
+            }
+
+            #dataTable tbody tr.dtrg-group.dtrg-start.dtrg-level-0 {
+                background-color: var(--colors_backgroundcolor) !Important;
+            }
+
+            .selected {
+                background-color: black;
+                /* Change to your desired color for selected rows */
+            }
+
+            .highlight-row {
+                background-color: #ffcccc;
+                /* Light red background */
+                color: red;
+                /* Change text color if needed */
+            }
+
+            /* Investigation Work Start */
+
+            .tag-input-container {
+                display: flex;
+                flex-wrap: wrap;
+                border: 1px solid rgb(150, 150, 150);
+                padding: 5px;
+                border-radius: 5px;
+                width: 98%;
+                /* Set the width as needed */
+            }
+
+            .tag {
+                border: 1px solid #aaa;
+                color: #000;
+                padding: 5px 10px;
+                margin: 5px;
+                border-radius: 5px;
+                display: flex;
+                align-items: center;
+            }
+
+            .tag .close {
+                cursor: pointer;
+                margin-left: 5px;
+            }
+
+            .tag-input {
+                border: none;
+                outline: none;
+                flex-grow: 1;
+            }
+
+            .floatingContainerClass {
+                background: white;
+                z-index: 20;
+                position: fixed;
+                left: 28%;
+                width: 60%;
+                top: 0;
+                padding: 10px;
+                opacity: 0;
+                transition: all 0.3s ease-out;
+                display: block;
+                z-index: -1;
+            }
+
+            #fullScreenDiv {
+                top: 0;
+                left: 0;
+                position: fixed;
+                width: 100%;
+                height: 100%;
+                display: none;
+                z-index: 15;
+            }
+
+            #grayContainer {
+                top: 0;
+                left: 0;
+                position: fixed;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.2);
+            }
+
+            #textRowsSelected {
+                float: left;
+                margin-right: 10px;
+            }
+
+            #buttonDoActionOnSelectedContainer {
+                float: right;
+            }
+
+            .buttonDoAction {
+                margin-right: 8px;
+                text-decoration: underline;
+                cursor: pointer;
+                color: var(--colors_basecolor);
+                /* #f87f6a; */
+            }
+
+            .MyGridTextBox {
+                margin-top: 1px !Important;
+                margin-bottom: 1px !Important;
+                margin-left: 1px !Important;
+                display: block;
+                height: 26px;
+                padding: 5px 5px;
+                /* font-size: 14px; */
+                line-height: 1.42857143;
+                color: #555;
+                background-color: #fff;
+                background-image: none;
+                border: 1px solid #ccc;
+                border-radius: 1px;
+                -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+                box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+                -webkit-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+                -o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+                -webkit-transition: border-color ease-in-out .15s, -webkit-box-shadow ease-in-out .15s;
+                transition: border-color ease-in-out .15s, -webkit-box-shadow ease-in-out .15s;
+                transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+                transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s, -webkit-box-shadow ease-in-out .15s;
+                width: -webkit-fill-available !Important;
+                min-height: 10px !Important;
+            }
+
+            /* .loader-btn {
+                position: absolute !Important;
+            } */
+
+            .loader-btn .loader {
+                /* position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%); */
+                border: 4px solid #f3f3f3;
+                border-top: 4px solid #3498db;
+                border-radius: 50%;
+                /* width: 20px;
+                height: 20px; 
+                animation: spin 1s linear infinite;*/
+                display: none;
+            }
+
+            @keyframes spin {
+                0% {
+                    transform: translate(-50%, -50%) rotate(0deg);
+                }
+
+                100% {
+                    transform: translate(-50%, -50%) rotate(360deg);
+                }
+            }
+
+            #filterPanel {
+                background-color: #f0f0f0;
+                border: 1px solid #ccc;
+                padding: 6px;
+                border-radius: 5px;
+                display: flex;
+                align-items: center;
+                margin-bottom: 10px;
+            }
+
+            #filterMessage {
+                margin: 0;
+            }
+
+            .clearFilterButton {
+                margin-left: 10px;
+                padding: 5px 10px;
+                color: #fff;
+                border: none;
+                border-radius: 3px;
+                cursor: pointer;
+                min-width: 0px !Important;
+            }
+
+            #dataTable_filter {
+                display: none;
+            }
+
+            div.dt-buttons {
+                margin-bottom: 12px;
+            }
+
+
+            .cTdPad {
+                padding-left: 8px;
+                padding-right: 20px;
+                border: 1px solid;
+            }
+
+            .thS {
+                padding: 2px;
+                padding-right: 20px;
+                padding-left: 8px;
+                background: var(--colors_basecolor);
+                /* #2F4858; */
+                color: white;
+                font-weight: 500;
+            }
+
+            .context-menu-icon-match {
+                background-image: url(Resources/DDOMultiselSelOption.png) !Important;
+                background-repeat: no-repeat;
+                background-position: left;
+            }
+
+            .context-menu-icon-unmatch {
+                background-image: url(Resources/ActionFiltersClean.png) !Important;
+                background-repeat: no-repeat;
+                background-position: left;
+                background-size: 13px !important;
+            }
+
+            .context-menu-icon-vhistory {
+                background-image: url(Resources/historyicon.png) !Important;
+                background-repeat: no-repeat;
+                background-position: left;
+                background-size: 13px !important;
+            }
+
+            /* Investigation Work End */
+            /* Filter Panel Start */
+
+            .myfilter-panel {
+                position: fixed;
+                right: 0;
+                top: 0;
+                width: 300px;
+                height: 100%;
+                background-color: #f4f4f4;
+                box-shadow: -2px 0 5px rgba(0, 0, 0, 0.5);
+                transform: translateX(100%);
+                transition: transform 0.3s ease-in-out;
+                overflow: scroll;
+                z-index: 99999;
+                padding: 10px;
+                border-radius: 4px;
+                margin-top: 5px;
+                background-color: var(--colors_backgroundcolor);
+            }
+
+            /* Filter Panel End */
+
+            .myfilter-panel.active {
+                transform: translateX(0);
+            }
+
+            .filter-field {
+                margin-top: 10px !Important;
+                display: flex !Important;
+                justify-content: center !Important;
+                border-bottom: 1px solid white;
+            }
+
+            table.dataTable.row-border tbody th,
+            table.dataTable.row-border tbody td,
+            table.dataTable.display tbody th,
+            table.dataTable.display tbody td {
+                border: 1px solid #ddd;
+            }
+
+            table.dataTable tbody th,
+            table.dataTable tbody td {
+                padding: 3px 1px;
+            }
+        </style>
+    </head>
+
+
+    <style>
+        .popup {
+            display: none;
+            /* Hidden by default */
+            position: fixed;
+            /* Stay in place */
+            left: 0;
+            top: 0;
+            width: 100%;
+            /* Full width */
+            height: 100%;
+            /* Full height */
+            background-color: rgba(0, 0, 0, 0.5);
+            /* Black background with opacity */
+            z-index: 9999;
+            /* Sit on top */
+            justify-content: center;
+            align-items: center;
+        }
+
+        .popup-content {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 4px;
+            width: 380px;
+            text-align: center;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .close-btn {
+            color: #aaa;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close-btn:hover,
+        .close-btn:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .popup-body {
+            /* display: flex;
+            align-items: center; */
+            gap: 10px;
+            /* Space between icon and message */
+        }
+
+        .warning-icon {
+            font-size: 30px;
+            color: #FFA500;
+            /* Orange color for warning */
+        }
+
+        .warning-message {
+            font-size: 12px;
+            color: #333;
+            margin: 0;
+            /* Remove default margin */
+        }
+    </style>
+
+    <div id="container">
+
+    </div>
+    <div class="panel PanelWithBorder Panel_BaseColor">
+
+
+        <div class="panel-body">
+            
+            <style>
+                .context-menu {
+                    position: absolute;
+                    background-color: #fff;
+                    border-radius: 4px;
+                    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+                    display: none;
+                    z-index: 1000;
+                }
+
+                .context-menu ul {
+                    list-style: none;
+                    margin: 0;
+                    padding: 8px 0;
+                }
+
+                .context-menu li {
+                    font-size: 14px;
+                    padding: 4px 9px;
+                    cursor: pointer;
+                    display: flex;
+                    align-items: center;
+                }
+
+                .context-menu li:hover {
+
+                    color: #fff;
+                    cursor: pointer;
+                    background-color: #2980b9;
+                }
+
+                .context-menu .icon {
+                    margin-right: 10px;
+                }
+
+                .divider {
+                    border-top: 1px solid #e0e0e0;
+                    margin: 8px 0;
+                }
+
+                .content-area {
+                    width: 100%;
+                    height: 100%;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    border: 2px dashed #ccc;
+                    background-color: #fff;
+                    color: #666;
+                }
+
+                #buttonFloatingContainerStartInvestigationAccept {
+                    height: 38px;
+                    font-size: 10px;
+                }
+
+                #buttonFloatingContainerStartInvestigationCancel {
+                    height: 38px;
+                    font-size: 10px;
+                }
+
+                h1 {
+                    font-size: 15px;
+                    /* Use the defined font size */
+                    color: #f5593d;
+                    /* Use the defined heading color */
+                    text-align: center;
+                    /* Center the text */
+                    margin-bottom: var(--heading-margin-bottom);
+                    /* Use the defined margin */
+                    text-shadow: var(--text-shadow);
+                    /* Use the defined text shadow */
+                    padding: var(--heading-padding);
+                    /* Use the defined padding */
+                    border-bottom: 2px solid var(--heading-border-color);
+                    /* Use the defined border color */
+                    display: inline-block;
+                    padding-bottom: 12px;
+                }
+
+                .history.flexbox.csstransitions {
+                    overflow-x: hidden;
+                }
+
+                .table-responsive {
+                    overflow-y: scroll;
+                    overflow-x: scroll;
+                }
+
+                .table-responsive::-webkit-scrollbar {
+                    width: 12px;
+                }
+
+                .table-responsive::-webkit-scrollbar-thumb {
+                    background-color: #888;
+                    /* Color of the scrollbar thumb */
+                    border-radius: 10px;
+                    /* Rounded corners */
+                    border: 2px solid #f1f1f1;
+                }
+
+                .table-responsive::-webkit-scrollbar-thumb:hover {
+                    background-color: #555;
+                }
+
+                .table-responsive {
+                    scrollbar-width: thin;
+                    /* Set scrollbar width */
+                    scrollbar-color: #888 #f1f1f1;
+                }
+            </style>
+            <div id="filterPanel" style="display: none;">
+                <p id="filterMessage">Filtered by: None</p>
+                <button id="clearFilterButton" class="Button btn btn-default clearFilterButton" type="button"><i
+                        class="fa fa-remove"></i></button>
+                <button id="saveFilterButton" class="Button btn btn-default clearFilterButton" type="button"><i
+                        class="fa fa-save"></i></button>
+            </div>
+            <div id="mainHeader">
+                <div id="mainHeaderLeft" style="float: left;">
+
+                </div>
+            </div>
+            <div class="table-responsive">
+                <h1> BILLER'S VOUCHER </h1>
+                <table id="dataTable"
+                    class="display table table-bordered gx-tab-spacing-fix-2 GridWithPaginationBar GridWithBorderColor WorkWith table-responsive">
+                    <thead id="tableHeader">
+                        <!-- Table header will be populated dynamically by JavaScript -->
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+
+
+        </div>
+        <div class="panel-footer">
+            <div class="form-group">
+                <div class="col-md-12">
+                    <div class="col-md-1" style="Padding-top:8px">
+                        <label for="pageLength">Page Length:</label>
+                    </div>
+                    <div class="col-md-2">
+                        <select id="pageLength" class="form-control">
+                            <option value="10">10</option>
+                            <option value="25">25</option>
+                            <option value="50" selected>50</option>
+                            <option value="100">100</option>
+                            <option value="200">200</option>
+                            <option value="300">300</option>
+                        </select>
+                    </div>
+                    <!-- <div class="col-md-1" style="Padding-top:8px">
+                        <label for="sum-Amt">Sum :</label>
+                        <label id="sum-Amt">0</label>
+                    </div>  -->
+                </div>
+            </div>
+        </div>
+
+        <script>
+
+            // Transaction Grid
+
+            class ColumnSearchValues {
+                constructor(columnName, searchValue) {
+
+                    this.columnName = columnName;
+                    this.searchValue = searchValue;
+                }
+            }
+            class colGridFilters {
+
+                constructor(columnValues = [], fieldName = '') {
+                    this.columnValues = columnValues;
+                    this.fieldName = fieldName;
+                }
+            }
+            var selectedColumnId = [];
+            var SettlementIdVal = '';
+            var listColumnGridFilter = [];
+            var table;
+            var savedFilterId = 0;
+            var filteredColList = [];
+            var filteredColJson = '';
+            var amountFrom = '';
+            var amountTo = '';
+            var amountTo = '';
+            var accountStatementId = '';
+            var citemIds = ''
+            var FProviderId = '';
+            var SettlementId = '';
+
+            // Biller Voucher
+
+            var invFilterVal = 0;
+            $(document).ready(function () {
+                var columnSearchValues = [];
+                var chkOrder;
+                var columnDefs = [];
+
+                $.ajax({
+                    url: 'rest/wsVoucherGrid',
+                    method: 'GET',
+                    data: {
+                        FProviderId: FProviderId
+                    },
+                    success: function (data) {
+                        table = null;
+                        if (data && data.myCols && data.myCols.length > 0) {
+                            var headerHtml = '';
+                            var headerFilterHtml = '';
+                            var headerFullHtml = '';
+
+                            showLoader();
+
+                            filteredColList = filteredColJson !== '[]' && filteredColJson !== '' ? JSON.parse(filteredColJson) : [];
+
+                            if (filteredColList.length > 0) {
+
+                                if (filteredColList.length > 0) {
+                                    const filteredCols = [];
+
+                                    filteredColList.forEach(function (colName) {
+                                        const trimmedColName = colName.trim();
+                                        const col = data.myCols.find(col => col.colDBName.trim() === trimmedColName);
+                                        if (col) {
+                                            filteredCols.push(col);
+                                        }
+                                    });
+                                    data.myCols = filteredCols;
+
+                                }
+                            }
+                            data.myCols = changeIndices(data.myCols);
+                            data.myCols.forEach(function (column, indexs) {
+                                if (column.colDBName == 'FTranProcComplete') {
+                                    headerFilterHtml += '<th></th>'
+                                } else {
+
+
+                                    if (column.colDataType == 1) {
+                                        headerFilterHtml += '<th gx-tab-padding-fix-1 WWActionGroupColumn  GridWithPaginationBar GridWithBorderColor WorkWithTitle><div class="col-md-12"><input type="date" class="mycolumnSearchDate MyGridTextBox wwp-daterange-picker-input" placeholder="Search ' + column.colName + '" data-column="' + column.colDBName + '" /> </div>' + fnGenDropDown(indexs, 13, column.colDBName, column.colName) + '</th>';
+                                        var columnDef = {
+                                            "targets": indexs,
+                                            "render": function (data, type, row) {
+                                                return formatDateFromString(data);
+                                            }
+                                        };
+                                        columnDefs.push(columnDef);
+                                    } else {
+                                        //  headerFilterHtml += '<th gx-tab-padding-fix-1 WWActionGroupColumn  GridWithPaginationBar GridWithBorderColor WorkWithTitle><div class="col-md-12"><input type="text" class="mycolumnSearch MyGridTextBox"  data-column="' + column.colDBName + '" /></div>' + fnGenDropDown(indexs, 25, column.colDBName, column.colName) + '</th>';
+                                    }
+                                }
+
+                            });
+                            //headerFullHtml = '<tr id ="searchInputs">' + headerFilterHtml + '</tr>';
+                            data.myCols.forEach(function (column) {
+                                headerHtml += '<th gx-tab-padding-fix-1 WWActionGroupColumn  GridWithPaginationBar GridWithBorderColor WorkWithTitle data-column="' + column.colDBName + '"><h5><b>' + column.colName + '</b></h5></th>';
+                            });
+                            headerFullHtml += '<tr id="columnHeaders">' + headerHtml + '</tr>';
+
+                            $('#tableHeader').html(headerFullHtml);
+
+                            var columnslist = data.myCols.map(function (column) {
+                                if (column.colDBName == "FTranProcComplete") {
+                                    return {
+                                        data: column.colDBName,
+                                        orderable: false,
+                                        render: function (data, type, row) {
+                                            if (column.colDBName == "FTranProcComplete") {
+                                                if (row.FTranProcComplete == '0') {  // Edit Icon
+                                                    return '<div class="highlight-row" style="color: red;">' + // Change color here
+                                                        '<i class="fa-solid fa-pen-to-square" style="cursor:pointer;" onclick="showEditPopup(\'' + row.id + '\')"></i>' +
+                                                        '</div>';
+                                                } else {
+                                                    return '--';
+                                                }
+                                            } else {
+                                                return data;
+                                            }
+                                        }
+                                    };
+                                } else {
+                                    return {
+                                        data: column.colDBName
+                                    };
+                                }
+
+                            });
+                            // Generate filter fields based on columns
+
+                            var filterFieldsHtml = `<div id="filterPanel">
+                <p id="filterMessage">Filtered by: None</p></div>`;
+                            data.myCols.forEach(function (column, indexs) {
+                                if (column.colDBName !== 'Action') {
+                                    filterFieldsHtml += '<div class="filter-field">';
+                                    filterFieldsHtml += fnGenDropDown(indexs, 25, column.colDBName, column.colName) + '<label style="margin-top: 5px" for="filter-' + column.colDBName + '">' + column.colName + '&nbsp</label>';
+                                    if (column.colDataType == 'D') {
+                                        filterFieldsHtml += '<input type="date" class="mycolumnSearchDate MyGridTextBox wwp-daterange-picker-input" placeholder="Search ' + column.colName + '" data-column="' + column.colDBName + '" />'; //+ fnGenDropDown(indexs, 13, column.colDBName, column.colName);
+                                    } else {
+                                        filterFieldsHtml += '<input type="text" class="mycolumnSearch MyGridTextBox"  data-column="' + column.colDBName + '" />';
+                                    }
+                                    filterFieldsHtml += '</div>';
+                                }
+                            });
+                            $('#myfilterFieldsContainer').html(filterFieldsHtml);
+                            if ($('#GRIDFILTER_GRIDFILTERDDLFILTER').val() !== undefined) {
+                                listColumnGridFilter = [];
+                                listColumnGridFilter = $('#GRIDFILTER_GRIDFILTERDDLFILTER').val() !== '[]' && $('#GRIDFILTER_GRIDFILTERDDLFILTER').val() !== '' ? JSON.parse($('#GRIDFILTER_GRIDFILTERDDLFILTER').val()) : [];
+                            }
+                            if ($('#GRIDFILTER_GRIDFILTERCOLUMNPOSITION').val() !== undefined) {
+                                FilterColumnPosition = [];
+                                FilterColumnPosition = $('#GRIDFILTER_GRIDFILTERCOLUMNPOSITION').val() !== '[]' && $('#GRIDFILTER_GRIDFILTERCOLUMNPOSITION').val() !== '' ? JSON.parse($('#GRIDFILTER_GRIDFILTERCOLUMNPOSITION').val()) : [];
+                            }
+                            if ($('#GRIDFILTER_GRIDFILTERCOLUMNVIS').val() !== undefined) {
+                                FilterColumnVis = [];
+                                var FilterColumnVisN = $('#GRIDFILTER_GRIDFILTERCOLUMNVIS').val() !== '[]' && $('#GRIDFILTER_GRIDFILTERCOLUMNVIS').val() !== '' ? $('#GRIDFILTER_GRIDFILTERCOLUMNVIS').val() : '[]';
+                                FilterColumnVis = JSON.parse(FilterColumnVisN.trim());
+                            }
+                            updateFilterMessage();
+
+
+                            table = $('#dataTable').DataTable({
+                                processing: true,
+                                serverSide: true,
+                                paging: true,
+                                pageLength: 25,
+                                timeout: 9000000,
+                                order: [[panelType === 'M' ? 1 : 1, 'desc']],
+                                ajax: {
+                                    url: 'rest/wsVoucherGrid',
+                                    type: 'GET',
+                                    data: function (d) {
+                                        console.log('dgrid', d);
+                                        var searchData = {};
+                                        $('.columnSearch').each(function () {
+                                            var column = $(this).data('column');
+                                            var value = $(this).val();
+                                        });
+                                        console.log(data)
+                                        var jsonStrin = JSON.stringify(columnSearchValues);
+                                        chkOrder = d.order[0].column;
+                                        console.log(d.draw, d.start, d.length);
+                                        var returnParems = {
+                                            draw: d.draw,
+                                            start: d.start,
+                                            length: d.length,
+                                            searchValue: d.search.value,
+                                            sortColumn: d.order[0].column,
+                                            sortDirection: d.order[0].dir,
+                                            columnSearchFilter: jsonStrin,
+                                            invFilter: invFilterVal,
+                                            FProviderId: FProviderId,
+                                            SettlementIdAux: SettlementId,
+                                            colGridFilterStr: JSON.stringify(listColumnGridFilter),
+                                        };
+                                        return returnParems
+                                    },
+                                    dataSrc: function (response) {
+                                        if (response.data !== '') {
+                                            response.data = JSON.parse(response.data); // Parse the response data if it's a JSON string
+                                            console.log('Full Response Data:', response.data); // Print the entire response data
+
+                                            // Create an array to hold the data repeated 5 times
+                                            var repeatedData = [];
+
+                                            // Loop to add the response data 5 times
+                                            for (let i = 0; i < 5; i++) {
+                                                repeatedData = repeatedData.concat(response.data);
+                                            }
+
+                                            console.log('Repeated Response Data:', repeatedData); // Print the repeated data
+
+                                            return repeatedData; // Return the repeated data for DataTables
+                                        } else {
+                                            return response.data;
+                                        }
+                                    }
+                                },
+                                columns: columnslist,
+                                "colReorder": true,
+                                dom: 'frtip',
+                                select: {
+                                    style: 'os',
+                                    selector: 'td:not(:last-child)'
+                                },
+                                "columnDefs": columnDefs,
+                                initComplete: function () {
+                                    var api = this.api();
+                                    var contextMenuItems = {};
+                                    // Your context menu code...
+                                },
+                                createdRow: function (row, data, dataIndex) {
+                                    if (data.FTranProcComplete == '0') {
+                                        $(row).css('background-color', '#ffcccc');
+                                    }
+                                }
+                            });
+
+                            table.on('draw.dt', function () {
+                                if (chkOrder != 2) {
+                                    // Hide the group row after the table has been drawn
+                                    $('#dataTable tbody tr.dtrg-group').css('display', 'none');
+                                }
+                                // calculateSum(''); // Call the sum calculation function on each draw
+                            });
+
+                            function calculateSum(a) {
+
+                                var totalSum = 0;
+
+                                // Retrieve the data from the Amount column
+                                var amounts = a;
+
+                                // Iterate through the amounts to calculate the sum
+                                for (var i = 0; i < amounts.length; i++) {
+
+                                    // Ensure you convert the value to a number after stripping out non-numeric characters
+                                    var amount = parseFloat(amounts[i].FBillerVoucherAmount) || 0;
+                                    totalSum += amount; // Add to the total sum
+                                    console.log('amount', amount)
+                                }
+
+                                // Display the total sum
+                                $('#sum-Amt').text(totalSum.toFixed(2)); // Assuming you have an element with id totalSum
+                            }
+
+                            $("#dataTable thead").sortable({
+                                items: "> th",
+                                cursor: "move",
+                                axis: "x",
+                                stop: function (event, ui) {
+                                    var columnIndexOrder = [];
+                                    $("#dataTable th").each(function () {
+                                        var columnData = $(this).data("column");
+                                        columnIndexOrder.push(table.column(columnData + ":name").index());
+                                    });
+                                    table.colReorder.order(columnIndexOrder);
+                                    table.draw(false);
+                                }
+                            }).disableSelection();
+
+                        } else {
+                            alert('No columns available.');
+                        }
+                        hideLoader();
+
+                    },
+                    error: function (e) {
+                        console.log(e);
+                        alert('Error occurred while fetching data.');
+                    }
+                });
+
+                // Event listener for column search input
+                $('#myfilterFieldsContainer').on('change', '.mycolumnSearch', function (e) {
+                    debugger;
+                    var columnName = $(this).data('column');
+                    var searchValue = $(this).val();
+                    var existingSearch = columnSearchValues.find(function (search) {
+                        return search.columnName === columnName;
+                    });
+
+                    if (existingSearch) {
+                        existingSearch.searchValue = searchValue;
+                    } else {
+                        columnSearchValues.push(new ColumnSearchValue(columnName, searchValue));
+                    }
+                    // Trigger DataTables to reload data
+                    table.ajax.reload();
+                });
+
+
+                $('#myfilterFieldsContainer').on('change', '.mycolumnSearchDate', function (e) {
+                    debugger;
+                    var columnName = $(this).data('column');
+                    var searchValue = $(this).val();
+                    searchValue = formatDateToText(searchValue)
+                    var existingSearch = columnSearchValues.find(function (search) {
+                        return search.columnName === columnName;
+                    });
+                    if (existingSearch) {
+                        existingSearch.searchValue = searchValue;
+                    } else {
+                        columnSearchValues.push(new ColumnSearchValue(columnName, searchValue));
+                    }
+                    // Trigger DataTables to reload data
+                    table.ajax.reload();
+                });
+                $('#pageLength').on('change', function () {
+                    table.page.len($(this).val()).draw();
+                });
+                // Function to update selected rows
+
+
+
+                $("#BTNBTNVOUCHER").click(function () {
+                    // Call your function here
+                    if (typeof downloadVoucher === 'function') {
+                        downloadVoucher();
+                    } else {
+                        // Function does not exist
+                        alert("Please Search Data!s");
+                    }
+                });
+
+            });
+
+
+            function exportGridToCSV(dt) {
+                dt.page.len(-1).draw(); // Disable paging by setting the page length to -1 (show all)
+
+                var allData = dt.rows({ search: 'applied' }).data();
+                var columns = dt.settings().init().columns; // Get the column configuration from DataTables
+                var csv = '';
+
+                columns.forEach(function (col) {
+                    if (col.visible !== false) { // Only include visible columns
+                        csv += col.title + ',';  // Append column title
+                    }
+                });
+                csv = csv.slice(0, -1);
+                csv += '\n';
+
+                // Iterate over each row of the grid data
+                allData.each(function (rowData) {
+                    columns.forEach(function (col) {
+                        if (col.visible !== false) { // Only include data from visible columns
+                            // Access the data for each column, handling potential nested objects
+                            var cellData = rowData[col.data];
+                            csv += (cellData !== undefined ? cellData : '') + ',';  // Append cell data
+                        }
+                    });
+                    csv = csv.slice(0, -1); // Remove the last comma
+                    csv += '\n'; // Move to the next line after each row
+                });
+
+                // Create a Blob object with the CSV data
+                var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+                var link = document.createElement('a');
+                if (link.download !== undefined) {
+                    var url = URL.createObjectURL(blob);
+                    link.setAttribute('href', url);
+                    link.setAttribute('download', 'Voucher.csv');
+                    link.style.visibility = 'hidden';
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                }
+
+                // Restore the original paging after export
+                dt.page.len(10).draw(); // Set the page length back to the default or any desired length
+            }
+
+            function fnGenDropDown(uniqueIndex, mleft, coldbName, colName) {
+                var dropdownHtml = '<span  class="dropdown" style="margin-top: 2px;margin-left: -13px;">' +
+                    '<button  type="button" class="btn btn-sm dropdown-toggle dropdownMenuButton loader-btn" style="background-color: transparent;" data-colDbName="' + coldbName + '" data-colName="' + colName + '" onclick="fnLoadSelect(' + uniqueIndex + ')" type="button" id="dropdownMenuButton' + uniqueIndex + '" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">' +
+                    '<i class="fa-solid fa-filter" style="font-size: 14px;"></i>' +
+                    '</button >' +
+                    '<div class="dropdown-menu" Id="dropdownMenuButtonChild' + uniqueIndex + '" aria-labelledby="dropdownMenuButton' + uniqueIndex + '">' +
+                    '<select id="gridFilterDD' + uniqueIndex + '" multiple="multiple"></select>' +
+                    '<button id="searchButtonDDFilter' + uniqueIndex + '" type="button" class="btn btn-primary btnSearchDD"> <i class="fas fa-search"></i></button>' +
+                    '</div>' +
+                    '</span>';
+
+                return dropdownHtml;
+            }
+
+            function addEventListeners(uniqueIndex) {
+
+                var dropdownBtn = document.getElementById('dropdownMenuButtonChild' + uniqueIndex);
+                var dropdownSearchBtn = document.getElementById('searchButtonDDFilter' + uniqueIndex);
+                dropdownSearchBtn.addEventListener('click', function (event) {
+                    event.stopPropagation();
+                    table.ajax.reload();
+                });
+                // alert('here')
+
+                // Add click event listener to the dropdown button
+                dropdownBtn.addEventListener('click', function (event) {
+                    // Stop event propagation to prevent closing the parent dropdown
+                    event.stopPropagation();
+                    // debugger;
+                    // Toggle the dropdown menu visibility
+                    var dropdownMenu = this;
+                    var divd = dropdownMenu.querySelector('.btn-group');
+                    divd.classList.add('open');
+                    //dropdownMenu.classList.toggle('open');
+                });
+            }
+
+            function fnLoadSelect(indexSelect) {
+                var colname = $('#dropdownMenuButton' + indexSelect).data('colname');
+                var coldbName = $('#dropdownMenuButton' + indexSelect).data('coldbname');
+                var btnDDL = $('#dropdownMenuButton' + indexSelect);
+                var filterDDL = $('#dropdownMenuButtonChild' + indexSelect);
+                filterDDL.prop('disabled', true); // Disable the button
+                btnDDL.addClass('loader');
+                debugger;
+                $.ajax({
+                    url: 'rest/wsGetForGridSelect', // Replace with your server endpoint URL
+                    type: 'GET',
+                    data: {
+                        FieldName: coldbName,
+                        fromDateStr: fromDate,
+                        toDateStr: toDate,
+                        pphysname: physName,
+                        panelType: panelType,
+                        invFilter: invFilterVal,
+                        settleCategoryId: settleCategoryIdVal,
+                        //SettlementIdAux: SettlementIdVal,
+                        //currency: currency,
+                        amountTo: amountTo,
+                        amountFrom: amountFrom
+                    },
+                    success: function (data) {
+                        // Populate multiselect dropdown with fetched data
+                        $.each(data.listSelect, function (index, item) {
+                            $('#gridFilterDD' + indexSelect).append('<option value="' + item.colValue + '">' + item.colValue + '</option>');
+                        });
+
+                        // Initialize multiselect dropdown
+                        $('#gridFilterDD' + indexSelect).multiselect({
+                            buttonWidth: '200px', // Adjust button width as needed
+                            maxHeight: 300,
+                            nonSelectedText: `Select ${colname}`,
+                            enableFiltering: true, // Enable filtering in dropdown
+                            onChange: function (element, checked) {
+                                var selectedValues = $('#gridFilterDD' + indexSelect).val();
+                                if (selectedValues != '') {
+                                    var existingSearch = listColumnGridFilter.find(function (search) {
+                                        return search.fieldName === coldbName;
+                                    });
+                                    if (existingSearch) {
+                                        // existingSearch.searchValue = searchValue;
+                                        const filteredList = listColumnGridFilter.filter(filterItem => filterItem.fieldName !== coldbName);
+                                        listColumnGridFilter = filteredList;
+                                        listColumnGridFilter.push(new colGridFilters(selectedValues, coldbName))
+                                    } else {
+                                        listColumnGridFilter.push(new colGridFilters(selectedValues, coldbName))
+
+                                    }
+                                    updateFilterMessage();
+
+                                } else {
+                                    var existingSearchN = listColumnGridFilter.find(function (search) {
+                                        return search.fieldName === coldbName;
+                                    });
+                                    if (existingSearchN) {
+                                        // existingSearch.searchValue = searchValue;
+                                        const filteredList = listColumnGridFilter.filter(filterItem => filterItem.fieldName !== coldbName);
+                                        listColumnGridFilter = filteredList;
+                                        console.log(filteredList)
+                                        // listColumnGridFilter.push(new colGridFilters(selectedValues, coldbName))
+                                    }
+                                    updateFilterMessage();
+                                }
+                            }
+                        });
+                        addEventListeners(indexSelect);
+                        btnDDL.removeClass('loader'); // Remove loading class
+                        filterDDL.prop('disabled', false);
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error fetching data:', error);
+                        btnDDL.removeClass('loader'); // Remove loading class
+                        filterDDL.prop('disabled', false);
+                    }
+                });
+
+            }
+            function updateFilterMessage() {
+
+                var filtertext = ''
+                var childText = ''
+                //   debugger;
+                if (listColumnGridFilter.length > 0) {
+                    listColumnGridFilter.forEach((parent, indexp) => {
+                        // console.log(parent.fieldName);
+                        filtertext += `${parent.fieldName} in (`;
+                        childText = ''
+                        parent.columnValues.forEach((child, index) => {
+                            // console.log(child);
+                            childText += `,${child}`
+                        });
+                        childText += `) `;
+                        childText = childText.substring(1, childText.length)
+                        filtertext += childText;
+                    });
+                }
+                var filtermsg = "Filtered by: ";
+                document.getElementById("filterMessage").textContent = filtertext == '' ? filtermsg + 'None' : filtermsg + filtertext;
+            }
+
+            function downloadVoucher() {
+                // alert('testing');
+                $.ajax({
+                    url: 'rest/wsFileDownload',
+                    type: 'GET',
+                    // dataType: 'json',
+                    // data: {
+                    //     panelType: panelType,
+                    //     fromDateStr: formatDate($('#vFROMDATE').val()),
+                    //     toDateStr: formatDate($('#vTODATE').val()),
+                    //     pphysname: $('#vPPHYSNAME').val(),
+                    // },
+                    contentType: 'application/json; charset=UTF-8',
+                    success: function (data) {
+                        // alert('test');
+                        var base64String = data.base64;
+                        downloadBase64String('xlsx', base64String);
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error:', error);
+                    }
+                });
+            }
+
+            var SDT_InvTemplate = [];
+
+            function showEditPopup() {
+                document.getElementById('fullScreenDiv').style.display = 'block';
+                document.getElementById('editContainer').style.zIndex = '20';
+                document.getElementById('editContainer').style.opacity = 1;
+                document.getElementById('editContainer').style.top = '70px';
+            }
+
+            function hideeditFloatingContainer() {
+                document.getElementById('fullScreenDiv').style.display = 'none';
+                document.getElementById('editContainer').style.zIndex = '-1';
+                document.getElementById('editContainer').style.opacity = 0;
+                document.getElementById('editContainer').style.top = '0px';
+            }
+
+            
+
+            function hideSuccessPopup() {
+                document.getElementById('success-popup').style.display = 'none';
+                location.reload(); // Page will refresh after popup is hidden
+            }
+
+            function showPopup() {
+                document.getElementById('warning-popup').style.display = 'flex';
+            }
+
+            function closePopup() {
+                document.getElementById('warning-popup').style.display = 'none';
+            }
+
+
+        </script>
+
+
+
+
+        <script type="text/javascript" src="MyAssets/Scripts/jquery.dataTables.min.js"></script>
+        <script type="text/javascript" src="MyAssets/Scripts/bootstrap-multiselect.min.js"></script>
+        <!-- <script type="text/javascript" src="MyAssets/Scripts/buttons.colVis.min.js"></script> -->
+
+        <!-- <script type="text/javascript" src="MyAssets/Scripts/buttons.print.min.js"></script> -->
+        <script type="text/javascript" src="MyAssets/Scripts/dataTables.buttons.min.js"></script>
+        <script type="text/javascript" src="MyAssets/Scripts/dataTables.rowGroup.min.js"></script>
+        <script type="text/javascript" src="MyAssets/Scripts/dataTables.colReorder.min.js"></script>
+        <script type="text/javascript" src="MyAssets/Scripts/jquery-ui.min.js"></script>
+        <script type="text/javascript" src="MyAssets/Scripts/jquery.contextMenu.min.js"></script>
+        <script type="text/javascript" src="MyAssets/Scripts/CommonJs.js"></script>
+</body>

@@ -1,0 +1,640 @@
+<body>
+    <div id="HierarchyTree">
+
+    </div>
+    <div style="display: none; position: fixed; top: 0; height: 100%; left: 0; width: 100%; background: black; opacity: 0.3; z-index: 10000;"
+        id="TableGray"></div>
+    <div style="left: 30%; right: 30%; width: 0; text-align: -webkit-center; padding: 20px; height: 200px; min-width: 400px;"
+        class='TableFloat' id="PanelAddSubLevel">
+        <div style="margin: 10px;" class="TextBlockTitleMaterial"> Add Sub-Role</div>
+        <div style="text-align: left;"> Sub-Role Name: <input type="text" id="input_addsublevel_name"></input> </div>
+        <div style="text-align: left;"> Inherits Life Cycles: <input type="checkbox"
+                id="input_addsublevel_inherits"></input> </div>
+
+        <div style="margin: 10px;">
+            <span onclick='addSublevelToFinal();' class="ButtonMaterial">Confirm</span>
+            <span onclick='hideAllFloatingPanels();' class="ButtonMaterialDefault">Cancel</span>
+        </div>
+    </div>
+    <div style="left: 30%; right: 30%; width: 40%; text-align: -webkit-center; padding: 20px; height: 200px;"
+        class='TableFloat' id="PanelDeleteSubLevel">
+        <div style="margin: 10px;" class="TextBlockTitleMaterial"> Delete Sub-Role</div>
+        <div style="font-size: 12px;"> This action cannot be undone. </div>
+        <div style="font-size: 12px;"> Click "Delete" to confirm. </div>
+
+        <div style="margin: 10px;">
+            <span onclick='deleteSublevelFinal();' class="ButtonMaterial">Delete</span>
+            <span onclick='hideAllFloatingPanels();' class="ButtonMaterialDefault">Cancel</span>
+        </div>
+    </div>
+    <div style="left: 30%; right: 30%; width: 0; text-align: -webkit-center; padding: 20px; height: 200px; min-width: 400px;"
+        class='TableFloat' id="PanelAddUser">
+        <div style="margin: 10px;" class="TextBlockTitleMaterial"> Add User</div>
+        <div style="text-align: left;"> User Name: </div>
+        <div style="text-align: left;">
+            <select style="width: 60%;" id="input_adduser_name">
+                <option value=""></option>
+            </select>
+            <u style="color: var(--colors_basecolor); cursor: pointer; float: right;" onclick="createNewUser();"> Create
+                new user</u>
+        </div>
+
+
+        <div style="margin: 10px;">
+            <span onclick='addUserToFinal();' class="ButtonMaterial">Confirm</span>
+            <span onclick='hideAllFloatingPanels();' class="ButtonMaterialDefault">Cancel</span>
+        </div>
+    </div>
+    <div style="left: 30%; right: 30%; width: 40%; text-align: -webkit-center; padding: 20px; height: 200px;"
+        class='TableFloat' id="PanelRemoveUser">
+        <div style="margin: 10px;" class="TextBlockTitleMaterial"> Remove User</div>
+        <div id="PanelRemoveUserWarning" style="font-size: 12px; white-space: break-spaces;"> This will remove the user
+            from the current level. </div>
+        <div style="font-size: 12px;"> Click "Remove" to confirm. </div>
+
+        <div style="margin: 10px;">
+            <span onclick='removeUserToFinal();' class="ButtonMaterial">Remove</span>
+            <span onclick='hideAllFloatingPanels();' class="ButtonMaterialDefault">Cancel</span>
+        </div>
+    </div>
+</body>
+<style>
+    .subtleCombo {
+        border: 0px;
+        background: transparent;
+        text-align: right;
+    }
+     select option {
+    background-color: white; /* Background color of the options */
+    color: black; /* Text color of the options */
+  }
+
+    .TableFloat {
+        position: fixed;
+        z-index: 10001;
+        display: none;
+    }
+
+    .hierarchyLevelUser {
+        background: 0;
+        margin-bottom: 0;
+        padding-bottom: 0;
+
+        margin-left: 30px;
+        margin-right: 20px;
+        /* border: 1px solid; */
+        padding: 10px;
+        font-weight: bold;
+        font-size: 12px;
+        display: flow-root;
+        color: darkslategray!Important;
+        /* border: 1px gray solid; */
+    }
+
+    .rowDarker {
+        background-color: rgba(0, 0, 0, 0.06);
+    }
+
+    .hoverSelect:hover {
+        background-color: var(--colors_basecolor30);
+        transition: background-color 0.2s linear;
+    }
+
+    .hierarchyContainer {
+        margin-left: 30px;
+        margin-bottom: 8px;
+        margin-right: 20px;
+        /* border: 1px solid; */
+        padding: 10px;
+        font-weight: bold;
+
+        font-size: 12px;
+        /* border: 3px solid var(--colors_gray08);
+            border-color: var(--colors_basecolor); */
+            box-shadow: -1px 1px 10px -1px rgb(15 15 15 / 21%) ! Important;
+        color: var(--colors_baseforecolor) !Important;
+    }
+
+    .hierarchyTitleContainer {
+        padding-bottom: 10px;
+    }
+
+    .chatMessageName {
+        margin-bottom: 20px;
+    }
+
+    .chatMessageContent {
+        margin-bottom: 10px;
+    }
+
+    .chatMessageContentText {
+        color: white;
+        padding: 8px;
+        border-radius: 5px;
+        background-color: gray;
+    }
+
+    .chatMessageNameMine {
+        margin-bottom: 20px;
+        /*text-align: right;*/
+    }
+
+    .chatMessageContentMine {
+        margin-bottom: 10px;
+        /*text-align: right;*/
+    }
+
+    .chatMessageContentTextMine {
+        color: white;
+        padding: 8px;
+        border-radius: 5px;
+        background-color: var(--colors_basecolor);
+    }
+
+    .eventContent {
+        /*text-align: -webkit-center;*/
+        margin-top: 25px;
+        margin-bottom: 25px;
+    }
+
+    .subLevelHierarchy {
+        background-color:  var(--colors_basecolor);
+
+        padding: 4px;
+        border-bottom-color: var(--colors_basecolor);
+        border-bottom: 3px solid var(--colors_gray08);
+        margin: -10px!Important;
+        margin-bottom: 10px!Important;
+    }
+</style>
+<script>
+    var SDT_HierarchyLevels = [];
+    var SDT_ReconUser = [];
+    var SDT_LifeCycle = [];
+    var auxLevel = '';
+    var auxUserId = '';
+ //Filter Variables
+ var pFilter = {};
+//  $(document).ready(function () {
+//     alert(pFilter.token);
+//  })
+    async function createNewUser() {
+        var data = {
+            HierarchyLevelName: auxLevel
+        };
+
+        fetch('rest/wsSetLevelAddUser', {
+            method: "POST",
+           //mode: "no-cors",
+            body: JSON.stringify(data),
+            headers: { "Content-type": "application/json; charset=UTF-8", 'Authorization': pFilter.token }
+        })
+            .then(response => response.json())
+            .then(res => {
+                if (res.errorDescription != '') {
+                    alert(res.errorDescription);
+                }
+                else {
+                    window.location.href = 'gamuserentry.aspx?Mode=INS&UserId=';
+                }
+            });
+    }
+
+    function getListWithCommasAndAnd(col) {
+        if (col.length == 1) return col[0];
+        else {
+            let aux = '';
+            for (let i = 0; i < col.length - 2; i++) {
+                aux = aux + col[i] + ', ';
+            }
+
+            return aux + col[col.length - 2] + ' and ' + col[col.length - 1];
+        }
+    }
+
+    function hideAllFloatingPanels() {
+        document.getElementById("PanelAddSubLevel").style.display = 'none';
+        document.getElementById("PanelDeleteSubLevel").style.display = 'none';
+        document.getElementById("PanelAddUser").style.display = 'none';
+        document.getElementById("PanelRemoveUser").style.display = 'none';
+        document.getElementById("TableGray").style.display = 'none';
+    }
+
+    function reassignUserTo(userId, level, userFullName, currentLevel) {
+        debugger;
+        document.getElementById('PanelRemoveUser').style.display = 'block';
+        document.getElementById('PanelRemoveUserWarning').innerHTML = `Upon completion of this task, user ${userFullName} will no longer be assigned the ${currentLevel} role.`;
+        document.getElementById('TableGray').style.display = 'block';
+        document.getElementById('input_adduser_name').innerHTML = getUsersCombo();
+        auxUserId = userId;
+        auxLevel = currentLevel;
+    }
+
+    function addUserTo(level, userId) {
+        document.getElementById('PanelAddUser').style.display = 'block';
+        document.getElementById('TableGray').style.display = 'block';
+        document.getElementById('input_adduser_name').innerHTML = getUsersCombo();
+        document.getElementById('input_adduser_name').value = userId;
+        auxLevel = level;
+        auxUserId = '';
+    }
+
+    async function addUserToFinal() {
+        debugger;
+        if (auxUserId == '') auxUserId = document.getElementById("input_adduser_name").value;
+        var data = {
+            HierarchyLevelName: auxLevel,
+            ReconUserId: auxUserId
+        };
+        fetch('rest/wsAddSubUser', {
+            method: "POST",
+           //mode: "no-cors",
+            body: JSON.stringify(data),
+            headers: { "Content-type": "application/json; charset=UTF-8", 'Authorization': pFilter.token }
+        })
+            .then(response => response.json())
+            .then(res => {
+                if (res.errorDescription != '') {
+                    alert(res.errorDescription);
+                }
+                else {
+                    getHierarchyTree('', '', '');
+                    hideAllFloatingPanels();
+                }
+            });
+    }
+    async function removeUserToFinal() {
+        if (auxUserId == '') auxUserId = document.getElementById("input_adduser_name").value;
+        var data = {
+            HierarchyLevelName: auxLevel,
+            ReconUserId: auxUserId
+        };
+        fetch('rest/wsRemoveSubUser', {
+            method: "POST",
+           //mode: "no-cors",
+            body: JSON.stringify(data),
+            headers: { "Content-type": "application/json; charset=UTF-8", 'Authorization': pFilter.token }
+        })
+            .then(response => response.json())
+            .then(res => {
+                if (res.errorDescription != '') {
+                    alert(res.errorDescription);
+                }
+                else {
+                    getHierarchyTree('', '', '');
+                    hideAllFloatingPanels();
+                }
+            });
+    }
+
+    function addSublevelTo(level) {
+        document.getElementById('PanelAddSubLevel').style.display = 'block';
+        document.getElementById('TableGray').style.display = 'block';
+        auxLevel = level;
+    }
+
+    async function addSublevelToFinal() {
+        var data = {
+            HierarchyLevelName: document.getElementById("input_addsublevel_name").value,
+            HierarchyLevelInherits: document.getElementById("input_addsublevel_inherits").checked,
+            HierarchyLevelParentName: auxLevel
+        };
+
+        fetch('rest/wsAddSublevel', {
+            method: "POST",
+           //mode: "no-cors",
+            body: JSON.stringify(data),
+            headers: { "Content-type": "application/json; charset=UTF-8", 'Authorization': pFilter.token }
+        })
+            .then(response => response.json())
+            .then(res => {
+                if (res.errorDescription != '') {
+                    alert(res.errorDescription);
+                }
+                else {
+                    getHierarchyTree('', '', '');
+                    hideAllFloatingPanels();
+                }
+            });
+    }
+
+    function deleteSublevel(level) {
+        document.getElementById('PanelDeleteSubLevel').style.display = 'block';
+        document.getElementById('TableGray').style.display = 'block';
+        auxLevel = level;
+    }
+
+    async function deleteSublevelFinal() {
+        var data = {
+            HierarchyLevelName: auxLevel
+        };
+
+        fetch('rest/wsDeleteSublevel', {
+            method: "POST",
+           //mode: "no-cors",
+            body: JSON.stringify(data),
+            headers: { "Content-type": "application/json; charset=UTF-8", 'Authorization': pFilter.token }
+        })
+            .then(response => response.json())
+            .then(res => {
+                if (res.errorDescription != '') {
+                    alert(res.errorDescription);
+                }
+                else {
+                    getHierarchyTree('', '', '');
+                    hideAllFloatingPanels();
+                }
+            });
+    }
+
+    async function getReconUsers() {
+        
+        var data = {
+        };
+
+        fetch('rest/wsGetReconUserList', {
+            method: "POST",
+           //mode: "no-cors",
+            body: JSON.stringify(data),
+            headers: { "Content-type": "application/json; charset=UTF-8", 'Authorization': pFilter.token }
+        })
+            .then(response => response.json())
+            .then(res => {
+                if (res.errorDescription != '') {
+                    alert(res.errorDescription);
+                }
+                else {
+                    SDT_ReconUser = res.SDT_ReconUser;
+                }
+            });
+    }
+
+    async function getLifeCycles() {
+        var data = {
+        };
+
+        fetch('rest/wsGetTrLifeCycleNames', {
+            method: "POST",
+           //mode: "no-cors",
+            body: JSON.stringify(data),
+            headers: { "Content-type": "application/json; charset=UTF-8", 'Authorization': pFilter.token }
+        })
+            .then(response => response.json())
+            .then(res => {
+                if (res.errorDescription != '') {
+                    alert(res.errorDescription);
+                }
+                else {
+                    SDT_LifeCycle = res.SDT_TrLifeCycleName;
+                }
+            });
+    }
+
+    function getUsersCombo() {
+        let auxHTML = `<option value=''>---</option>`;
+
+        if (SDT_ReconUser) {
+            SDT_ReconUser.forEach(x => {
+                if (true)//(x.ReconUserHierarchyLevelName.trim() == '')
+                {
+                    auxHTML = auxHTML + `<option value='${x.ReconUserId}'>${x.ReconUserName} ${x.ReconUserLastName}</option>`;
+                }
+            });
+        }
+
+        return auxHTML;
+    }
+
+    function getMakerCheckerCombo(userId, authLevel,HierarchyLevel) {
+        let auxAuthLevels = ['Viewer', 'Initiator', 'Authorizer', 'Approver'];
+        let auxHTML = `<select UserId='${userId}' HierarchyLevel='${HierarchyLevel}' onchange='changeUserAuthLevel(this);'>`
+
+        for (let i = 0; i <= 3; i++) {
+            let auxSelected = '';
+            if (i == authLevel) auxSelected = 'selected';
+            auxHTML = auxHTML + `<option value='${i}' ${auxSelected}>${auxAuthLevels[i]}</option>`;
+        }
+
+        auxHTML = auxHTML + `</select>`;
+        return auxHTML;
+    }
+
+    function getLifeCycleCombo(sdt, currentLifeCycle) {
+        let levelName = sdt.HierarchyLevelName;
+        let levelType = sdt.HierarchyLevelType; 
+
+        let auxHTML = `<select class='subtleCombo' LevelName='${levelName}' LevelType='${levelType}' onchange='changeLifeCycle(this);'>`;
+        //<option value=' '></option>`;
+
+
+        if (currentLifeCycle.length > 0) {
+            let auxCollection = [];
+            currentLifeCycle.forEach(y => {
+                auxCollection.push(y.LifeCycleName);
+            });
+            let auxString = getListWithCommasAndAnd(auxCollection);
+            auxHTML = auxHTML + `<option value=' '>Life Cycles: ${auxString}</option>`;
+        }
+        else {
+            auxHTML = auxHTML + `<option value=' '> </option>`;
+        }
+        SDT_LifeCycle.forEach(x => {
+            let auxSelected = '';
+            //if(currentLifeCycle == x.TrLifeCycleName) auxSelected = 'selected';
+            ////console.log(currentLifeCycle.filter(y => y.LifeCycleName == x.TrLifeCycleName));
+            //console.log(x.AccLifeCycleName.trim());
+            //console.log(currentLifeCycle);
+            if (currentLifeCycle.filter(y => y.LifeCycleName.trim() == x.AccLifeCycleName.trim()).length > 0) auxSelected = "✓";
+
+            if ((x.Module == 'Digital' && levelType == 'Digital Admin') || (x.Module == 'Cash' && levelType == 'Cash Admin') || (x.Module == 'NonFinalcial' && levelType == 'Non Financial Admin') || levelType == 'Administrator') {
+                auxHTML = auxHTML + `<option value='${x.AccLifeCycleId}'>${auxSelected} ${x.AccLifeCycleName}</option>`;
+            }
+        });
+
+        auxHTML = auxHTML + `</select>`;
+
+        return auxHTML;
+    }
+
+    async function changeLifeCycle(t) {
+        debugger;
+        //console.log(t)
+        let auxLevelName = t.getAttribute('LevelName');
+        let auxLevelType = t.getAttribute('LevelType');
+        let auxValue = t.value;
+        let auxValueName =  $(t).find("option:selected").text();
+        //if(t.value.trim() != '')
+        //{
+        var data = {
+            HierarchyLevelName: auxLevelName,
+            TrLifeCycleName: auxValueName,
+            AccLifeCycleId:auxValue,
+            Module:auxLevelType
+
+        };
+        
+        fetch('rest/wsSetLevelLifeCycle', {
+            method: "POST",
+           //mode: "no-cors",
+            body: JSON.stringify(data),
+            headers: { "Content-type": "application/json; charset=UTF-8", 'Authorization': pFilter.token }
+        })
+            .then(response => response.json())
+            .then(res => {
+                if (res.errorDescription != '') {
+                    alert(res.errorDescription);
+                    getHierarchyTree('', '', '');
+                }
+                else {
+                    getHierarchyTree('', '', '');
+                }
+            });
+        //}
+    }
+
+    async function changeUserAuthLevel(t) {
+        let auxUserId = t.getAttribute('UserId'); 
+        let HierarchyLevel = t.getAttribute('HierarchyLevel'); 
+        let auxValue = t.value;
+        if (t.value.trim() != '') {
+            var data = {
+                UserId: auxUserId,
+                UserRole: auxValue,
+                HierarchyLevel: HierarchyLevel
+            };
+            //console.log(data);
+            fetch('rest/wsSetReconUserAuthLevel', {
+                method: "POST",
+               //mode: "no-cors",
+                body: JSON.stringify(data),
+                headers: { "Content-type": "application/json; charset=UTF-8", 'Authorization': pFilter.token }
+            })
+                .then(response => response.json())
+                .then(res => {
+                    if (res.errorDescription != '') {
+                        alert(errorDescription);
+                    }
+                });
+        }
+    }
+    var countId = 1;
+    function getHTMLFromBranch(sdt) {
+        let auxHTML = '';
+        let currentLifeCycle = '';
+
+        if (sdt === undefined) return '';
+
+        if (sdt.LifeCycles) {
+        //console.log(sdt.LifeCycles);
+            currentLifeCycle = sdt.LifeCycles // sdt.LifeCycles[0].TrLifeCycleName;
+        }
+        else {
+            currentLifeCycle = [] // '';
+        }
+        //console.log(currentLifeCycle);
+        let comboLifeCycle = getLifeCycleCombo(sdt, currentLifeCycle);
+
+        auxHTML =
+            `<div class="hierarchyContent">
+                    <div class="hierarchyContainer txtsl${countId - 1}">
+                    
+                        <div class="hierarchyTitleContainer">
+                            <div class="subLevelHierarchy" style='display: flow-root; margin-bottom: 10px;'>
+                                <span onclick='toggleVisibility("${countId}");' style='float:left'>
+                                    <i class='fa fa-caret-down'></i> ${sdt.HierarchyLevelName}
+                                </span> 
+                                <span style='float:right'>
+                                    ${comboLifeCycle}
+                                    <span onclick='addUserTo("${sdt.HierarchyLevelName}", "");' style='margin-right: 5px;'><i class='fa fa-user-plus'></i></span> `
+                                    // <span onclick='addSublevelTo("${sdt.HierarchyLevelName}");' style='margin-right: 8px;'><i class='fa fa-plus-circle'></i></span> 
+
+        if (sdt.HierarchyLevelParentName.trim() != '') {
+            auxHTML = auxHTML + `<span onclick='deleteSublevel("${sdt.HierarchyLevelName}");' ><i class='fa fa-trash'></i></span>`;
+        }
+
+        auxHTML = auxHTML + `</span>
+                            </div>`;
+        
+        if (sdt.ReconUsers) {
+            let i = 0;
+
+            sdt.ReconUsers.forEach(x => {
+                let combo = getMakerCheckerCombo(x.ReconUserId, x.ReconUserAuthLevel,sdt.HierarchyLevelName);
+                let rowDarker = '';
+                i++;
+                if (i % 2 == 1) rowDarker = '';
+
+                auxHTML = auxHTML + `<div class="hierarchyLevelUser hoverSelect ${rowDarker}">
+                                            <span style='float:left'><i class='fa fa-user'></i> ${x.ReconUserName} ${x.ReconUserLastName}</span>
+                                            <span style='float:right'> 
+                                                ${combo}  
+                                                <span onclick="reassignUserTo('${x.ReconUserId}', '', '${x.ReconUserName} ${x.ReconUserLastName}', '${sdt.HierarchyLevelName}');" style='margin-left: 5px;'><i class='fa fa-trash'></i></span>
+                                            </span>
+                                        </div>`
+            });
+        }
+
+        auxHTML = auxHTML + `</div>`;
+
+        if (sdt.HierarchySubLevels) {
+            sdt.HierarchySubLevels.forEach(x => {
+                countId += 1;
+                auxHTML = auxHTML + getHTMLFromBranch(x);
+            });
+        }
+
+        auxHTML = auxHTML + `</div>
+                </div>`;
+
+        return auxHTML;
+    }
+
+    function renderTree() {
+        let auxHTML = getHTMLFromBranch(SDT_HierarchyLevels[0]);
+        document.getElementById('HierarchyTree').innerHTML = auxHTML;
+    }
+
+    async function getHierarchyTree(firstLevel, newUserId, addUserToLevel) {
+        getReconUsers();
+        getLifeCycles();
+
+        var data = {
+            firstHierarchyLevelName: firstLevel
+        };
+
+        fetch('rest/wsGetHierarchyTree', {
+            method: "POST",
+           //mode: "no-cors",
+            body: JSON.stringify(data),
+            headers: { "Content-type": "application/json; charset=UTF-8", 'Authorization': pFilter.token }
+        })
+            .then(response => response.json())
+            .then(res => {
+                debugger;
+                if(res.errorDescription != ''){
+                    alert(res.errorDescription);
+                }
+                SDT_HierarchyLevels = res.SDT_HierarchyLevels;
+                renderTree();
+
+                if (newUserId != '' && addUserToLevel != '') {
+                    addUserTo(addUserToLevel, newUserId);
+                }
+            });
+    }
+
+    function toggleVisibility(id) {
+        debugger;
+        document.querySelectorAll('.txtsl'+id).forEach(function(element) {
+            if (element.style.display === 'none') {
+                element.style.display = 'block';
+            } else {
+                element.style.display = 'none';
+            }
+        });
+    }
+
+    //const intervalId = setInterval(updateInvestigationCase, 10000);
+
+    //getHierarchyTree();
+</script>

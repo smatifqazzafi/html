@@ -1,0 +1,1880 @@
+<body>
+
+    <head>
+
+        <link rel="stylesheet" href="MyAssets/Scripts/css/jquery.dataTables.min.css">
+        <link rel="stylesheet" href="MyAssets/Scripts/css/buttons.dataTables.min.css">
+        <link rel="stylesheet" href="MyAssets/Scripts/css/jquery.contextMenu.min.css">
+        <link rel="stylesheet" href="MyAssets/Scripts/css/MyCommonCss.css">
+        <link rel="stylesheet" href="MyAssets/Scripts/css/bootstrap-multiselect.css">
+        <style>
+            #TBLBUTTON {
+
+                margin-bottom: 15px;
+            }
+
+            #dataTable tbody tr.dtrg-group.dtrg-start.dtrg-level-0 {
+                background-color: var(--colors_backgroundcolor) !Important;
+            }
+
+            /* Investigation Work Start */
+
+            .tag-input-container {
+                display: flex;
+                flex-wrap: wrap;
+                border: 1px solid rgb(150, 150, 150);
+                padding: 5px;
+                border-radius: 5px;
+                width: 98%;
+                /* Set the width as needed */
+            }
+
+            .tag {
+                border: 1px solid #aaa;
+                color: #000;
+                padding: 5px 10px;
+                margin: 5px;
+                border-radius: 5px;
+                display: flex;
+                align-items: center;
+            }
+
+            .tag .close {
+                cursor: pointer;
+                margin-left: 5px;
+            }
+
+            .tag-input {
+                border: none;
+                outline: none;
+                flex-grow: 1;
+            }
+
+            .floatingContainerClass {
+                background: white;
+                z-index: 20;
+                position: fixed;
+                left: 28%;
+                width: 60%;
+                top: 0;
+                padding: 10px;
+                opacity: 0;
+                transition: all 0.3s ease-out;
+                display: block;
+                z-index: -1;
+            }
+
+            #fullScreenDiv {
+                top: 0;
+                left: 0;
+                position: fixed;
+                width: 100%;
+                height: 100%;
+                display: none;
+                z-index: 15;
+            }
+
+            #grayContainer {
+                top: 0;
+                left: 0;
+                position: fixed;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.2);
+            }
+
+            #textRowsSelected {
+                float: left;
+                margin-right: 10px;
+            }
+
+            #buttonDoActionOnSelectedContainer {
+                float: right;
+            }
+
+            .buttonDoAction {
+                margin-right: 8px;
+                text-decoration: underline;
+                cursor: pointer;
+                color: var(--colors_basecolor);
+                /* #f87f6a; */
+            }
+
+            .MyGridTextBox {
+                margin-top: 1px !Important;
+                margin-bottom: 1px !Important;
+                margin-left: 1px !Important;
+                display: block;
+                height: 26px;
+                padding: 5px 5px;
+                /* font-size: 14px; */
+                line-height: 1.42857143;
+                color: #555;
+                background-color: #fff;
+                background-image: none;
+                border: 1px solid #ccc;
+                border-radius: 1px;
+                -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+                box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+                -webkit-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+                -o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+                -webkit-transition: border-color ease-in-out .15s, -webkit-box-shadow ease-in-out .15s;
+                transition: border-color ease-in-out .15s, -webkit-box-shadow ease-in-out .15s;
+                transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+                transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s, -webkit-box-shadow ease-in-out .15s;
+                width: -webkit-fill-available !Important;
+                min-height: 10px !Important;
+            }
+
+            /* .loader-btn {
+                position: absolute !Important;
+            } */
+
+            .loader-btn .loader {
+                /* position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%); */
+                border: 4px solid #f3f3f3;
+                border-top: 4px solid #3498db;
+                border-radius: 50%;
+                /* width: 20px;
+                height: 20px; 
+                animation: spin 1s linear infinite;*/
+                display: none;
+            }
+
+            @keyframes spin {
+                0% {
+                    transform: translate(-50%, -50%) rotate(0deg);
+                }
+
+                100% {
+                    transform: translate(-50%, -50%) rotate(360deg);
+                }
+            }
+
+            #filterPanel {
+                background-color: #f0f0f0;
+                border: 1px solid #ccc;
+                padding: 6px;
+                border-radius: 5px;
+                display: flex;
+                align-items: center;
+                margin-bottom: 10px;
+            }
+
+            #filterMessage {
+                margin: 0;
+            }
+
+            .clearFilterButton {
+                margin-left: 10px;
+                padding: 5px 10px;
+                color: #fff;
+                border: none;
+                border-radius: 3px;
+                cursor: pointer;
+                min-width: 0px !Important;
+            }
+
+            #dataTable_filter {
+                display: none;
+            }
+
+            div.dt-buttons {
+                margin-bottom: 12px;
+            }
+
+            /*  .dt-button {
+                white-space: nowrap !Important;
+                background-color: var(--colors_basecolor) !Important;
+                color: var(--colors_baseforecolor) !Important;
+                border: var(--borders_xs) solid var(--colors_actionborder_and_focuscolor) !Important;
+                text-align: center !Important;
+                text-indent: 0 !Important;
+                vertical-align: middle !Important;
+                box-shadow: 0 7px 10px -5px var(--colors_basecolorshadow) !Important;
+                border-radius: var(--radius_m) !Important;
+            } */
+            .cTdPad {
+                padding-left: 8px;
+                padding-right: 20px;
+                border: 1px solid;
+            }
+
+            .thS {
+                padding: 2px;
+                padding-right: 20px;
+                padding-left: 8px;
+                background: var(--colors_basecolor);
+                /* #2F4858; */
+                color: white;
+                font-weight: 500;
+            }
+
+            .context-menu-icon-match {
+                background-image: url(Resources/DDOMultiselSelOption.png) !Important;
+                background-repeat: no-repeat;
+                background-position: left;
+            }
+
+            .context-menu-icon-unmatch {
+                background-image: url(Resources/ActionFiltersClean.png) !Important;
+                background-repeat: no-repeat;
+                background-position: left;
+                background-size: 13px !important;
+            }
+
+            .context-menu-icon-vhistory {
+                background-image: url(Resources/historyicon.png) !Important;
+                background-repeat: no-repeat;
+                background-position: left;
+                background-size: 13px !important;
+            }
+
+            /* Investigation Work End */
+            /* Filter Panel Start */
+
+            .myfilter-panel {
+                position: fixed;
+                right: 0;
+                top: 0;
+                width: 300px;
+                height: 100%;
+                background-color: #f4f4f4;
+                box-shadow: -2px 0 5px rgba(0, 0, 0, 0.5);
+                transform: translateX(100%);
+                transition: transform 0.3s ease-in-out;
+                overflow: scroll;
+                z-index: 99999;
+                padding: 10px;
+                border-radius: 4px;
+                margin-top: 5px;
+                background-color: var(--colors_backgroundcolor);
+            }
+
+            /* Filter Panel End */
+
+            .myfilter-panel.active {
+                transform: translateX(0);
+            }
+
+            .filter-field {
+                margin-top: 10px !Important;
+                display: flex !Important;
+                justify-content: center !Important;
+                border-bottom: 1px solid white;
+            }
+
+            table.dataTable.row-border tbody th,
+            table.dataTable.row-border tbody td,
+            table.dataTable.display tbody th,
+            table.dataTable.display tbody td {
+                border: 1px solid #ddd;
+            }
+
+            table.dataTable tbody th,
+            table.dataTable tbody td {
+                padding: 3px 1px;
+            }
+
+            /* Investigation Work End */
+        </style>
+    </head>
+
+    <!-- Button to Open the Modal -->
+    <!-- <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
+    Open Modal
+  </button> -->
+
+    <style>
+        .popup {
+            display: none;
+            /* Hidden by default */
+            position: fixed;
+            /* Stay in place */
+            left: 0;
+            top: 0;
+            width: 100%;
+            /* Full width */
+            height: 100%;
+            /* Full height */
+            background-color: rgba(0, 0, 0, 0.5);
+            /* Black background with opacity */
+            z-index: 9999;
+            /* Sit on top */
+            justify-content: center;
+            align-items: center;
+        }
+
+        .popup-content {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 4px;
+            width: 380px;
+            text-align: center;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .close-btn {
+            color: #aaa;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close-btn:hover,
+        .close-btn:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .popup-body {
+            /* display: flex;
+            align-items: center; */
+            gap: 10px;
+            /* Space between icon and message */
+        }
+
+        .warning-icon {
+            font-size: 30px;
+            color: #FFA500;
+            /* Orange color for warning */
+        }
+
+        .warning-message {
+            font-size: 12px;
+            color: #333;
+            margin: 0;
+            /* Remove default margin */
+        }
+
+        #fullScreenDiv {
+            background-color: rgba(0, 0, 0, 0.5);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        #grayContainer {
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 30px;
+            width: 800px;
+            /* Increased width */
+            max-height: 400px;
+            /* Set maximum height */
+            overflow-y: hidden;
+            /* Allow vertical scrolling if content exceeds max height */
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            z-index: 2;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        #editContainerTitle {
+            font-size: 20px;
+            font-weight: bold;
+            text-align: center;
+            color: #ff6347;
+            /* Tomato color for title */
+            margin-bottom: 20px;
+        }
+
+        .tag-input-container {
+            margin-bottom: 15px;
+        }
+
+        .tag-input-container label {
+            font-size: 14px;
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .tag-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 4px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+            margin-left: 10px;
+        }
+
+        .checkbox-container input {
+            margin-right: 25px;
+            margin-top: -4px;
+        }
+
+        .button-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .ButtonMaterial {
+            background-color: #ff6347;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .ButtonMaterialDefault {
+            background-color: #ccc;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .ButtonMaterial:hover {
+            background-color: #e5533a;
+        }
+
+        .ButtonMaterialDefault:hover {
+            background-color: #b0b0b0;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 600px) {
+            #grayContainer {
+                width: 90%;
+            }
+
+            .tag-input-container {
+                width: 100%;
+            }
+        }
+
+        .orange-bar {
+            background-color: #ff6347;
+            /* Orange color */
+            height: 5px;
+            /* Height of the bar */
+            margin-bottom: 20px;
+            /* Space below the bar */
+        }
+    </style>
+    <div id="warning-popup" class="popup">
+        <div class="popup-content">
+            <span class="close-btn" onclick="closePopup()">&times;</span>
+            <div class="popup-body">
+                <div class="warning-icon">⚠️
+                    <p style="font-size: small;">Warning</p>
+                </div>
+                <p class="warning-message">All Items Amount Sign is same . </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Row -->
+
+    <div id="fullScreenDiv">
+        <div id="grayContainer">
+            <div id="editContainerTitle">ENTITY</div>
+            <div class="orange-bar"></div>
+
+            <!-- Left and Right Column Inputs -->
+            <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+
+                <!-- Left Column -->
+                <div style="flex: 1;">
+                    <div class="tag-input-container">
+                        <label for="caseIdSubject">Company Name:</label>
+                        <input type="text" id="caseIdSubject" class="tag-input" placeholder="">
+                    </div>
+
+                    <div class="tag-input-container">
+                        <label for="accountNo">Account No:</label>
+                        <input type="text" id="accountNo" class="tag-input" placeholder="">
+                    </div>
+                </div>
+
+                <!-- Right Column -->
+                <div style="flex: 1;">
+                    <div class="tag-input-container">
+                        <label for="additionalInfo">Account Type:</label>
+                        <input type="text" id="additionalInfo" class="tag-input" placeholder="">
+                    </div>
+
+                    <div class="tag-input-container">
+                        <label for="transactionType">Transaction Type:</label>
+                        <select id="transactionType" class="form-control">
+                            <option value="">Select Type</option>
+                            <option value="Biller">Biller</option>
+                            <option value="Aggregator">Aggregator</option>
+                        </select>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Checkbox -->
+            <div class="checkbox-container">
+                <input type="checkbox" id="confirmCheckbox">
+                <label for="confirmCheckbox">is Fees Only</label>
+            </div>
+
+            <!-- Buttons -->
+            <div class="button-container">
+                <button id="buttonFloatingContainerStartInvestigationAccept" class="ButtonMaterial">ENTER</button>
+                <button id="buttonFloatingContainerStartInvestigationCancel"
+                    class="ButtonMaterialDefault">CANCEL</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Row Ends -->
+
+
+    <!-- The Modal -->
+    <div class="modal fade" id="myModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Modal Heading</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <!-- Modal Body -->
+                <div class="modal-body">
+                    Modal body content goes here.
+                </div>
+
+                <!-- Modal Footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div id="container">
+        <!-- Your content goes here -->
+    </div>
+    <div class="panel PanelWithBorder Panel_BaseColor">
+        <!-- <div id="PanelHeader_DVPANEL_TABLEATTRIBUTESContainer" class="panel-heading PanelWithBorder_Header Panel_BaseColor_Header">
+<h3 class="panel-title"><span id="Title_DVPANEL_TABLEATTRIBUTESContainer">Cards Match Item</span></h3>
+</div> -->
+
+        <div class="panel-body">
+            <style>
+                .context-menu {
+                    position: absolute;
+                    background-color: #fff;
+                    border-radius: 4px;
+                    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+                    display: none;
+                    z-index: 1000;
+                }
+
+                .context-menu ul {
+                    list-style: none;
+                    margin: 0;
+                    padding: 8px 0;
+                }
+
+                .context-menu li {
+                    font-size: 14px;
+                    padding: 4px 9px;
+                    cursor: pointer;
+                    display: flex;
+                    align-items: center;
+                }
+
+                .context-menu li:hover {
+
+                    color: #fff;
+                    cursor: pointer;
+                    background-color: #2980b9;
+                }
+
+                .context-menu .icon {
+                    margin-right: 10px;
+                }
+
+                .divider {
+                    border-top: 1px solid #e0e0e0;
+                    margin: 8px 0;
+                }
+
+                .content-area {
+                    width: 100%;
+                    height: 100%;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    border: 2px dashed #ccc;
+                    background-color: #fff;
+                    color: #666;
+                }
+
+                .table-responsive {
+                    overflow-y: scroll;
+                    overflow-x: scroll;
+                }
+
+                .table-responsive::-webkit-scrollbar {
+                    width: 12px;
+                }
+
+                .table-responsive::-webkit-scrollbar-thumb {
+                    background-color: #888;
+                    /* Color of the scrollbar thumb */
+                    border-radius: 10px;
+                    /* Rounded corners */
+                    border: 2px solid #f1f1f1;
+                }
+
+                .table-responsive::-webkit-scrollbar-thumb:hover {
+                    background-color: #555;
+                }
+
+                .table-responsive {
+                    scrollbar-width: thin;
+                    /* Set scrollbar width */
+                    scrollbar-color: #888 #f1f1f1;
+                }
+
+                .highlight-row {
+                    background-color: #ffcccc;
+                    /* Light red background */
+                    color: red;
+                    /* Change text color if needed */
+                }
+            </style>
+            <div id="filterPanel" style="display: none;">
+                <p id="filterMessage">Filtered by: None</p>
+                <button id="clearFilterButton" class="Button btn btn-default clearFilterButton" type="button"><i
+                        class="fa fa-remove"></i></button>
+                <button id="saveFilterButton" class="Button btn btn-default clearFilterButton" type="button"><i
+                        class="fa fa-save"></i></button>
+            </div>
+            <div id="mainHeader">
+                <div id="mainHeaderLeft" style="float: left;">
+
+                </div>
+            </div>
+
+            <!-- <div style="display: flex; align-items: center; margin-bottom: 10px;">
+                <div id="datePickerContainer" style="margin-right: 10px;">
+                    <label for="datePicker" style="font-weight: bold; padding: 5px;">Select Date:</label>
+                    <input type="date" id="datePicker" name="datePicker"
+                        style="padding: 5px; border: 1px solid #ccc; border-radius: 5px; width: 150px; text-align: center;">
+                </div>
+                <div id="categoryContainer">
+                    <label for="categorySelect" style="font-weight: bold; padding: 5px;">Select Category:</label>
+                    <select id="categorySelect" name="categorySelect"
+                        style="padding: 5px; border: 1px solid #ccc; border-radius: 5px; width: 150px; text-align: center;">
+                        <option value="">Choose a Category</option>
+                        <option value="Biller">Biller</option>
+                        <option value="Aggregator">Aggregator</option>
+                    </select>
+                </div>
+            </div> -->
+
+
+            <div class="table-responsive">
+                <table id="dataTable"
+                    class="display table table-bordered gx-tab-spacing-fix-2 GridWithPaginationBar GridWithBorderColor WorkWith table-responsive">
+                    <thead id="tableHeader">
+                        <!-- Table header will be populated dynamically by JavaScript -->
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+
+        </div>
+        <div class="panel-footer">
+            <div class="form-group">
+                <div class="col-md-12">
+                    <div class="col-md-1" style="Padding-top:8px">
+                        <label for="pageLength">Page Length:</label>
+                    </div>
+                    <div class="col-md-2">
+                        <select id="pageLength" class="form-control">
+                            <option value="10">10</option>
+                            <option value="25">25</option>
+                            <option value="50" selected>50</option>
+                            <option value="100">100</option>
+                            <option value="200">200</option>
+                            <option value="300">300</option>
+                        </select>
+                    </div>
+                    <!-- <div class="col-md-1" style="Padding-top:8px">
+                        <label for="sum-Amt">Sum :</label>
+                        <label id="sum-Amt">0</label>
+                    </div> -->
+                </div>
+            </div>
+        </div>
+
+
+
+    </div>
+    <!-- Investigation Start -->
+    <div id="fullScreenDiv">
+        <div id="grayContainer"></div>
+    </div>
+    <div id="floatingContainerStartInvestigation" class="floatingContainerClass">
+        <div id="floatingContainerTitleStartInvestigation" class="TextBlockTitleMaterial">
+            Start Investigation
+        </div>
+        <div style="margin-top: 20px; font-size: 12px;">
+            <div>To: </div>
+            <div class="tag-input-container" id="tag-input-container">
+                <!-- Tags will be dynamically added here -->
+                <input list="deparments" type="text" id="tag-input" class="tag-input"
+                    placeholder="Add one or more recipients" onkeydown="inputCheckSpace(this.value, event);">
+                <datalist id="deparments">
+                    <option value="IT" label="IT Department">
+                    <option value="Branch" label="Branch Manager">
+                    <option value="Accounting" label="Accounting Department">
+                    <option value="General" label="General Management">
+                </datalist>
+            </div>
+
+            <div>Subject: </div>
+            <div class="tag-input-container">
+                CASE ID #XXXXXX
+                <input type="text" id="caseIdSubject" class="tag-input" placeholder="">
+            </div>
+
+            <div>Comments: </div>
+            <textarea id="floatingContainerCommentsStartInvestigation" rows="6"
+                style="resize: none; width: 98%;"></textarea>
+            <div>
+                By clicking on "Continue", I accept to start an investigation over the selected transactions.
+            </div>
+        </div>
+        <div style="margin-top: 20px;">
+            <button id="buttonFloatingContainerStartInvestigationAccept"
+                class="ButtonMaterial btn btn-default">Continue</button>
+            <button id="buttonFloatingContainerStartInvestigationCancel"
+                class="ButtonMaterialDefault btn btn-default">Cancel</button>
+        </div>
+    </div>
+
+    <div id="floatingContainerForceMatch" class="floatingContainerClass">
+        <div id="floatingContainerTitleForceMatch" class="TextBlockTitleMaterial">
+            You are about to force the matching of several transactions
+        </div>
+        <div style="margin-top: 20px; font-size: 12px;">
+            <div>Comments: </div>
+            <textarea id="floatingContainerCommentsForceMatch" rows="6" style="resize: none; width: 98%;"></textarea>
+            <div id="floatingContainerDescription">
+                By clicking on "Continue", I accept to force the matching of the selected transactions.
+            </div>
+        </div>
+        <div style="margin-top: 20px;">
+            <button id="buttonFloatingContainerAccept" type="button" onclick="wsInitiateMatchedTransactions()"
+                class="ButtonMaterial btn btn-default">Continue</button>
+            <button id="buttonFloatingContainerCancel" type="button" onclick="hideFloatingContainerForceMatch()"
+                class="ButtonMaterialDefault btn btn-default">Cancel</button>
+        </div>
+    </div>
+
+
+    <div id="floatingContainerForceUnMatch" class="floatingContainerClass">
+        <div id="floatingContainerTitleForceUnMatch" class="TextBlockTitleMaterial">
+            You are about to force the un-matching of several transactions
+        </div>
+        <div style="margin-top: 20px; font-size: 12px;">
+            <div>Comments: </div>
+            <textarea id="floatingContainerCommentsForceUnMatch" rows="6" style="resize: none; width: 98%;"></textarea>
+            <div id="floatingContainerDescription">
+                By clicking on "Continue", I accept to force the un-matching of the selected transactions.
+            </div>
+        </div>
+        <div style="margin-top: 20px;">
+            <button id="buttonFloatingContainerAccept" type="button" onclick="wsInitiateMatchedTransactions()"
+                class="ButtonMaterial btn btn-default">Continue</button>
+            <button id="buttonFloatingContainerCancel" type="button" onclick="hideFloatingContainerForceUnMatch()"
+                class="ButtonMaterialDefault btn btn-default">Cancel</button>
+        </div>
+    </div>
+    <div id="myfilterPanel" class="myfilter-panel">
+        <div style="display: flex;justify-content: space-between;">
+            <h4>FILTERS</h4>
+            <button id="closeFilterPanel" class="Button btn btn-default clearFilterButton" style="height: fit-content;"
+                type="button"><i class="fa fa-remove"></i></button>
+        </div>
+        <div id="myfilterFieldsContainer"></div>
+    </div>
+    <!-- <button id="openFilterPanel" type="button">Open Filters</button> -->
+
+    <script>
+
+        class ColumnSearchValue {
+            constructor(columnName, searchValue) {
+                this.columnName = columnName;
+                this.searchValue = searchValue;
+            }
+        }
+        class colGridFilter {
+
+            constructor(columnValues = [], fieldName = '') {
+                this.columnValues = columnValues;
+                this.fieldName = fieldName;
+            }
+        }
+
+        var selectedColumnId = [];
+        var SettlementIdVal = '';
+        var listColumnGridFilter = [];
+        var table;
+        var savedFilterId = 0;
+        var filteredColList = [];
+        var filteredColJson = '';
+        var amountFrom = '';
+        var amountTo = '';
+        var amountTo = '';
+        var accountStatementId = '';
+        var citemIds = ''
+        var FProviderId = '';
+        var SettlementId = '';
+        var dataSucess = [];
+        var FTranProcDate  = '';
+        var FEntityTypeName = '';
+        var FTranProcAccType1 = '';
+
+        var pFilter = {};
+        
+        var invFilterVal = 0;
+        $(document).ready(function () {
+            var columnSearchValues = [];
+            var chkOrder;
+            var columnDefs = [];
+
+
+            $('#closeFilterPanel').click(function () {
+                $('#myfilterPanel').removeClass('active');
+            });
+            
+            $.ajax({
+                url: 'rest/wsTransactionGrids',
+                method: 'GET',
+                headers: {
+                    'Authorization': pFilter.token
+                },
+                data: {
+                    //FTranProcDate: FTranProcDate,
+                    //FTranProcAccType1: FTranProcAccType1
+                },
+                success: function (data) {
+                    table = null;
+                    dataSucess = data;
+                    console.log('Daata:' , dataSucess)
+                    if (data && data.myCols && data.myCols.length > 0) {
+                        var headerHtml = '';
+                        var headerFilterHtml = '';
+                        var headerFullHtml = '';
+                        showLoader();
+                        filteredColList = filteredColJson !== '[]' && filteredColJson !== '' ? JSON.parse(filteredColJson) : [];
+                        //    var nCol = new nCol{
+                        //     colDBName = "Action",
+                        //     colName = ""
+                        //    }
+                        // data.myCols.unshift({ colIndex: 1, colName: 'Action', colDBName: 'Action', colDataType: 2 })
+
+                        if (filteredColList.length > 0) {
+
+                            if (filteredColList.length > 0) {
+                                const filteredCols = [];
+
+                                filteredColList.forEach(function (colName) {
+                                    const trimmedColName = colName.trim();
+                                    const col = data.myCols.find(col => col.colDBName.trim() === trimmedColName);
+                                    if (col) {
+                                        filteredCols.push(col);
+                                    }
+                                });
+                                data.myCols = filteredCols;
+
+                            }
+                        }
+                        data.myCols = changeIndices(data.myCols);
+                        data.myCols.forEach(function (column, indexs) {
+                            if (column.colDBName == 'FTranProcComplete') {
+                                headerFilterHtml += '<th></th>'
+                            } else {
+
+                                if (column.colDataType == 1) {
+                                    headerFilterHtml += '<th gx-tab-padding-fix-1 WWActionGroupColumn  GridWithPaginationBar GridWithBorderColor WorkWithTitle><div class="col-md-12"><input type="date" class="mycolumnSearchDate MyGridTextBox wwp-daterange-picker-input" placeholder="Search ' + column.colName + '" data-column="' + column.colDBName + '" /> </div>' + fnGenDropDown(indexs, 13, column.colDBName, column.colName) + '</th>';
+                                    var columnDef = {
+                                        "targets": indexs, // Assuming index corresponds to column index
+                                        "render": function (data, type, row) {
+                                            // Example: Format the data as needed, for example, convert it to uppercase
+                                            return formatDateFromString(data);
+                                            console.log('Date', data)
+                                        }
+                                    };
+                                    columnDefs.push(columnDef);
+                                } else {
+                                    //  headerFilterHtml += '<th gx-tab-padding-fix-1 WWActionGroupColumn  GridWithPaginationBar GridWithBorderColor WorkWithTitle><div class="col-md-12"><input type="text" class="mycolumnSearch MyGridTextBox"  data-column="' + column.colDBName + '" /></div>' + fnGenDropDown(indexs, 25, column.colDBName, column.colName) + '</th>';
+                                }
+                            }
+
+                        });
+                        //headerFullHtml = '<tr id ="searchInputs">' + headerFilterHtml + '</tr>';
+                        data.myCols.forEach(function (column) {
+                            headerHtml += '<th gx-tab-padding-fix-1 WWActionGroupColumn  GridWithPaginationBar GridWithBorderColor WorkWithTitle data-column="' + column.colDBName + '"><h5><b>' + column.colName + '</b></h5></th>';
+                        });
+                        headerFullHtml += '<tr id="columnHeaders">' + headerHtml + '</tr>';
+
+                        $('#tableHeader').html(headerFullHtml);
+
+                        var columnslist = data.myCols.map(function (column) {
+                            if (column.colDBName == "FTranProcComplete") {
+                                return {
+                                    data: column.colDBName,
+                                    orderable: false,
+                                    render: function (data, type, row) {
+                                        if (column.colDBName == "FTranProcComplete") {
+                                            if (row.FTranProcComplete == '0') {
+                                                return '<div style="color: red;">' + // Change color here
+                                                    '<i class="fa-solid fa-pen-to-square" style="cursor:pointer;" onclick="showEditPopup(\'' + row.id + '\')"></i>' +
+                                                    '</div>'; // Display a edit icon
+                                            } else {
+                                                return '--';
+                                            }
+                                        } else {
+                                            return data;
+                                        }
+                                    }
+                                };
+                            } else {
+                                return {
+                                    data: column.colDBName
+                                };
+                            }
+
+                        });
+                        // Generate filter fields based on columns
+
+                        var filterFieldsHtml = `<div id="filterPanel">
+                        <p id="filterMessage">Filtered by: None</p></div>`;
+                        data.myCols.forEach(function (column, indexs) {
+                            if (column.colDBName !== 'Action') {
+                                filterFieldsHtml += '<div class="filter-field">';
+                                filterFieldsHtml += fnGenDropDown(indexs, 25, column.colDBName, column.colName) + '<label style="margin-top: 5px" for="filter-' + column.colDBName + '">' + column.colName + '&nbsp</label>';
+                                if (column.colDataType == 'D') {
+                                    filterFieldsHtml += '<input type="date" class="mycolumnSearchDate MyGridTextBox wwp-daterange-picker-input" placeholder="Search ' + column.colName + '" data-column="' + column.colDBName + '" />'; //+ fnGenDropDown(indexs, 13, column.colDBName, column.colName);
+                                } else {
+                                    filterFieldsHtml += '<input type="text" class="mycolumnSearch MyGridTextBox"  data-column="' + column.colDBName + '" />';
+                                }
+                                filterFieldsHtml += '</div>';
+                            }
+                        });
+                        $('#myfilterFieldsContainer').html(filterFieldsHtml);
+                        if ($('#GRIDFILTER_GRIDFILTERDDLFILTER').val() !== undefined) {
+                            listColumnGridFilter = [];
+                            listColumnGridFilter = $('#GRIDFILTER_GRIDFILTERDDLFILTER').val() !== '[]' && $('#GRIDFILTER_GRIDFILTERDDLFILTER').val() !== '' ? JSON.parse($('#GRIDFILTER_GRIDFILTERDDLFILTER').val()) : [];
+                        }
+                        if ($('#GRIDFILTER_GRIDFILTERCOLUMNPOSITION').val() !== undefined) {
+                            FilterColumnPosition = [];
+                            FilterColumnPosition = $('#GRIDFILTER_GRIDFILTERCOLUMNPOSITION').val() !== '[]' && $('#GRIDFILTER_GRIDFILTERCOLUMNPOSITION').val() !== '' ? JSON.parse($('#GRIDFILTER_GRIDFILTERCOLUMNPOSITION').val()) : [];
+                        }
+                        if ($('#GRIDFILTER_GRIDFILTERCOLUMNVIS').val() !== undefined) {
+                            FilterColumnVis = [];
+                            var FilterColumnVisN = $('#GRIDFILTER_GRIDFILTERCOLUMNVIS').val() !== '[]' && $('#GRIDFILTER_GRIDFILTERCOLUMNVIS').val() !== '' ? $('#GRIDFILTER_GRIDFILTERCOLUMNVIS').val() : '[]';
+                            FilterColumnVis = JSON.parse(FilterColumnVisN.trim());
+                        }
+                        updateFilterMessage();
+                        var panelType = 'M';
+                        table = $('#dataTable').DataTable({
+                            processing: true,
+                            serverSide: true,
+                            paging: true,
+                            pageLength: 40,
+                            timeout: 9000000,
+                            //order: [[panelType === 'M' ? 1 : 1, 'asc']],
+                            ajax: {
+                                url: 'rest/wsTransactionGrids',
+                                type: 'GET',
+                                headers: {
+                                     'Authorization': pFilter.token
+                                },
+                                data: function (d) {
+                                    var coldbName = 'FTranProcDate';  // Column to filter
+                                    var searchData = {};
+                                    $('.columnSearch').each(function () {
+                                        var column = $(this).data('column');
+                                        var value = $(this).val();
+                                    });
+
+                                    var jsonStrin = JSON.stringify(columnSearchValues);
+                                    chkOrder = d.order[0].column;
+                                    console.log('Check', chkOrder);
+                                    var returnParems = {
+                                        draw: d.draw,
+                                        start: d.start,
+                                        length: d.length,
+                                        searchValue: d.search.value,
+                                        sortColumn: d.order[0].column,
+                                        sortDirection: d.order[0].dir,
+                                        columnSearchFilter: jsonStrin,
+                                        invFilter: invFilterVal,
+                                        FTranProcDate: FTranProcDate,
+                                        FEntityTypeName: FEntityTypeName,
+                                        FTranProcAccType1: FTranProcAccType1,
+
+                                        colGridFilterStr: JSON.stringify(listColumnGridFilter),
+                                        coldbName: coldbName,  // Specify which column to filt
+                                    };
+                                    console.log('selectedvalue', returnParems )
+                                    return returnParems
+                                },
+                                dataSrc: function (response) {
+                                    if (response.data != '') {
+                                        response.data = JSON.parse(response.data);
+                                        console.log('response', response.data)
+                                        return response.data;
+                                    } else {
+                                        return response.data;
+                                    }
+                                }
+                            },
+                            columns: columnslist,
+                            "colReorder": true,
+                            dom: 'Bfrtip',
+
+                            buttons: [
+                                {
+                                    extend: 'colvis',
+                                    text: '<i class="fa fa-columns"></i> Column Visibility'
+                                },
+                                {
+                                    text: '<i class="fa-solid fa-download"></i> Export',
+                                    action: function (e, dt, node, config) {
+                                        $(node).attr('id', 'exportCsvButton');
+                                        exportGridToCSV(dt); // Passing DataTable instance to export function
+                                    },
+                                    init: function (dt, node, config) {
+                                        $(node).attr('id', 'exportCsvButton');
+                                        $(node).addClass('dt-button buttons-collection buttons-colvis');
+                                    }
+                                },
+                                {
+                                    text: '<i class="fa-solid fa-filter"></i> Filters',
+                                    action: function (e, dt, node, config) {
+                                        $(node).attr('id', 'buttons-filterButton');
+                                        $('#myfilterPanel').toggleClass('active');
+                                    },
+                                    init: function (dt, node, config) {
+                                        $(node).attr('id', 'buttons-filterButton');
+                                        $(node).addClass('dt-button buttons-collection buttons-colvis');
+                                    }
+                                }
+                            ],
+                            "columnDefs": columnDefs,
+                            initComplete: function () {
+                                var api = this.api();
+                                var contextMenuItems = {};
+
+                                $('#dataTable tbody').on('contextmenu', 'tr:not(.dtrg-group)', function (e) {
+                                    e.preventDefault(); // Prevent the default right-click context menu
+                                    //  if (panelType === 'O') {
+                                    //      // Position and show the context menu
+                                    //      $('#contextMenu').css({
+                                    //          display: 'block',
+                                    //          left: (e.pageX - 300) + 'px',
+                                    //          top: (e.pageY - 50) + 'px',
+                                    //      });
+
+                                    //  }
+
+                                    return false;
+                                });
+
+                                // Hide the context menu if clicked anywhere else
+                                $(document).on('click', function () {
+                                    $('#contextMenu').hide();
+                                });
+
+                                $('#forceMatch').on('click', function () {
+                                    var CreditAndDebitSignExsist = checkExistence(selectedColumnId);
+                                    if (!CreditAndDebitSignExsist) {
+                                        showPopup();
+                                        return;
+                                    }
+
+                                    showFloatingContainerForceMatch();
+                                    $('#contextMenu').hide();
+                                });
+
+                                $('#forceUnMatch').on('click', function () {
+                                    showFloatingContainerForceUnMatch();
+                                    $('#contextMenu').hide();
+                                });
+
+
+                                $('#Investigation').on('click', function () {
+                                    showFloatingContainerStartInvestigation();
+                                    $('#contextMenu').hide();
+                                });
+                            }
+                        });
+
+                        $("#dataTable thead").sortable({
+                            items: "> th",
+                            cursor: "move",
+                            axis: "x",
+                            stop: function (event, ui) {
+                                var columnIndexOrder = [];
+                                $("#dataTable th").each(function () {
+                                    var columnData = $(this).data("column");
+                                    columnIndexOrder.push(table.column(columnData + ":name").index());
+                                });
+                                table.colReorder.order(columnIndexOrder);
+                                table.draw(false);
+                            }
+                        }).disableSelection();
+
+                    } else {
+                        alert('No columns available.');
+                    }
+                    hideLoader();
+
+                },
+                error: function (e) {
+                    console.log(e);
+                    alert('Error occurred while fetching data.');
+                }
+            });
+
+             $('#categorySelect').on('change', function () {
+                 var selectedValues = $(this).val(); // Get selected values from the dropdown
+                 var coldbName = 'FEntityTypeName';  // Column to filter
+                 // Get the DataTable instance
+                 var table = $('#dataTable').DataTable();
+
+
+              // Debug: check the current state of the table
+               console.log("Before filtering: ", table.data().toArray());
+                 console.log("selectedValues: ",selectedValues);
+
+                 // Check if there's a selected value to filter
+               if (selectedValues) {
+               
+                    table
+                    .search(selectedValues)  // Apply global search to all columns
+                   .draw();
+                // table
+                // .column('FEntityTypeName')  // Index of the 'TypeName' column (zero-based index)
+                // .search(selectedValues)  // Apply search filter on the 'TypeName' column
+                // .draw();
+               }
+            //     } else {
+            //         console.log('Aggre')
+            //         // If no value is selected, clear the filter for the column
+            //         table
+            //         .search(selectedValues)  // Apply global search to all columns
+            //        .draw();   // Redraw the table
+            //    }
+             });
+
+             $('#datePicker').on('change', function () {
+              var selectedValues = $(this).val(); // Get selected values from the dropdown
+                var coldbName = 'FTranProcDate';  // Column to filter
+               // Get the DataTable instance
+                var table = $('#dataTable').DataTable();
+
+
+               // Debug: check the current state of the table
+               console.log("Before filtering: ", table.data().toArray());
+                console.log("selectedValues: ",selectedValues);
+
+               if (selectedValues) {
+                 // Apply custom filter to match only the date part of the DateTime in the column
+              $.fn.dataTable.ext.search.push(function (settings, data, dataIndex) {
+                   var dateTime = data[0]; // Assuming the DateTime column is the first one (column index 0)
+                   var dateOnly = new Date(dateTime).toISOString().split('T')[0]; // Extract only the date part from DateTime
+                 return dateOnly === selectedValues; // Return true if the date matches, else false
+            });
+
+              table.draw(); // Redraw the table with the applied filter
+
+               // Remove the filter after the draw so it doesn't persist for future searches
+                $.fn.dataTable.ext.search.pop();
+            } else {
+               // If no date is selected, clear the search filter
+              table
+                   .column(6)
+                    .search('') // Clear the search filter
+                    .draw();    // Redraw the table
+             }
+            });
+
+            // Event listener for column search input
+            $('#myfilterFieldsContainer').on('change', '.mycolumnSearch', function (e) {
+                var columnName = $(this).data('column');
+                var searchValue = $(this).val();
+                var existingSearch = columnSearchValues.find(function (search) {
+                    return search.columnName === columnName;
+                });
+
+                if (existingSearch) {
+                    existingSearch.searchValue = searchValue;
+                } else {
+                    columnSearchValues.push(new ColumnSearchValue(columnName, searchValue));
+                }
+                // Trigger DataTables to reload data
+                table.ajax.reload();
+            });
+            $('#myfilterFieldsContainer').on('change', '.mycolumnSearchDate', function (e) {
+                var columnName = $(this).data('column');
+                var searchValue = $(this).val();
+                searchValue = formatDateToText(searchValue)
+                var existingSearch = columnSearchValues.find(function (search) {
+                    return search.columnName === columnName;
+                });
+                if (existingSearch) {
+                    existingSearch.searchValue = searchValue;
+                } else {
+                    columnSearchValues.push(new ColumnSearchValue(columnName, searchValue));
+                }
+                // Trigger DataTables to reload data
+                table.ajax.reload();
+            });
+            $('#pageLength').on('change', function () {
+                table.page.len($(this).val()).draw();
+            });
+            // Function to update selected rows
+
+
+
+            $("#BTNBTNVOUCHER").click(function () {
+                // Call your function here
+                if (typeof downloadVoucher === 'function') {
+                    downloadVoucher();
+                } else {
+                    // Function does not exist
+                    alert("Please Search Data!");
+                }
+            });
+
+            //getDepartments();
+        });
+
+        function fnGenDropDown(uniqueIndex, mleft, coldbName, colName) {
+            var dropdownHtml = '<span  class="dropdown" style="margin-top: 2px;margin-left: -13px;">' +
+                '<button  type="button" class="btn btn-sm dropdown-toggle dropdownMenuButton loader-btn" style="background-color: transparent;" data-colDbName="' + coldbName + '" data-colName="' + colName + '" onclick="fnLoadSelect(' + uniqueIndex + ')" type="button" id="dropdownMenuButton' + uniqueIndex + '" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">' +
+                '<i class="fa-solid fa-filter" style="font-size: 14px;"></i>' +
+                '</button >' +
+                '<div class="dropdown-menu" Id="dropdownMenuButtonChild' + uniqueIndex + '" aria-labelledby="dropdownMenuButton' + uniqueIndex + '">' +
+                '<select id="gridFilterDD' + uniqueIndex + '" multiple="multiple"></select>' +
+                '<button id="searchButtonDDFilter' + uniqueIndex + '" type="button" class="btn btn-primary btnSearchDD"> <i class="fas fa-search"></i></button>' +
+                '</div>' +
+                '</span>';
+
+            return dropdownHtml;
+        }
+
+        function addEventListeners(uniqueIndex) {
+
+            var dropdownBtn = document.getElementById('dropdownMenuButtonChild' + uniqueIndex);
+            var dropdownSearchBtn = document.getElementById('searchButtonDDFilter' + uniqueIndex);
+            dropdownSearchBtn.addEventListener('click', function (event) {
+                event.stopPropagation();
+                table.ajax.reload();
+            });
+            // alert('here')
+
+            // Add click event listener to the dropdown button
+            dropdownBtn.addEventListener('click', function (event) {
+                // Stop event propagation to prevent closing the parent dropdown
+                event.stopPropagation();
+                // debugger;
+                // Toggle the dropdown menu visibility
+                var dropdownMenu = this;
+                var divd = dropdownMenu.querySelector('.btn-group');
+                divd.classList.add('open');
+                //dropdownMenu.classList.toggle('open');
+            });
+        }
+
+        $("#clearFilterButton").click(function () {
+            // This function will be called when the button with id "myButton" is clicked
+            listColumnGridFilter = [];
+            updateFilterMessage();
+            table.ajax.reload();
+            // Add your code here to perform actions when the button is clicked
+        });
+
+
+        $("#saveFilterButton").click(function () {
+            if (savedFilterId > 0) {
+                $.ajax({
+                    url: 'rest/wsSaveColGridFilter',
+                    type: 'GET',
+                    headers: {
+                    'Authorization': pFilter.token
+                },
+                    dataType: 'json',
+                    data: {
+                        filterJson: JSON.stringify(listColumnGridFilter),
+                        savedFilterId: savedFilterId
+                    },
+                    contentType: 'application/json; charset=UTF-8',
+                    success: function (data) {
+                        alert('Filter Saved');
+                        //console.log(data);
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error:', error);
+                    }
+                });
+            }
+            else {
+                alert('Please Save Advance Filter');
+            }
+        });
+        function updateFilterMessage() {
+
+            var filtertext = ''
+            var childText = ''
+            //   debugger;
+            if (listColumnGridFilter.length > 0) {
+                listColumnGridFilter.forEach((parent, indexp) => {
+                    // console.log(parent.fieldName);
+                    filtertext += `${parent.fieldName} in (`;
+                    childText = ''
+                     parent.columnValues.forEach((child, index) => {
+                         // console.log(child);
+                         childText += `,${child}`
+                     });
+                    childText += `) `;
+                    childText = childText.substring(1, childText.length)
+                    filtertext += childText;
+                });
+            }
+            var filtermsg = "Filtered by: ";
+            document.getElementById("filterMessage").textContent = filtertext == '' ? filtermsg + 'None' : filtermsg + filtertext;
+        }
+
+        function downloadVoucher() {
+            // alert('testing');
+            $.ajax({
+                url: 'rest/wsFileDownload',
+                type: 'GET',
+                headers: {
+                    'Authorization': pFilter.token
+                },
+                // dataType: 'json',
+                // data: {
+                //     panelType: panelType,
+                //     fromDateStr: formatDate($('#vFROMDATE').val()),
+                //     toDateStr: formatDate($('#vTODATE').val()),
+                //     pphysname: $('#vPPHYSNAME').val(),
+                // },
+                contentType: 'application/json; charset=UTF-8',
+                success: function (data) {
+                    // alert('test');
+                    var base64String = data.base64;
+                    downloadBase64String('xlsx', base64String);
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error:', error);
+                }
+            });
+        }
+
+        var SDT_InvTemplate = [];
+
+        function showFloatingContainerStartInvestigation() {
+            document.getElementById('fullScreenDiv').style.display = 'block';
+            document.getElementById('floatingContainerStartInvestigation').style.zIndex = '20';
+            document.getElementById('floatingContainerStartInvestigation').style.opacity = 1;
+            document.getElementById('floatingContainerStartInvestigation').style.top = '70px';
+        }
+
+        function showFloatingContainerForceMatch() {
+            document.getElementById('fullScreenDiv').style.display = 'block';
+            document.getElementById('floatingContainerForceMatch').style.zIndex = '20';
+            document.getElementById('floatingContainerForceMatch').style.opacity = 1;
+            document.getElementById('floatingContainerForceMatch').style.top = '70px';
+        }
+
+        function showFloatingContainerForceUnMatch() {
+            document.getElementById('fullScreenDiv').style.display = 'block';
+            document.getElementById('floatingContainerForceUnMatch').style.zIndex = '20';
+            document.getElementById('floatingContainerForceUnMatch').style.opacity = 1;
+            document.getElementById('floatingContainerForceUnMatch').style.top = '70px';
+        }
+
+        function hideFloatingContainerStartInvestigation() {
+            document.getElementById('fullScreenDiv').style.display = 'none';
+            document.getElementById('floatingContainerStartInvestigation').style.zIndex = '-1';
+            document.getElementById('floatingContainerStartInvestigation').style.opacity = 0;
+            document.getElementById('floatingContainerStartInvestigation').style.top = '0px';
+        }
+
+        function hideFloatingContainerForceMatch() {
+            document.getElementById('fullScreenDiv').style.display = 'none';
+            document.getElementById('floatingContainerForceMatch').style.zIndex = '-1';
+            document.getElementById('floatingContainerForceMatch').style.opacity = 0;
+            document.getElementById('floatingContainerForceMatch').style.top = '0px';
+        }
+
+
+        function hideFloatingContainerForceUnMatch() {
+            document.getElementById('fullScreenDiv').style.display = 'none';
+            document.getElementById('floatingContainerForceUnMatch').style.zIndex = '-1';
+            document.getElementById('floatingContainerForceUnMatch').style.opacity = 0;
+            document.getElementById('floatingContainerForceUnMatch').style.top = '0px';
+        }
+
+
+        var tags = [];
+
+        function addNewTag(tagName) {
+            tags.push(tagName);
+            renderTagHolder();
+        }
+
+        function deleteTag(tagName) {
+            for (let i = 0; i < tags.length; i++) {
+                if (tagName == tags[i]) {
+                    tags.splice(i, 1);
+                    break;
+                }
+            }
+
+            renderTagHolder();
+        }
+
+        function renderTagHolder() {
+            let auxHTML = '';
+
+            tags.forEach(x => {
+                auxHTML = auxHTML + `<div class="tag">
+                                    <span>${x}</span>
+                                    <span class="close" onclick="deleteTag('${x}')"><i class="fa fa-close"></i></span>
+                                </div>`
+            });
+
+            let auxDataList = '<datalist id="departments">';
+
+            SDT_InvTemplate.forEach(x => {
+                if (tags.indexOf(x.InvTemplateId) < 0) {
+                    auxDataList = auxDataList + `<option value="${x.InvTemplateId}" label="${x.InvTemplateDescription}">`;
+                }
+            });
+
+            auxDataList = auxDataList + '</datalist>';
+
+            document.getElementById("tag-input-container").innerHTML = auxHTML + `<input list="departments" type="text" id="tag-input" class="tag-input" placeholder="" onkeydown="inputCheckSpace(this.value, event);">`
+                + auxDataList;
+            //   document.getElementById("tag-input").focus();
+        }
+
+        async function getDepartments() {
+            data = {};
+
+            fetch('rest/wsGetDepartments', {
+                method: "POST",
+                mode: "no-cors",
+                body: JSON.stringify(data),
+                headers: { "Content-type": "application/json; charset=UTF-8", 'Authorization': pFilter.token }
+            })
+                .then(response => response.json())
+                .then(res => {
+                    SDT_InvTemplate = res.SDT_InvTemplate;
+                    renderTagHolder();
+                });
+        }
+        function inputCheckSpace(val, event) {
+            if (event.key === 'Enter' || event.key === ',' || event.key === ' ') {
+                event.preventDefault();
+                addNewTag(val);
+            }
+        }
+        async function startInvestigation(inSubject, inComments) {
+            var data = {
+                InvestigationSubject: inSubject,
+                InvestigationContent: inComments,
+                colInvTemplateId: tags,
+                sTDataGroupMatchKey: selectedColumnId.map(e => e.CITMID),
+                TrLifeCycleName: 'Cash'
+            };
+
+            fetch('rest/wsStartInvestigationCash', {
+                method: "POST",
+                mode: "no-cors",
+                body: JSON.stringify(data),
+                headers: { "Content-type": "application/json; charset=UTF-8", 'Authorization': pFilter.token }
+            })
+                .then(response => response.json())
+                .then(res => {
+                    if (res.error == 0) {
+                        alert('Investigation started: Case #' + res.InvestigationCaseId);
+                        hideFloatingContainerStartInvestigation();
+                    }
+                    else {
+                        alert('Could not start an investigation: ' + res.errorDescription);
+                    }
+                });
+        }
+        document.getElementById("buttonFloatingContainerStartInvestigationAccept").addEventListener("click",
+            (ev) => {
+                ev.preventDefault();
+
+                let sendSubject = document.getElementById('caseIdSubject').value;
+                let sendComments = document.getElementById('floatingContainerCommentsStartInvestigation').value;
+
+                if (sendComments) {
+                    if (tags.length > 0) {
+                        startInvestigation(sendSubject, sendComments)
+                        table.ajax.reload();
+                    }
+                    else {
+                        alert('The field "To" must contain at least one recipient.');
+                    }
+                }
+                else {
+                    alert('A comment must be entered in order to continue.');
+                }
+
+            }
+            , false);
+        document.getElementById("buttonFloatingContainerStartInvestigationCancel").addEventListener("click",
+            (ev) => {
+                ev.preventDefault();
+                hideFloatingContainerStartInvestigation();
+            }
+            , false);
+        function formatDate(inputDateString) {
+            if (inputDateString == '' || inputDateString == null || inputDateString == '  /  /  ') {
+                return ''
+            }
+            // Parse the input date string
+            var parts = inputDateString.split('/');
+            var month = parseInt(parts[0]);
+            var day = parseInt(parts[1]);
+            var year = parseInt(parts[2]);
+
+            // Handle 2-digit years
+            if (year < 100) {
+                var currentYear = new Date().getFullYear();
+                var currentCentury = Math.floor(currentYear / 100) * 100;
+                var centuryOffset = currentYear % 100;
+
+                if (year <= centuryOffset) {
+                    // Year is in the current century
+                    year += currentCentury;
+                } else {
+                    // Year is in the previous century
+                    year += currentCentury - 100;
+                }
+            }
+
+            // Create a Date object
+            var date = new Date(year, month - 1, day); // Note: Month is zero-based in JavaScript Date object
+
+            // Format the date as 'YYYYDDMM'
+            var formattedDate = date.getFullYear() + ('0' + (date.getMonth() + 1)).slice(-2) + ('0' + date.getDate()).slice(-2);
+
+            return formattedDate;
+        }
+        function checkExistence(data) {
+            let hasC = false;
+            let hasD = false;
+
+            for (const item of data) {
+                if (item.CITMCRDB.includes('C')) {
+                    hasC = true;
+                }
+                if (item.CITMCRDB.includes('D')) {
+                    hasD = true;
+                }
+                // If both are found, no need to continue
+                if (hasC && hasD) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        function updateSelectedRows() {
+
+            var selectedRows = table.rows('.selected').data();
+            selectedColumnId = [];
+
+            var sumC = 0;
+            var sumD = 0;
+
+            selectedRows.each(function (row, index) {
+                var rowData = {};
+
+                for (var columnName in row) {
+                    if (row.hasOwnProperty(columnName)) {
+                        rowData[columnName] = row[columnName];
+                    }
+                }
+
+                if (row.CITMAVAILS !== 'C') {
+                    selectedColumnId.push(rowData);
+                }
+
+                if (row.CITMCRDB.trim() === "C") {
+                    sumC += row.CITMAM;
+                } else if (row.CITMCRDB.trim() === "D") {
+                    sumD += row.CITMAM;
+                }
+
+
+            });
+            debugger;
+            var result = (sumC - sumD).toFixed(4);
+            $('#sum-Amt').text(result);
+
+
+        }
+
+        function showEditPopup() {
+            document.getElementById('fullScreenDiv').style.display = 'block';
+            document.getElementById('editContainer').style.zIndex = '20';
+            document.getElementById('editContainer').style.opacity = 1;
+            document.getElementById('editContainer').style.top = '70px';
+        }
+
+        function hideeditFloatingContainer() {
+            document.getElementById('fullScreenDiv').style.display = 'none';
+            document.getElementById('editContainer').style.zIndex = '-1';
+            document.getElementById('editContainer').style.opacity = 0;
+            document.getElementById('editContainer').style.top = '0px';
+        }
+
+        function showSuccessPopup() {
+            document.getElementById('success-popup').style.display = 'flex';
+        }
+
+        function hideSuccessPopup() {
+            document.getElementById('success-popup').style.display = 'none';
+            location.reload(); // Page will refresh after popup is hidden
+        }
+
+        function showPopup() {
+            document.getElementById('warning-popup').style.display = 'flex';
+        }
+
+        function closePopup() {
+            document.getElementById('warning-popup').style.display = 'none';
+        }
+
+        function wsInitiateMatchedTransactions() {
+
+
+            var remarks = $("#floatingContainerCommentsForceMatch").val()
+
+            const cashItems = {
+                "SelectedCitemList": selectedColumnId,
+                "Remarks": remarks,
+
+            };
+
+            const jsonString = JSON.stringify(cashItems, null, 2);
+
+            console.log(jsonString);
+            $.ajax({
+                url: 'rest/wsInitiateMatchedTransactions',
+                type: 'POST',
+                contentType: 'application/json',
+                data: jsonString,
+                success: function (response) {
+
+                    $('#sum-Amt').text(0);
+
+                    $("#floatingContainerCommentsForceMatch").val('');
+
+                    $("#floatingContainerCommentsForceUnMatch").val('');
+
+                    hideFloatingContainerForceMatch();
+
+                    hideFloatingContainerForceUnMatch();
+
+                    table.$('tr.selected').removeClass('selected');
+
+                    selectedColumnId = [];
+
+                    table.ajax.reload();
+
+                    alert(response.message)
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    $('#sum-Amt').text(0);
+
+                    $("#floatingContainerCommentsForceMatch").val('');
+
+                    $("#floatingContainerCommentsForceUnMatch").val('');
+
+                    hideFloatingContainerForceMatch();
+
+                    hideFloatingContainerForceUnMatch();
+
+                    table.$('tr.selected').removeClass('selected');
+
+                    selectedColumnId = [];
+                }
+            });
+        }
+
+        $(document).keydown(function (event) {
+
+            if (event.key === "Escape" || event.keyCode === 27) {
+
+                table.$('tr.selected').removeClass('selected');
+                $('#sum-Amt').text(0);
+                selectedColumnId = [];
+            }
+        });
+
+        function exportGridToCSV(dt) {
+            // Temporarily disable paging to get all data from all pages
+            dt.page.len(-1).draw(); // Disable paging by setting the page length to -1 (show all)
+
+            // Get all data including from all pages
+            var allData = dt.rows({ search: 'applied' }).data();
+            var columns = dt.settings().init().columns; // Get the column configuration from DataTables
+            var csv = '';
+
+            // Generate the CSV header dynamically from the grid columns
+            columns.forEach(function (col) {
+                if (col.visible !== false) { // Only include visible columns
+                    csv += col.title + ',';  // Append column title
+                }
+            });
+            csv = csv.slice(0, -1); // Remove the last comma
+            csv += '\n';
+
+            // Iterate over each row of the grid data
+            allData.each(function (rowData) {
+                columns.forEach(function (col) {
+                    if (col.visible !== false) { // Only include data from visible columns
+                        // Access the data for each column, handling potential nested objects
+                        var cellData = rowData[col.data];
+                        csv += (cellData !== undefined ? cellData : '') + ',';  // Append cell data
+                    }
+                });
+                csv = csv.slice(0, -1); // Remove the last comma
+                csv += '\n'; // Move to the next line after each row
+            });
+
+            // Create a Blob object with the CSV data
+            var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            var link = document.createElement('a');
+            if (link.download !== undefined) {
+                var url = URL.createObjectURL(blob);
+                link.setAttribute('href', url);
+                link.setAttribute('download', 'Voucher.csv');
+                link.style.visibility = 'hidden';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+
+            // Restore the original paging after export
+            dt.page.len(10).draw(); // Set the page length back to the default or any desired length
+        }
+
+        // Enter Data
+        function updateData(companyName, accountType, accountNo, IsFees, type) {
+            debugger
+            var data = {
+                FEntitiesName1: companyName,
+                FEntityAccTypeName: accountType,
+                FEntitiesAccountNo: accountNo,
+                isFeesOnly: IsFees,
+                FEntityTypeName: type
+            };
+
+            // Log the data being sent
+            console.log("Sending data:", JSON.stringify(data));
+
+            $.ajax({
+                url: 'rest/wsUpdateData',
+                type: 'POST',
+                data: JSON.stringify(data),
+                // contentType: "application/json; charset=UTF-8",
+                dataType: "json",
+                success: function (res) {
+                    console.log("Response received:", res);
+
+                    if (res.errorDescription == 200) {
+                        debugger
+                        hideeditFloatingContainer();
+                        showSuccessPopup();
+                    } else {
+                        debugger
+                        showPopup();
+                    }
+                },
+                error: function (xhr, status, error) {
+                    // Log the error details for debugging
+                    console.error("Error occurred: Status = " + status + ", Error = " + error);
+                    console.error("Response Text: " + xhr.responseText);
+                    console.error("Full Error: ", xhr);  // Log full error object
+                }
+            });
+        }
+
+
+        document.getElementById("buttonFloatingContainerStartInvestigationAccept").addEventListener("click", function (ev) {
+            ev.preventDefault();
+
+            let FEntitiesName1 = document.getElementById('caseIdSubject').value;
+            let FEntityAccTypeName = document.getElementById('additionalInfo').value;
+            let FEntitiesAccountNo = document.getElementById('accountNo').value;
+            let isFeesOnly = document.getElementById('confirmCheckbox').checked;
+            let type = document.getElementById('transactionType').value;
+
+            console.log("Collected form data:", FEntitiesName1, FEntityAccTypeName, FEntitiesAccountNo, isFeesOnly, type);  // Debugging
+
+            updateData(FEntitiesName1, FEntityAccTypeName, FEntitiesAccountNo, isFeesOnly, type);
+        });
+
+
+    </script>
+
+    <script type="text/javascript" src="MyAssets/Scripts/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="MyAssets/Scripts/bootstrap-multiselect.min.js"></script>
+    <script type="text/javascript" src="MyAssets/Scripts/buttons.colVis.min.js"></script>
+    <!-- <script type="text/javascript" src="MyAssets/Scripts/buttons.html5.min.js"></script> -->
+    <script type="text/javascript" src="MyAssets/Scripts/buttons.print.min.js"></script>
+    <script type="text/javascript" src="MyAssets/Scripts/dataTables.buttons.min.js"></script>
+    <script type="text/javascript" src="MyAssets/Scripts/dataTables.rowGroup.min.js"></script>
+    <script type="text/javascript" src="MyAssets/Scripts/dataTables.colReorder.min.js"></script>
+    <script type="text/javascript" src="MyAssets/Scripts/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="MyAssets/Scripts/jquery.contextMenu.min.js"></script>
+    <script type="text/javascript" src="MyAssets/Scripts/CommonJs.js"></script>
+</body>

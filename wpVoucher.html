@@ -1,0 +1,539 @@
+<body>
+
+    <head>
+
+        <link rel="stylesheet" href="MyAssets/Scripts/css/jquery.dataTables.min.css">
+        <link rel="stylesheet" href="MyAssets/Scripts/css/buttons.dataTables.min.css">
+        <link rel="stylesheet" href="MyAssets/Scripts/css/jquery.contextMenu.min.css">
+        <link rel="stylesheet" href="MyAssets/Scripts/css/MyCommonCss.css">
+        <link rel="stylesheet" href="MyAssets/Scripts/css/bootstrap-multiselect.css">
+        
+        <style>
+            .dataTables_filter,
+            .dataTables_info,
+            .dataTables_paginate {
+                display: none;
+            }
+
+            #dataTable tbody tr.dtrg-group.dtrg-start.dtrg-level-0 {
+                background-color: var(--colors_backgroundcolor) !Important;
+            }
+
+            /* Investigation Work Start */
+
+            .tag-input-container {
+                display: flex;
+                flex-wrap: wrap;
+                border: 1px solid rgb(150, 150, 150);
+                padding: 5px;
+                border-radius: 5px;
+                width: 98%;
+                /* Set the width as needed */
+            }
+
+            .tag {
+                border: 1px solid #aaa;
+                color: #000;
+                padding: 5px 10px;
+                margin: 5px;
+                border-radius: 5px;
+                display: flex;
+                align-items: center;
+            }
+
+            .tag .close {
+                cursor: pointer;
+                margin-left: 5px;
+            }
+
+            .tag-input {
+                border: none;
+                outline: none;
+                flex-grow: 1;
+            }
+
+            .floatingContainerClass {
+                background: white;
+                z-index: 20;
+                position: fixed;
+                left: 20%;
+                width: 60%;
+                top: 0;
+                padding: 10px;
+                opacity: 0;
+                transition: all 0.3s ease-out;
+                display: block;
+                z-index: -1;
+            }
+
+            #fullScreenDiv {
+                top: 0;
+                left: 0;
+                position: fixed;
+                width: 100%;
+                height: 100%;
+                display: none;
+                z-index: 15;
+            }
+
+            #grayContainer {
+                top: 0;
+                left: 0;
+                position: fixed;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.2);
+            }
+
+            #textRowsSelected {
+                float: left;
+                margin-right: 10px;
+            }
+
+            #buttonDoActionOnSelectedContainer {
+                float: right;
+            }
+
+            .buttonDoAction {
+                margin-right: 8px;
+                text-decoration: underline;
+                cursor: pointer;
+                color: var(--colors_basecolor);
+                /* #f87f6a; */
+            }
+
+            .MyGridTextBox {
+                margin-top: 1px !Important;
+                margin-bottom: 1px !Important;
+                margin-left: 1px !Important;
+                display: block;
+                height: 26px;
+                padding: 5px 5px;
+                font-size: 10px;
+                line-height: 1.42857143;
+                color: #555;
+                background-color: #fff;
+                background-image: none;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+                -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+                box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+                -webkit-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+                -o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+                -webkit-transition: border-color ease-in-out .15s, -webkit-box-shadow ease-in-out .15s;
+                transition: border-color ease-in-out .15s, -webkit-box-shadow ease-in-out .15s;
+                transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+                transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s, -webkit-box-shadow ease-in-out .15s;
+                width: -webkit-fill-available !Important;
+                min-height: 10px !Important;
+            }
+
+            /* .loader-btn {
+                position: absolute !Important;
+            } */
+
+            .loader-btn .loader {
+                /* position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%); */
+                border: 4px solid #f3f3f3;
+                border-top: 4px solid #3498db;
+                border-radius: 50%;
+                /* width: 20px;
+                height: 20px; 
+                animation: spin 1s linear infinite;*/
+                display: none;
+            }
+
+            @keyframes spin {
+                0% {
+                    transform: translate(-50%, -50%) rotate(0deg);
+                }
+
+                100% {
+                    transform: translate(-50%, -50%) rotate(360deg);
+                }
+            }
+
+            #filterPanel {
+                background-color: #f0f0f0;
+                border: 1px solid #ccc;
+                padding: 6px;
+                border-radius: 5px;
+                display: flex;
+                align-items: center;
+                margin-bottom: 10px;
+            }
+
+            .table-responsive {
+                    overflow-y: scroll;
+                    overflow-x: scroll;
+                }
+
+                .table-responsive::-webkit-scrollbar {
+                    width: 12px;
+                }
+
+                .table-responsive::-webkit-scrollbar-thumb {
+                    background-color: #888;
+                    /* Color of the scrollbar thumb */
+                    border-radius: 10px;
+                    /* Rounded corners */
+                    border: 2px solid #f1f1f1;
+                }
+
+                .table-responsive::-webkit-scrollbar-thumb:hover {
+                    background-color: #555;
+                }
+
+                .table-responsive {
+                    scrollbar-width: thin;
+                    /* Set scrollbar width */
+                    scrollbar-color: #888 #f1f1f1;
+                }
+
+            #filterMessage {
+                margin: 0;
+            }
+
+            .clearFilterButton {
+                margin-left: 10px;
+                padding: 5px 10px;
+                color: #fff;
+                border: none;
+                border-radius: 3px;
+                cursor: pointer;
+                min-width: 0px !Important;
+            }
+
+            /*  .dt-button {
+                white-space: nowrap !Important;
+                background-color: var(--colors_basecolor) !Important;
+                color: var(--colors_baseforecolor) !Important;
+                border: var(--borders_xs) solid var(--colors_actionborder_and_focuscolor) !Important;
+                text-align: center !Important;
+                text-indent: 0 !Important;
+                vertical-align: middle !Important;
+                box-shadow: 0 7px 10px -5px var(--colors_basecolorshadow) !Important;
+                border-radius: var(--radius_m) !Important;
+            } */
+            .cTdPad {
+                padding-left: 8px;
+                padding-right: 20px;
+                border: 1px solid;
+            }
+
+            .thS {
+                padding: 2px;
+                padding-right: 20px;
+                padding-left: 8px;
+                background: var(--colors_basecolor);
+                /* #2F4858; */
+                color: white;
+                font-weight: 500;
+            }
+
+            .context-menu-icon-match {
+                background-image: url(Resources/DDOMultiselSelOption.png) !Important;
+                background-repeat: no-repeat;
+                background-position: left;
+            }
+
+            .context-menu-icon-unmatch {
+                background-image: url(Resources/ActionFiltersClean.png) !Important;
+                background-repeat: no-repeat;
+                background-position: left;
+                background-size: 13px !important;
+            }
+
+            .context-menu-icon-vhistory {
+                background-image: url(Resources/historyicon.png) !Important;
+                background-repeat: no-repeat;
+                background-position: left;
+                background-size: 13px !important;
+            }
+
+            /* Investigation Work End */
+            /* Filter Panel Start */
+
+            .myfilter-panel {
+                position: fixed;
+                right: 0;
+                top: 0;
+                width: 300px;
+                height: 100%;
+                background-color: #f4f4f4;
+                box-shadow: -2px 0 5px rgba(0, 0, 0, 0.5);
+                transform: translateX(100%);
+                transition: transform 0.3s ease-in-out;
+                overflow: scroll;
+                z-index: 99999;
+                padding: 10px;
+                border-radius: 4px;
+                margin-top: 5px;
+                background-color: var(--colors_backgroundcolor);
+            }
+
+            /* Filter Panel End */
+
+            .myfilter-panel.active {
+                transform: translateX(0);
+            }
+
+            .filter-field {
+                margin-top: 10px !Important;
+                display: flex !Important;
+                justify-content: center !Important;
+                border-bottom: 1px solid white;
+            }
+        </style>
+    </head>
+
+    <div id="container">
+
+    </div>
+
+    <div id="panelContainer">
+        <!-- JavaScript will insert panels here -->
+    </div>
+
+    <script>
+
+        var pFilter = {};
+
+        $(document).ready(function () {
+
+            var chkOrder;
+            var savedFilterId = 0;
+
+            function fetchVoucherData(categoryId, voucherName) {
+                return $.ajax({
+                    url: 'rest/wsVoucher',
+                    method: 'GET',
+                    headers: {
+                    'Authorization': pFilter.token
+                },
+                    data: {
+                        FVoucherId: categoryId,
+                    }
+                    
+                });
+            }
+
+            //debugger;
+            
+
+            for (let a = 0; a < FVoucher.length; a++) {
+                var categoryId = FVoucher[a].FVoucherId;
+                var voucherName = "asd";
+
+                try {
+                    fetchVoucherData(categoryId, voucherName)
+                        .then(function (data) {
+
+                            const i = data.FVoucherReturnId;
+
+                            createPanel(data);
+                            console.log('Data:' , data);
+
+                            if (data && data.myCols && data.myCols.length > 0) {
+
+                                var headerHtml = '';
+                                var headerFilterHtml = '';
+                                var headerFullHtml = '';
+                                showLoader();
+
+                                data.myCols = changeIndices(data.myCols);
+
+                                data.myCols.forEach(function (column) {
+                                    headerHtml += '<th gx-tab-padding-fix-1 WWActionGroupColumn  GridWithPaginationBar GridWithBorderColor WorkWithTitle data-column="' + column.colDBName + '"><h5><b>' + column.colName + '</b></h5></th>';
+                                });
+
+                                headerFullHtml += '<tr id="columnHeaders">' + headerHtml + '</tr>';
+
+                                $(`#${i}tableHeader`).html(headerFullHtml);
+
+                                var columnslist = data.myCols.map(function (column) {
+
+                                    return {
+                                        data: column.colDBName
+                                    };
+
+                                });
+                                console.log('Data:', `#${i}dataTable`)
+                                const dataTableInstance = $(`#${i}dataTable`).DataTable({
+                                    processing: true,
+                                    serverSide: true,
+                                    paging: true,
+                                    pageLength: 50,
+                                    timeout: 9000000,
+                                    order: [[1, 'asc']],
+                                    ajax: {
+                                        url: 'rest/wsVoucher',
+                                        type: 'GET',
+                                         headers: {
+                                            'Authorization': pFilter.token
+                                        },
+                                        async: false,
+                                        data: function (d) {
+                                            chkOrder = d.order[0].column;
+                                            return {
+                                                draw: d.draw,
+                                                start: d.start,
+                                                length: d.length,
+                                                searchValue: d.search.value,
+                                                sortColumn: d.columns[d.order[0].column].data,
+                                                sortDirection: d.order[0].dir,
+                                                FVoucherId: data.FVoucherReturnId,
+                                            };
+                                        },
+                                        dataSrc: function (response) {
+                                            console.log('Data Response:',response)
+                                            if (response.data != '') {
+
+                                                response.data = JSON.parse(response.data);
+                                                fetchedData = response.data;
+                                                return response.data;
+                                            } else {
+                                                return response.data;
+                                            }
+                                        }
+
+                                    },
+
+                                    drawCallback: function (settings) {
+
+                                    },
+                                    rowCallback: function (row, data, index) {
+
+                                    },
+
+                                    columns: columnslist,
+                                    "colReorder": true,
+                                    dom: 'Bfrtip',
+                                    buttons: [],
+                                    initComplete: function () {
+                                        var api = this.api();
+
+                                    }
+                                });
+                               
+                            }
+                            else {
+                                alert('No columns available.' + data.errorDescription);
+                            }
+
+                            hideLoader();
+                        })
+                        .catch(function (error) {
+                            console.error("Error fetching data for categoryId:", categoryId, "Voucher Name:", voucherName, error);
+                        });
+                } catch (error) {
+                    console.error("Error fetching data:", error);
+                }
+            }
+
+        });
+
+        function downloadVoucher() {
+            // alert('testing');
+            $.ajax({
+                url: 'rest/wsFileDownload',
+                type: 'GET',
+                headers: {
+                    'Authorization': pFilter.token
+                },
+                // dataType: 'json',
+                // data: {
+                //     panelType: panelType,
+                //     fromDateStr: formatDate($('#vFROMDATE').val()),
+                //     toDateStr: formatDate($('#vTODATE').val()),
+                //     pphysname: $('#vPPHYSNAME').val(),
+                // },
+                contentType: 'application/json; charset=UTF-8',
+                success: function (data) {
+                    // alert('test');
+                    var base64String = data.base64;
+                    downloadBase64String('xlsx', base64String);
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error:', error);
+                }
+            });
+        }
+
+        function formatDate(inputDateString) {
+
+            if (inputDateString == '' || inputDateString == null || inputDateString == '  /  /  ') {
+                return ''
+            }
+
+            var parts = inputDateString.split('/');
+            var month = parseInt(parts[0]);
+            var day = parseInt(parts[1]);
+            var year = parseInt(parts[2]);
+
+
+            if (year < 100) {
+                var currentYear = new Date().getFullYear();
+                var currentCentury = Math.floor(currentYear / 100) * 100;
+                var centuryOffset = currentYear % 100;
+
+                if (year <= centuryOffset) {
+                    year += currentCentury;
+                } else {
+                    year += currentCentury - 100;
+                }
+            }
+            var date = new Date(year, month - 1, day);
+
+            var formattedDate = date.getFullYear() + ('0' + (date.getMonth() + 1)).slice(-2) + ('0' + date.getDate()).slice(-2);
+
+            return formattedDate;
+        }
+
+        function createPanel(data) {
+            // Retrieve the FVoucherReturnId from data
+            const i = data.FVoucherReturnId;
+
+            // Get the container where the panel should be added
+            const panelContainer = document.getElementById('panelContainer');
+
+            // Create the panel HTML with dynamic data
+            const panelHTML = `
+                               <div id="DVelopBootstrapPanel_DVPANEL_UNNAMEDTABLE${i}Container" class="panel PanelWithBorder Panel_BaseColor" style="width: 100%;">
+                                   <div id="PanelHeader_DVPANEL_UNNAMEDTABLE${i}Container" class="panel-heading PanelWithBorder_Header Panel_BaseColor_Header" style="width: 1211.35px;">
+                                       <h3 class="panel-title">
+                                           <a href="#PanelBody_DVPANEL_UNNAMEDTABLE${i}Container" class="accordion-toggle" data-parent="#PanelHeader_DVPANEL_UNNAMEDTABLE${i}Container" data-toggle="collapse">
+                                               <span id="Title_DVPANEL_UNNAMEDTABLE${i}Container"> ${data.FVoucherName} </span>
+                                           </a>
+                                       </h3>
+                                   </div>
+                                   <div id="PanelBody_DVPANEL_UNNAMEDTABLE${i}Container" class="panel-collapse PanelWithBorder_Body Panel_BaseColor_Body in">
+                                       <div class="panel-body" id="DVPANEL_UNNAMEDTABLE${i}ContainerUnnamedTable1" style="display: block;">
+                                           <div class="table-responsive">
+                                               <table id="${i}dataTable" class="display table table-bordered gx-tab-spacing-fix-2 GridWithPaginationBar GridWithBorderColor WorkWith table-responsive">
+                                                   <thead id="${i}tableHeader">
+                                                   </thead>
+                                                   <tbody></tbody>
+                                               </table>
+                                           </div>
+                                       </div>
+                                   </div>
+                               </div>
+                               <br /> <!-- Add some space between panels -->
+                           `;
+
+            // Append the generated HTML to the panel container
+            panelContainer.innerHTML += panelHTML;
+        }
+
+    </script>
+
+    <!-- SheetJS Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+
+
+
+</body>
