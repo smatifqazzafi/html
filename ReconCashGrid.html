@@ -725,7 +725,7 @@
                             "columnDefs": columnDefs,
                             initComplete: function () {
                                 var api = this.api();
-
+                                // Handle row selection
                                 $('#dataTable tbody').on('click', 'tr:not(.dtrg-group)', function () {
                                     if (invFilterVal == '') {
                                         if (settleCategoryIdVal == '') {
@@ -733,7 +733,9 @@
                                             updateSelectedRows();
                                         }
                                     }
+
                                 });
+
 
 
 
@@ -980,6 +982,7 @@
                 // Trigger DataTables to reload data
                 table.ajax.reload();
             });
+            
             $('#myfilterFieldsContainer').on('change', '.mycolumnSearchDate', function (e) {
                 debugger;
                 var columnName = $(this).data('column');
@@ -999,9 +1002,7 @@
             $('#pageLength').on('change', function () {
                 table.page.len($(this).val()).draw();
             });
-
             function updateSelectedRows() {
-
                 var selectedRows = table.rows('.selected').data();
                 selectedColumnId = [];
                 selectedRows.each(function (row, index) {
@@ -1010,6 +1011,7 @@
                 var sumC = 0;
                 var sumD = 0;
 
+                // Iterate through each item in the data array
                 $.each(selectedColumnId, function (index, item) {
                     if (item.Sign === "C") {
                         sumC += item.Amount;
@@ -1018,15 +1020,14 @@
                     }
                 });
 
+                // Calculate Sum of C - Sum of D
                 var result = (sumC - sumD).toFixed(4);
-
                 $('#sum-Amt').text(result);
             }
 
             getDepartments();
 
         });
-        
         function fnGenDropDown(uniqueIndex, mleft, coldbName, colName) {
             var dropdownHtml = '<span  class="dropdown" style="margin-top: 2px;margin-left: -13px;">' +
                 '<button  type="button" class="btn btn-sm dropdown-toggle dropdownMenuButton loader-btn" style="background-color: transparent;" data-colDbName="' + coldbName + '" data-colName="' + colName + '" onclick="fnLoadSelect(' + uniqueIndex + ')" type="button" id="dropdownMenuButton' + uniqueIndex + '" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">' +
