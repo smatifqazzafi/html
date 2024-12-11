@@ -489,17 +489,18 @@ function populateDropdown(elementName) {
 function populateMultiplyDropdown(elementName) {
 
     $.ajax({
-        url: 'rest/prGetEltColumnBySourceId',
+        url: 'rest/wsGetEltColumnBySourceId',
         type: 'GET',
         data: {
-            SourceId: profile.SourceId
+            SourceId: profile.SourceId,
+            SrcProfileId: profile.SrcProfileId
         },
         headers: { "Content-type": "application/json; charset=UTF-8", 'Authorization': token },
         success: function (data) {
             //console.log(data);
             var dropdown = $('#' + elementName);
             dropdown.empty();
-            data.listDDL.forEach(function (item) {
+            data.ListDDL.forEach(function (item) {
                 dropdown.append('<option value="' + item.dataValue + '">' + item.dataValue + '</option>');
             });
         },
