@@ -726,15 +726,35 @@
                             initComplete: function () {
                                 var api = this.api();
                                 // Handle row selection
-                                $('#dataTable tbody').on('click', 'tr:not(.dtrg-group)', function () {
+                                // $('#dataTable tbody').on('click', 'tr:not(.dtrg-group)', function () {
+                                //     if (invFilterVal == '') {
+                                //         if (settleCategoryIdVal == '') {
+                                //             $(this).toggleClass('selected');
+                                //             updateSelectedRows();
+                                //         }
+                                //     }
+
+                                // });
+
+                                $('#dataTable tbody').on('click', 'tr:not(.dtrg-group)', function (event) {
+                                    // Agar invFilterVal aur settleCategoryIdVal ki conditions match ho rahi hain
                                     if (invFilterVal == '') {
                                         if (settleCategoryIdVal == '') {
-                                            $(this).toggleClass('selected');
+                                            // Agar Ctrl key press nahi hai toh sirf ek row select ho
+                                            if (!event.ctrlKey) {
+                                                $('#dataTable tbody tr').removeClass('selected'); // Baaki rows ka selection hata de
+                                                $(this).addClass('selected'); // Sirf current row ko select kare
+                                            } else {
+                                                // Agar Ctrl key press hai, toh toggle selection for multiple rows
+                                                $(this).toggleClass('selected');
+                                            }
+
+                                            // Selected rows ko update karein
                                             updateSelectedRows();
                                         }
                                     }
-
                                 });
+
 
 
 
@@ -982,7 +1002,6 @@
                 // Trigger DataTables to reload data
                 table.ajax.reload();
             });
-            
             $('#myfilterFieldsContainer').on('change', '.mycolumnSearchDate', function (e) {
                 debugger;
                 var columnName = $(this).data('column');
@@ -1002,6 +1021,7 @@
             $('#pageLength').on('change', function () {
                 table.page.len($(this).val()).draw();
             });
+            // Function to update selected rows
             function updateSelectedRows() {
                 var selectedRows = table.rows('.selected').data();
                 selectedColumnId = [];

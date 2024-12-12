@@ -7,8 +7,9 @@
         <link rel="stylesheet" href="MyAssets/Scripts/css/jquery.contextMenu.min.css">
         <link rel="stylesheet" href="MyAssets/Scripts/css/MyCommonCss.css">
         <link rel="stylesheet" href="MyAssets/Scripts/css/bootstrap-multiselect.css">
-        <script src="MyAssets/Elt/EltJS.js"></script>
         <style>
+
+            
             #dataTable tbody tr.dtrg-group.dtrg-start.dtrg-level-0 {
                 background-color: var(--colors_backgroundcolor) !Important;
             }
@@ -304,10 +305,7 @@
                             <option value="300">300</option>
                         </select>
                     </div>
-                    <div id="sumAmtdiv" class="col-md-1" style="Padding-top:8px">
-                        <label for="sum-Amt">Sum :</label>
-                        <label id="sum-Amt">0</label>
-                    </div>
+
                 </div>
             </div>
         </div>
@@ -432,14 +430,11 @@
         const TrLifeCycleRolesActionLabel = ['', 'initiate', 'authorize', 'approve'];
         var acceptForceMatch = false;
         var isForceMatch = false;
-        var acceptForceClose = false;
         var p_TrLifeCycleRoles = 1;
         var authorizationPanel = false;
 
         $(document).ready(function () {
-            if (fnGetPageName() == 'wpinvestigationcase') {
-                $('#sumAmtdiv').hide();
-            }
+
             var columnSearchValues = [];
             var chkOrder;
             var columnDefs = [];
@@ -447,16 +442,13 @@
             //     $('#myfilterPanel').addClass('active');
             // });
 
-
+            debugger;
             $('#closeFilterPanel').click(function () {
                 $('#myfilterPanel').removeClass('active');
             });
             $.ajax({
-                url: 'rest/wsReconData',
+                url: 'rest/wsCoronaUD',
                 method: 'GET',
-                headers: {
-                    'Authorization': pFilter.token
-                },
                 data: {
                     //panelType: panelType
                 },
@@ -467,7 +459,7 @@
                         var headerFullHtml = '';
                         showLoader();
                         filteredColList = filteredColJson !== '[]' && filteredColJson !== '' ? JSON.parse(filteredColJson) : [];
-                        data.myCols.unshift({ colIndex: 0, colName: 'Action', colDBName: 'Action', colDataType: 2 })
+                        //data.myCols.unshift({ colIndex: 0, colName: 'Action', colDBName: 'Action', colDataType: 2 })
 
                         //Remove Some Column From Array
 
@@ -569,6 +561,7 @@
                         var filterFieldsHtml = `<div id="filterPanel">
                 <p id="filterMessage">Filtered by: None</p></div>`;
                         data.myCols.forEach(function (column, indexs) {
+                           
                             if (column.colDBName !== 'Action') {
                                 filterFieldsHtml += '<div class="filter-field">';
                                 filterFieldsHtml += fnGenDropDown(indexs, 25, column.colDBName, column.colName) + '<label style="margin-top: 5px" for="filter-' + column.colDBName + '">' + column.colName + '&nbsp</label>';
@@ -603,11 +596,8 @@
                             timeout: 9000000,
                             order: [[1, 'asc']],
                             ajax: {
-                                url: 'rest/wsReconData',
+                                url: 'rest/wsCoronaUD',
                                 type: 'GET',
-                                headers: {
-                                    'Authorization': pFilter.token
-                                },
                                 data: function (d) {
                                     var searchData = {};
                                     $('.columnSearch').each(function () {
@@ -616,7 +606,6 @@
                                     });
                                     var jsonStrin = JSON.stringify(columnSearchValues);
                                     chkOrder = d.order[0].column;
-                                    //debugger;
                                     return {
                                         draw: d.draw,
                                         start: d.start,
@@ -630,22 +619,12 @@
                                     };
                                 },
                                 dataSrc: function (response) {
-                                    pFilter.isExportAll = false;
-                                    debugger;
                                     if (response.data != '') {
                                         response.data = JSON.parse(response.data);
-                                        if (response.exportJsonRes != '') {
-                                            response.exportJsonRes = JSON.parse(response.exportJsonRes);
-                                            const updatedDataDownload = removeColumn(response.exportJsonRes, 'TotalCount');
-                                            //const csv = jsonToCsv(updatedDataDownload);
-                                            downloadCsv(updatedDataDownload, 'Digital-Recon.csv');
-                                            //downloadCsv(JSON.parse(response.exportJsonRes));
-                                        }
                                         return response.data;
                                     } else {
                                         return response.data;
                                     }
-
                                 }
 
                             },
@@ -659,48 +638,36 @@
 
                             },
                             rowCallback: function (row, data, index) {
-                                if (data.DTranProcMatchStat.includes('Match')) {
-                                    $(row).css('color', 'green');
-                                } else if (data.DTranProcMatchStat.includes('Open')) {
-                                    $(row).css('color', 'red');
-                                }
-                                else if (data.DTranProcMatchStat.includes('Propose')) {
-                                    $(row).css('color', '#eed202');
-                                }
+                                //Ahmed
+                                // if (data.DTranProcMatchStat.includes('Match')) {
+                                //     $(row).css('color', 'green');
+                                // } else if (data.DTranProcMatchStat === 'Open') {
+                                //     $(row).css('color', 'red');
+                                // }
+                                // else if (data.DTranProcMatchStat === 'Propose') {
+                                //     $(row).css('color', 'yellow');
+                                // }
                             },
-                            rowGroup: {
-                                dataSrc: function (row) {
-                                    if (chkOrder == 2) {
-                                        return 'Group ID  : ' + row.DGrpId;
-                                    } else {
-                                        return null;
-                                    }
-                                }
-                            },
+                            // rowGroup: {
+                            //     dataSrc: function (row) {
+                            //         if (chkOrder == 2) {
+                            //             return 'Group ID  : ' + row.DGrpId;
+                            //         } else {
+                            //             return null;
+                            //         }
+                            //     }
+                            // },
                             columns: columnslist,
                             "colReorder": true,
                             dom: 'Bfrtip',
                             buttons: [
-                                // {
-                                //     extend: 'csv',
-                                //     text: '<i class="fa fa-download"></i> CSV'
-                                // },
+                                {
+                                    extend: 'csv',
+                                    text: '<i class="fa fa-download"></i> CSV'
+                                },
                                 {
                                     extend: 'colvis',
                                     text: '<i class="fa fa-columns"></i> Column Visibility'
-                                },
-                                {
-                                    text: '<i class="fa-solid fa-download"></i> Export',
-                                    action: function (e, dt, node, config) {
-                                        $(node).attr('id', 'ExportAllButton');
-
-                                        pFilter.isExportAll = true;
-                                        table.ajax.reload();
-                                    },
-                                    init: function (dt, node, config) {
-                                        $(node).attr('id', 'ExportAllButton');
-                                        $(node).addClass('dt-button buttons-collection buttons-colvis');
-                                    }
                                 },
                                 {
                                     text: '<i class="fa-solid fa-save"></i> Save',
@@ -751,38 +718,17 @@
                             ],
                             "columnDefs": columnDefs,
                             initComplete: function () {
-                                debugger;
                                 var api = this.api();
                                 // Handle row selection
-                                // $('#dataTable tbody').on('click', 'tr:not(.dtrg-group)', function () {
-                                //     if (invFilterVal == '') {
-                                //         if (settleCategoryIdVal == '') {
-                                //             $(this).toggleClass('selected');
-                                //             updateSelectedRows();
-                                //         }
-                                //     }
-
-                                // });
-
-                                $('#dataTable tbody').on('click', 'tr:not(.dtrg-group)', function (event) {
-                                    // Agar invFilterVal aur settleCategoryIdVal ki conditions match ho rahi hain
+                                $('#dataTable tbody').on('click', 'tr:not(.dtrg-group)', function () {
                                     if (invFilterVal == '') {
                                         if (settleCategoryIdVal == '') {
-                                            // Agar Ctrl key press nahi hai toh sirf ek row select ho
-                                            if (!event.ctrlKey) {
-                                                $('#dataTable tbody tr').removeClass('selected'); // Baaki rows ka selection hata de
-                                                $(this).addClass('selected'); // Sirf current row ko select kare
-                                            } else {
-                                                // Agar Ctrl key press hai, toh toggle selection for multiple rows
-                                                $(this).toggleClass('selected');
-                                            }
-
-                                            // Selected rows ko update karein
+                                            $('#dataTable tbody tr').removeClass('selected'); // Remove 'selected' class from all rows
+                                            $(this).addClass('selected'); // Add 'selected' class to the clicked row
                                             updateSelectedRows();
                                         }
                                     }
                                 });
-
 
 
 
@@ -835,9 +781,6 @@
                                 $.ajax({
                                     url: 'rest/wsSaveColGridFilter',
                                     type: 'GET',
-                                    headers: {
-                                        'Authorization': pFilter.token
-                                    },
                                     dataType: 'json',
                                     data: {
                                         filterJson: JSON.stringify(listColumnGridFilter),
@@ -866,9 +809,6 @@
                                 $.ajax({
                                     url: 'rest/wsSaveColGridFilter',
                                     type: 'GET',
-                                    headers: {
-                                        'Authorization': pFilter.token
-                                    },
                                     dataType: 'json',
                                     data: {
                                         filterJson: JSON.stringify(listColumnGridFilter),
@@ -908,127 +848,22 @@
                 contextMenuItems = {};
 
                 // Conditionally add items based on the value of panelType
-                if (pFilter.matchSts === '') {
-                    contextMenuItems["Investigation"] = { name: "Start Investigation", icon: "inv" };
-                    contextMenuItems["ForceUnMatch"] = { name: "Force UnMatch", icon: "unmatch" };
-                    contextMenuItems["ForceMatch"] = { name: "Force Match", icon: "match" };
-                    contextMenuItems["ForceClose"] = { name: "Force Close", icon: "match" };
-                    contextMenuItems["ViewHistory"] = { name: "View History", icon: "vhistory" };
-                } else if (pFilter.matchSts === '%Match%') {
-                    contextMenuItems["ForceUnMatch"] = { name: "Force UnMatch", icon: "unmatch" };
-                    contextMenuItems["ViewHistory"] = { name: "View History", icon: "match" };
-                } else if (pFilter.matchSts === '%Open%') {
-                    contextMenuItems["Investigation"] = { name: "Start Investigation", icon: "inv" };
-                    contextMenuItems["ForceMatch"] = { name: "Force Match", icon: "match" };
-                    contextMenuItems["ForceClose"] = { name: "Force Close", icon: "match" };
-                    contextMenuItems["ViewHistory"] = { name: "View History", icon: "vhistory" };
-                } else if (pFilter.matchSts === '%Close%') {
-                    contextMenuItems["Investigation"] = { name: "Start Investigation", icon: "inv" };
-                    contextMenuItems["ForceUnMatch"] = { name: "Force UnMatch", icon: "unmatch" };
-                    contextMenuItems["ViewHistory"] = { name: "View History", icon: "vhistory" };
-                } else if (pFilter.matchSts.toString() === '4') {
+                contextMenuItems["CardAccount"] = { name: "Card Account", icon: "inv" };
 
-                    if (fnGetPageName() == 'wpauthorizationpending') {
-                        contextMenuItems["Investigation"] = { name: "Start Investigation", icon: "inv" };
-                        contextMenuItems["ForceMatch"] = { name: "Accept", icon: "match" };
-                        contextMenuItems["RejectReq"] = { name: "Reject", icon: "unmatch" };
-                        contextMenuItems["ViewHistory"] = { name: "View History", icon: "vhistory" };
-                    }
-                    else if (fnGetPageName() == 'wpauthorizationumpending') {
-                        contextMenuItems["Investigation"] = { name: "Start Investigation", icon: "inv" };
-                        contextMenuItems["ForceUnMatch"] = { name: "Accept", icon: "match" };
-                        contextMenuItems["RejectReqUM"] = { name: "Reject", icon: "unmatch" };
-                        contextMenuItems["ViewHistory"] = { name: "View History", icon: "vhistory" };
-                    }
-                    else if (fnGetPageName() == 'wpdforcecloseauthorizationpending') {
-                        contextMenuItems["Investigation"] = { name: "Start Investigation", icon: "inv" };
-                        contextMenuItems["ForceClose"] = { name: "Accept", icon: "match" };
-                        contextMenuItems["RejectReqFC"] = { name: "Reject", icon: "unmatch" };
-                        contextMenuItems["ViewHistory"] = { name: "View History", icon: "vhistory" };
-                    }
-                    else if (pFilter.NoAction == 1) {
-                        contextMenuItems["NoAction"] = { name: "No Action", icon: "stop" };
-                    } else {
-                        contextMenuItems["Investigation"] = { name: "Start Investigation", icon: "inv" };
-                        contextMenuItems["ForceMatch"] = { name: "Force Match", icon: "match" };
-                        contextMenuItems["ForceUnMatch"] = { name: "Force UnMatch", icon: "unmatch" };
-                        contextMenuItems["ViewHistory"] = { name: "View History", icon: "vhistory" };
-                    }
-                }
-                else {
-                    contextMenuItems["NoAction"] = { name: "No Action", icon: "stop" };
-                }
 
                 // Initialize the context menu
                 $.contextMenu({
                     selector: '#dataTable tbody tr',
                     callback: function (key, options) {
                         var row = table.row(options.$trigger).data(); // Get data of clicked row
-                        // Perform action based on the selected row data or key
-                        const allLcSame = selectedColumnId.every(item => item.AccLifeCycleId === selectedColumnId[0].AccLifeCycleId);
-                        const masterExist = selectedColumnId.filter(item => item.DPAccCategory === 'Master').length > 0
-                        if (key == 'Investigation') {
-                            debugger;
-                            const alreadyInv = selectedColumnId.find(e => e.InvStatus >= 1);
-                            if (alreadyInv != null && alreadyInv.DataId != '') {
-                                alert('Already in Investigation Id: ' + alreadyInv.DataId);
-                            } else {
-                                showFloatingContainerStartInvestigation();
-                            }
-                        } else if (key == 'ForceMatch') {
-                            debugger;
-                            const isOnlyOpen = selectedColumnId.every(item => item.DTranProcMatchStat === 'Open' || item.DTranProcMatchStat === 'ForceOpen');
-                            if (allLcSame && masterExist && isOnlyOpen) {
-                                acceptForceMatch = true;
-                                fnGetAuthLevel(selectedColumnId[0].AccLifeCycleId, true, true);
-                            } else {
-                                if (!allLcSame) {
-                                    alert('Please select one Life Cycle transactions for force match');
-                                }
-                                if (!masterExist) {
-                                    alert('Please select one master transaction for force match');
-                                }
-                                if (!isOnlyOpen) {
-                                    alert('Please select only open transactions for force match');
-                                }
-                            }
+
+                        if (key == 'CardAccount') {
+                            var defaultValue = 0;
+                            var firstValue = selectedColumnId.length > 0 ? selectedColumnId[0].PACCID : defaultValue;
+                            window.open('wpCoronaCardPhyAccount.aspx?PACCID=' + firstValue);
+
                         }
-                        else if (key == 'ForceUnMatch') {
-                            if (allLcSame) {
-                                acceptForceMatch = true;
-                                fnGetAuthLevel(selectedColumnId[0].AccLifeCycleId, true, false);
-                            } else {
-                                alert('Please select one Life Cycle transactions for force unmatch');
-                            }
-                        }
-                        else if (key == 'ForceClose') {
-                            // if (allLcSame) {
-                            acceptForceClose = true;
-                            acceptForceMatch = true;
-                            fnGetAuthLevel(selectedColumnId[0].AccLifeCycleId, true, false);
-                            // } else {
-                            //     alert('Please select one Life Cycle transactions for force unmatch');
-                            // }
-                        }
-                        else if (key == 'RejectReq') {
-                            if (allLcSame) {
-                                fnGetAuthLevel(selectedColumnId[0].AccLifeCycleId, false, true);
-                                acceptForceMatch = false;
-                            } else {
-                                alert('Please select same match set transactions for this action');
-                            }
-                        }
-                        else if (key == 'RejectReqUM') {
-                            if (allLcSame) {
-                                fnGetAuthLevel(selectedColumnId[0].AccLifeCycleId, false, false);
-                                acceptForceMatch = false;
-                            } else {
-                                alert('Please select same match set transactions for this action');
-                            }
-                        }
-                        else if (key == 'ViewHistory') {
-                            viewHistory(selectedColumnId[0].DataId, selectedColumnId[0].AccLifeCycleId);
-                        }
+
                     },
                     items: contextMenuItems
                 });
@@ -1075,23 +910,9 @@
                 var selectedRows = table.rows('.selected').data();
                 selectedColumnId = [];
                 selectedRows.each(function (row, index) {
-                    selectedColumnId.push({ DataId: row.DTranProcId, AccLifeCycleId: row.DGrpAccId, DAccountId: row.DPAccId, GroupId: row.DGrpId == undefined ? 0 : row.DGrpId, InvStatus: row.InvStatus, DPAccCategory: row.DPAccCategory, DTranProcMatchStat: row.DTranProcMatchStat, Amount: row.DTranProcTrnAmount, Sign: row.DTranProcSign });
-                });
-                var sumC = 0;
-                var sumD = 0;
-
-                // Iterate through each item in the data array
-                $.each(selectedColumnId, function (index, item) {
-                    if (item.Sign === "C") {
-                        sumC += item.Amount;
-                    } else if (item.Sign === "D") {
-                        sumD += item.Amount;
-                    }
+                    selectedColumnId.push({ PACCID: row.PACCID });
                 });
 
-                // Calculate Sum of C - Sum of D
-                var result = (sumC - sumD).toFixed(4);
-                $('#sum-Amt').text(result);
             }
 
             getDepartments();
@@ -1128,17 +949,13 @@
                 // Toggle the dropdown menu visibility
                 var dropdownMenu = this;
                 var divd = dropdownMenu.querySelector('.btn-group');
-                if (divd.classList.contains('open')) {
-                    // If open, remove the 'open' class to close it
-                    divd.classList.remove('open');
-                } else {
-                    // If closed, add the 'open' class to open it
-                    divd.classList.add('open');
-                }
+                divd.classList.add('open');
+                //dropdownMenu.classList.toggle('open');
             });
         }
 
-        function ofnLoadSelect(indexSelect) {
+        function fnLoadSelect(indexSelect) {
+            debugger;
             var colname = $('#dropdownMenuButton' + indexSelect).data('colname');
             var coldbName = $('#dropdownMenuButton' + indexSelect).data('coldbname');
             var btnDDL = $('#dropdownMenuButton' + indexSelect);
@@ -1146,14 +963,12 @@
             filterDDL.prop('disabled', true); // Disable the button
             btnDDL.addClass('loader');
             $.ajax({
-                url: 'rest/wsGetForGridSelect', // Replace with your server endpoint URL
+                url: 'rest/wsGetFoCoronaGridSelect', // Replace with your server endpoint URL
                 type: 'GET',
-                headers: {
-                    'Authorization': pFilter.token
-                },
                 data: {
                     FieldName: coldbName,
                     pFilterStr: JSON.stringify(pFilter),
+                    module:"CoronaCardAccount"
                 },
                 success: function (data) {
                     // Populate multiselect dropdown with fetched data
@@ -1212,128 +1027,6 @@
 
         }
 
-        //region
-        // Pagination variables
-        let offset = 0;
-        const limit = 20;
-        let hasMoreData = true;
-        let buttonshow = 0;
-
-        function fnLoadSelect(indexSelect, Next = 0) {
-            if (Next == 0) {
-                offset = 0;
-                GetForReportGridSelect(indexSelect, Next);
-            } else {
-                offset += limit;
-                GetForReportGridSelect(indexSelect, Next);
-            }
-        }
-
-        function GetForReportGridSelect(indexSelect, Next) {
-            var colname = $('#dropdownMenuButton' + indexSelect).data('colname');
-            var coldbName = $('#dropdownMenuButton' + indexSelect).data('coldbname');
-            var btnDDL = $('#dropdownMenuButton' + indexSelect);
-            var filterDDL = $('#dropdownMenuButtonChild' + indexSelect);
-
-            // Disable button and show loading state
-            filterDDL.prop('disabled', true);
-            btnDDL.addClass('loader');
-
-            $.ajax({
-                url: 'rest/wsGetForGridSelectPaging', // Replace with your server endpoint URL
-                type: 'GET',
-                headers: {
-                    'Authorization': pFilter.token
-                },
-                data: {
-                    FieldName: coldbName,
-                    pFilterStr: JSON.stringify(pFilter),
-                    offset: offset,
-                    limit: limit,
-                },
-                success: function (data) {
-                    if (data.listSelect.length < limit) {
-                        hasMoreData = false;
-                    } else {
-                        hasMoreData = true;
-                    }
-
-                    $('#gridFilterDD' + indexSelect).empty();
-                    // Populate multiselect dropdown with fetched data
-                    $.each(data.listSelect, function (index, item) {
-                        if (item.colValue.length > 0) {
-                            $('#gridFilterDD' + indexSelect).append('<option value="' + item.colValue + '">' + item.colValue + '</option>');
-                        }
-                    });
-
-
-
-                    if (hasMoreData && Next == 0 && buttonshow == 0) {
-                        buttonshow = 1;
-                        $('#dropdownMenuButtonChild' + indexSelect).append(
-                            '<button id="NextButtonFilter" type="button"  onclick="fnLoadSelect(' + indexSelect + ', 1)" class="btn btn-primary"><i class="fa fa-arrow-right"></i></button>'
-                        );
-                    }
-
-
-                    // Initialize multiselect dropdown
-                    $('#gridFilterDD' + indexSelect).multiselect({
-                        buttonWidth: '200px',
-                        maxHeight: 300,
-                        nonSelectedText: `Select ${colname}`,
-                        enableFiltering: true,
-                        onChange: function (element, checked) {
-                            var selectedValues = $('#gridFilterDD' + indexSelect).val();
-                            if (selectedValues != '') {
-                                var existingSearch = listColumnGridFilter.find(function (search) {
-                                    return search.fieldName === coldbName;
-                                });
-                                if (existingSearch) {
-                                    const filteredList = listColumnGridFilter.filter(filterItem => filterItem.fieldName !== coldbName);
-                                    listColumnGridFilter = filteredList;
-                                    listColumnGridFilter.push(new colGridFilter(selectedValues, coldbName));
-                                } else {
-                                    listColumnGridFilter.push(new colGridFilter(selectedValues, coldbName));
-                                }
-                                updateFilterMessage();
-
-                            } else {
-                                var existingSearchN = listColumnGridFilter.find(function (search) {
-                                    return search.fieldName === coldbName;
-                                });
-                                if (existingSearchN) {
-                                    const filteredList = listColumnGridFilter.filter(filterItem => filterItem.fieldName !== coldbName);
-                                    listColumnGridFilter = filteredList;
-                                }
-                                updateFilterMessage();
-                            }
-                        }
-                    });
-
-
-                    $('#gridFilterDD' + indexSelect).multiselect('rebuild');
-
-                    //Close the dropdown after loading new data
-                    if (Next === 1) {
-                        btnDDL.removeClass('loader');
-                        btnDDL.dropdown('hide'); // Manually close dropdown after clicking "Next"
-                    }
-
-                    addEventListeners(indexSelect);
-                    btnDDL.removeClass('loader'); // Remove loading class
-                    filterDDL.prop('disabled', false);
-                },
-                error: function (xhr, status, error) {
-                    console.error('Error fetching data:', error);
-                    btnDDL.removeClass('loader'); // Remove loading class
-                    filterDDL.prop('disabled', false);
-                }
-            });
-        }
-
-
-        //endregion
-
         function fnclearFilterButton() {
             // This function will be called when the button with id "myButton" is clicked
             listColumnGridFilter = [];
@@ -1347,9 +1040,6 @@
                 $.ajax({
                     url: 'rest/wsSaveColGridFilter',
                     type: 'GET',
-                    headers: {
-                        'Authorization': pFilter.token
-                    },
                     dataType: 'json',
                     data: {
                         filterJson: JSON.stringify(listColumnGridFilter),
@@ -1406,9 +1096,9 @@
 
             fetch(serviceURL, {
                 method: "POST",
-                //mode: "no-cors",
+                mode: "no-cors",
                 body: JSON.stringify(data),
-                headers: { "Content-type": "application/json; charset=UTF-8", 'Authorization': pFilter.token }
+                headers: { "Content-type": "application/json; charset=UTF-8" }
             })
                 .then(response => response.json())
                 .then(res => {
@@ -1436,9 +1126,6 @@
             $.ajax({
                 url: 'rest/wsFileDownload',
                 type: 'GET',
-                headers: {
-                    'Authorization': pFilter.token
-                },
                 // dataType: 'json',
                 // data: {
                 //     panelType: panelType,
@@ -1521,20 +1208,18 @@
             data = {
                 Module: 'Digital'
             };
-            fetch('rest/wsGetDepartments', {
-                method: "POST",
-                ////mode: "no-cors",
-                body: JSON.stringify(data),
-                headers: {
-                    "Content-type": "application/json; charset=UTF-8",
-                    "Authorization": pFilter.token,  // Dynamically adding the token
-                }//{ "Content-type": "application/json; charset=UTF-8", "Authorization": pFilter.token }
-            })
-                .then(response => response.json())
-                .then(res => {
-                    SDT_InvTemplate = res.SDT_InvTemplate;
-                    renderTagHolder();
-                });
+
+            // fetch('rest/wsGetDepartments', {
+            //     method: "POST",
+            //     mode: "no-cors",
+            //     body: JSON.stringify(data),
+            //     headers: { "Content-type": "application/json; charset=UTF-8" }
+            // })
+            //     .then(response => response.json())
+            //     .then(res => {
+            //         SDT_InvTemplate = res.SDT_InvTemplate;
+            //         renderTagHolder();
+            //     });
         }
         function inputCheckSpace(val, event) {
             if (event.key === 'Enter' || event.key === ',' || event.key === ' ') {
@@ -1556,9 +1241,9 @@
 
             fetch('rest/wsStartInvestigationNew', {
                 method: "POST",
-                //mode: "no-cors",
+                mode: "no-cors",
                 body: JSON.stringify(data),
-                headers: { "Content-type": "application/json; charset=UTF-8", 'Authorization': pFilter.token }
+                headers: { "Content-type": "application/json; charset=UTF-8" }
             })
                 .then(response => response.json())
                 .then(res => {
@@ -1647,9 +1332,9 @@
             };
             fetch('rest/wsGetTrLifeCycleRoleByLcName', {
                 method: "POST",
-                //mode: "no-cors",
+                mode: "no-cors",
                 body: JSON.stringify(data),
-                headers: { "Content-type": "application/json; charset=UTF-8", 'Authorization': pFilter.token }
+                headers: { "Content-type": "application/json; charset=UTF-8" }
             })
                 .then(response => response.json())
                 .then(res => {
@@ -1662,12 +1347,9 @@
                         if (p_TrLifeCycleRoles == 0) {
                             alert('You have no right for this action');
                         } else {
-                            if (acceptForceClose) {
-                                showFloatingContainer(true);
-                            } else {
-                                isForceMatch = isForceMatchPrm;
-                                showFloatingContainer(accept);
-                            }
+
+                            isForceMatch = isForceMatchPrm;
+                            showFloatingContainer(accept);
                         }
                     }
                 });
@@ -1679,9 +1361,6 @@
 
             acceptForceMatch = accept;
             if (accept) {
-                document.getElementById('floatingContainerTitle').innerHTML = `You are about to ${TrLifeCycleRolesActionLabel[p_TrLifeCycleRoles]} the process of the selected transactions`;
-                document.getElementById('floatingContainerDescription').innerHTML = `By clicking on "Continue", I accept to ${TrLifeCycleRolesActionLabel[p_TrLifeCycleRoles]} the process of the selected transactions.`;
-            } else if (acceptForceClose) {
                 document.getElementById('floatingContainerTitle').innerHTML = `You are about to ${TrLifeCycleRolesActionLabel[p_TrLifeCycleRoles]} the process of the selected transactions`;
                 document.getElementById('floatingContainerDescription').innerHTML = `By clicking on "Continue", I accept to ${TrLifeCycleRolesActionLabel[p_TrLifeCycleRoles]} the process of the selected transactions.`;
             }
@@ -1704,11 +1383,7 @@
                 if (sendComments) {
                     //   if(panelMode == 2 || panelMode == 3)
                     // {
-                    debugger;
-                    if (acceptForceClose) {
-                        callWebService('rest/wsForceCloseTransactions', sendComments);
-                    }
-                    else if (isForceMatch) {
+                    if (isForceMatch) {
                         callWebService('rest/wsMatchProposedTransactions', sendComments);
                     }
                     else if (!isForceMatch) {
@@ -1744,9 +1419,9 @@
 
             fetch('rest/wsGetTransactionHistory', {
                 method: "POST",
-                //mode: "no-cors",
+                mode: "no-cors",
                 body: JSON.stringify(data),
-                headers: { "Content-type": "application/json; charset=UTF-8", 'Authorization': pFilter.token }
+                headers: { "Content-type": "application/json; charset=UTF-8" }
             })
                 .then(response => response.json())
                 .then(res => {
@@ -1842,9 +1517,6 @@
                 case 'Open':
                     return 'Open';
                     break;
-                case 'ForceOpen':
-                    return 'Force Open';
-                    break;
                 case 'FOR':
                     return 'Force Match: Complete';
                     break;
@@ -1881,52 +1553,11 @@
                 case 'UMR':
                     return 'Force Unmatch: Reject';
                     break;
-                case 'FC':
-                    return 'Force Close: Complete';
-                    break;
-                case 'FC1':
-                    return 'Force Close: Initiate';
-                    break;
-                case 'FC2':
-                    return 'Force Close: Authorize';
-                    break;
-                case 'UM3':
-                    return 'Force Close: Approve';
-                    break;
-                case 'FCR':
-                    return 'Force Unmatch: Reject';
-                    break;
                 default:
                     return 'Unknown';
             }
         }
 
         //History End
-    </script>
-    <script>
-        const jsonToCsv = (jsonData) => {
-            const keys = Object.keys(jsonData[0]);
-            const csvRows = [keys.join(',')];
-
-            jsonData.forEach(obj => {
-                debugger;
-                const values = keys.map(key => JSON.stringify(obj[key], (key, value) => value === null ? '' : value));
-                csvRows.push(values.join(','));
-            });
-
-            return csvRows.join('\n');
-        };
-        const downloadCsv = (jsonData, filename = 'data.csv') => {
-            const csvData = jsonToCsv(jsonData);
-            const blob = new Blob([csvData], { type: 'text/csv' });
-            const url = URL.createObjectURL(blob);
-
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = filename;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        };
     </script>
 </body>

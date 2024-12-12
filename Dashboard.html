@@ -1144,7 +1144,9 @@
     /* Material Design Button Styling */
     .material-button {
         /* background-color: #6200ea; Material Design purple color */
-        background-color: #004000ad;
+        /* background-color: #004000ad; */
+        background-color: var(--colors_materialmenu_selecteditembackground);
+        opacity: 0.8;
         color: white;
         border: none;
         padding: 12px;
@@ -1162,7 +1164,9 @@
     /* Hover Effect */
     .material-button:hover {
         /* background-color: #3700b3; Darker purple on hover */
-        background-color: #004000;
+        /* background-color: #004000; */
+        background-color: var(--colors_materialmenu_selecteditembackground);
+        opacity: 2;
         box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.3);
         /* Larger shadow on hover */
     }
@@ -1171,7 +1175,31 @@
     .material-icons {
         font-size: 18px;
     }
+
+
+
+
+
+    .alert {
+        background-color: #f8d7da;
+        color: #721c24;
+        padding: 10px;
+        border: 1px solid #f5c6cb;
+        border-radius: 4px;
+        margin: 10px 0;
+        text-align: center;
+        transition: opacity 0.5s ease;
+    }
+
+    .alert.hidden {
+        opacity: 0;
+        pointer-events: none;
+    }
 </style>
+
+<div id="customerAlert" class="alert" style="display: none;">
+    This is a customer alert message!
+</div>
 
 <!--_________________________________________________________-->
 <!--__________________ Show Griding _________________________-->
@@ -1254,6 +1282,8 @@
 <!--_________________________________________________________-->
 <!--__________________ Dividers _____________________________-->
 <!--_________________________________________________________-->
+<div id="ParentAlert">
+</div>
 <div class="accordion" id="Dashboard">
 </div>
 
@@ -1288,31 +1318,39 @@
         }
 
         function addTemplatesUIBaseOnRole() {
+            LoadAlert();
             let { CurrentRole, LicenseModules } = RoleBaseModuleGloble;
             RoleName = CurrentRole;
 
             let hasTransformerModule = LicenseModules.some(l => l.AppModuleName === "Transformer");
             let hasDigitalModule = LicenseModules.some(l => l.AppModuleName === "Digital");
             let hasCashModule = LicenseModules.some(l => l.AppModuleName === "Cash");
+            let hasSettlementModule = LicenseModules.some(l => l.AppModuleName === "Settlement");
 
             $('.floating-refresh-button').show();
 
-            if (hasTransformerModule && !hasDigitalModule && !hasCashModule) {
+            if (!hasDigitalModule && !hasCashModule && hasTransformerModule && !hasSettlementModule) {
                 RenderTransformer();
                 Transformer();
-            } else if (!hasDigitalModule && hasCashModule && !hasTransformerModule) {
+            }
+            else if (!hasDigitalModule && !hasCashModule && !hasTransformerModule && hasSettlementModule) {
+                RenderSettlement();
+                CaSettlementsh();
+            }
+            else if (!hasDigitalModule && hasCashModule && !hasTransformerModule && !hasSettlementModule) {
                 RenderCash();
                 Cash();
             }
-            else if (hasDigitalModule && !hasCashModule && !hasTransformerModule) {
+            else if (hasDigitalModule && !hasCashModule && !hasTransformerModule && !hasSettlementModule) {
                 RenderDigital();
                 Digital();
-            } else if (hasDigitalModule && hasCashModule && hasTransformerModule) {
+            } else if (hasDigitalModule && hasCashModule && hasTransformerModule && hasSettlementModule) {
                 if (CurrentRole === "Admin") {
                     RenderAdmin();
                     Transformer();
                     Digital();
                     Cash();
+                    Settlement();
 
                 } else if (CurrentRole === "Digital Admin" || CurrentRole === "Digital User") {
                     RenderDigital();
@@ -1325,6 +1363,10 @@
                     RenderTransformer();
                     Transformer();
                 }
+                else if (CurrentRole === "Settlement Admin" || CurrentRole === "Settlement User") {
+                    RenderSettlement();
+                    Settlement();
+                }
             }
 
         }
@@ -1334,7 +1376,7 @@
             $("#Dashboard").append(TransformerUI('show'));
             $("#Dashboard").append(digitalUI('hidde'));
             $("#Dashboard").append(cashUI('hidde'));
-
+            $("#Dashboard").append(SettlementUI('hidde'));
         }
 
         function RenderTransformer() {
@@ -1349,6 +1391,9 @@
             $("#Dashboard").html(cashUI('show'));
         }
 
+        function RenderSettlement() {
+            $("#Dashboard").html(SettlementUI('show'));
+        }
 
 
         //============= UI =============
@@ -1682,7 +1727,7 @@
 <div class="card" style="overflow:hidden;background-color:transparent;border:none">
     <div class="card-header" id="headingTwo">
         <h5 class="mb-0">
-            <button type="button" class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseTransformer" aria-expanded="false" aria-controls="collapseTwo" style="border:none;outline:none">
+            <button type="button" class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseTransformer" aria-expanded="false" aria-controls="collapseTransformer" style="border:none;outline:none">
                 <div class="divider div-transparent"> <h2>Transformer</h2></div>
             </button>
             <div class="wrapper" style="border-bottom: 2px solid var(--colors_materialmenu_selecteditembackground);margin-bottom:10px;overflow:hidden">
@@ -1787,22 +1832,138 @@
             return TransformerHtml
         }
 
+        function SettlementUI(toggle) { //hidde
+            let SettlementHtml = `
+            <!--=======================================-->
+<!--============== Settlement ===================-->
+<!--=======================================-->
+<div class="card" style="overflow:hidden;background-color:transparent;border:none">
+    <div class="card-header" id="headingTwo">
+        <h5 class="mb-0">
+            <button type="button" class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseSettlement" aria-expanded="false" aria-controls="collapseSettlement" style="border:none;outline:none">
+                <div class="divider div-transparent"> <h2>Settlement</h2></div>
+            </button>
+            <div class="wrapper" style="border-bottom: 2px solid var(--colors_materialmenu_selecteditembackground);margin-bottom:10px;overflow:hidden">
+            </div>
+        </h5>
+    </div>
+    <div id="collapseSettlement" class="collapse ${toggle}" aria-labelledby="headingTwo" data-parent="#Dashboard" style="overflow:hidden">
+        <!-- __________ Dashboard Card ______________ -->
+        <div class="row" style="margin-top:5px;" id="SettlementTransactionCards">
+        </div>
+        <!-- __________ Dashboard Circle Card _______________ -->
+        <div class="row" id="SettlementAmountCards">
+        </div>
+        <!-- __________ Chart ____________ -->
+        <div class="row" id="progressBarStatistic">
+            <div class="chart-containers">
+                <div class="loader text-center" id="loader">
+                </div>
+            </div>
+             <div class="col-xs-12 col-md-6 col-lg-6 EltDataLoadingFileChart" style="margin-top:8px">
+                <div style="background-color: white !important; width: 100%; height: 470px" class="chart-container">
+                    <div class="chart-dropdown" style="text-align:center;margin-top:10px; margin-bottom:10px;margin-right:15px">
+                        <select id="SettlementOverAllChartType4">
+                            <option value="column" >Column Chart</option>
+                            <option value="line" selec>Line Chart</option>
+                            <option value="area">Area Chart</option>
+                            <option value="spline">Spline Chart</option>
+                            <option value="bar" selected>Bar Chart</option>
+                            
+                        </select>
+                    </div>
+                    <div id="EltDataLoadingFileChart"></div>
+                </div>
+            </div>
+             <div class="col-xs-12 col-md-6 col-lg-6 DBChartLoad" style="margin-top:8px">
+                <div style="background-color: white !important; width: 100%; height: 470px" class="chart-container">
+                    <div class="chart-dropdown" style="text-align:center;margin-top:10px; margin-bottom:10px;margin-right:15px">
+                        <select id="DBChartLoadType">
+                            <option value="column" selected>Column Chart</option>
+                            <option value="line" selec>Line Chart</option>
+                            <option value="area">Area Chart</option>
+                            <option value="spline">Spline Chart</option>
+                            <option value="bar">Bar Chart</option>
+                            <option value="pie">Pie Chart</option>
+                        </select>
+                    </div>
+                    <div id="DBChartLoad"></div>
+                </div>
+            </div>
+            <!-- <div class="col-xs-12 col-md-6 col-lg-6 APIUploadChart" style="margin-top:8px">
+                <div style="background-color: white !important; width: 100%; height: 470px" class="chart-container">
+                    <div class="chart-dropdown" style="text-align:center;margin-top:10px; margin-bottom:10px;margin-right:15px">
+                        <select id="APIUploadChartType">
+                            <option value="column">Column Chart</option>
+                            <option value="line" selec>Line Chart</option>
+                            <option value="area" >Area Chart</option>
+                            <option value="spline">Spline Chart</option>
+                            <option value="bar" selected>Bar Chart</option>
+                            <option value="pie">Pie Chart</option>
+                        </select>
+                    </div>
+                    <div id="APIUploadChart"></div>
+                </div>
+            </div>
+            <div class="col-xs-12 col-md-6 col-lg-6 SettlementOverAllDestCount" style="margin-top:8px">
+                <div style="background-color: white !important; width: 100%; height: 470px" class="chart-container">
+                    <div class="chart-dropdown" style="text-align:center;margin-top:10px; margin-bottom:10px;margin-right:15px">
+                        <select id="SettlementOverAllChartType3">
+                            <option value="column">Column Chart</option>
+                            <option value="line" selec>Line Chart</option>
+                            <option value="area">Area Chart</option>
+                            <option value="spline">Spline Chart</option>
+                            <option value="bar">Bar Chart</option>
+                            <option value="pie" selected>Pie Chart</option>
+                        </select>
+                    </div>
+                    <div id="SettlementOverAllDestCount"></div>
+                </div>
+            </div>
+            <div class="col-xs-12 col-md-6 col-lg-6 SettlementOverAllSourceCount" style="margin-top:8px">
+                <div style="background-color:white !important;width:100%;height:470px" class="chart-container">
+                    <div class="chart-dropdown" style="text-align:center;margin-top:10px; margin-bottom:10px;margin-right:15px">
+                        <select id="SettlementOverAllChartType2">
+                            <option value="column">Column Chart</option>
+                            <option value="line" selected>Line Chart</option>
+                            <option value="area">Area Chart</option>
+                            <option value="spline">Spline Chart</option>
+                            <option value="bar">Bar Chart</option>
+                            <option value="pie">Pie Chart</option>
+                        </select>
+                    </div>
+                    <div id="SettlementOverAllSourceCount"></div>
+                   
+                </div>
+            </div>-->
+           
+           
+        </div>
+    </div>
+</div>
+            `
+            return SettlementHtml
+        }
+
     }
     RoleLicensceBaseUI();
 
     //___________ Refresh Button __________
-    function handleModuleRefresh(hasDigitalModule, hasCashModule, hasTransformerModule) {
-        if (hasTransformerModule && !hasDigitalModule && !hasCashModule) {
+    function handleModuleRefresh(hasDigitalModule, hasCashModule, hasTransformerModule, hasSettlementModule) {
+        if (!hasDigitalModule && !hasCashModule && hasTransformerModule && hasSettlementModule) {
             RefreshModule("Transformer");
         }
-        else if (!hasDigitalModule && hasCashModule && !hasTransformerModule) {
+        else if (!hasDigitalModule && !hasCashModule && !hasTransformerModule && hasSettlementModule) {
+            RefreshModule("Settlement");
+        }
+        else if (!hasDigitalModule && hasCashModule && !hasTransformerModule && !hasSettlementModule) {
             RefreshModule("Cash");
         }
-        else if (hasDigitalModule && !hasCashModule && !hasTransformerModule) {
+        else if (hasDigitalModule && !hasCashModule && !hasTransformerModule && !hasSettlementModule) {
             RefreshModule("Digital");
-        } else if (hasDigitalModule && hasCashModule && hasTransformerModule) {
+        } else if (hasDigitalModule && hasCashModule && hasTransformerModule && hasSettlementModule) {
             if (RoleName === "Admin") {
-                RefreshModule("Digital,Cash,Transformer");
+                RefreshModule("Digital,Cash,Transformer,Settlement");
             } else if (RoleName === "Digital Admin" || RoleName === "Digital User") {
                 RefreshModule("Digital");
             } else if (RoleName === "Cash Admin" || RoleName === "Digital User") {
@@ -1810,6 +1971,9 @@
             }
             else if (RoleName === "Transformer Admin" || RoleName === "Digital User") {
                 RefreshModule("Transformer");
+            }
+            else if (RoleName === "Settlement Admin" || RoleName === "Settlement User") {
+                RefreshModule("Settlement");
             }
         }
     }
@@ -1823,8 +1987,9 @@
             let hasTransformerModule = LicenseModules.some(l => l.AppModuleName === "Transformer");
             let hasDigitalModule = LicenseModules.some(l => l.AppModuleName === "Digital");
             let hasCashModule = LicenseModules.some(l => l.AppModuleName === "Cash");
+            let hasSettlementModule = LicenseModules.some(l => l.AppModuleName === "Settlement");
 
-            handleModuleRefresh(hasDigitalModule, hasCashModule, hasTransformerModule);
+            handleModuleRefresh(hasDigitalModule, hasCashModule, hasTransformerModule, hasSettlementModule);
         });
     });
 
@@ -1835,6 +2000,123 @@
 <!--__________________ UI_Module Functionality ______________-->
 <!--_________________________________________________________-->
 <script>
+    //________________________________________
+    //____________ Alert Warning _____________
+    //________________________________________
+    function LoadAlert() {
+        async function fetchTransactionBandAlert() {
+            try {
+                const response = await fetch('rest/wsGetTransactionBandAlert', {
+                    method: 'POST',
+                    headers: {
+                        "Content-type": "application/json; charset=UTF-8",
+                        'Authorization': token
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const apiResponse = await response.json();
+                let data = apiResponse.SDT_LicenseTrnLimitResponses;
+                console.log(data);
+
+                // Filter data to include only items with non-empty LicenseTrnLimitType and LicenseTrnLimitMessage
+                const filteredData = data.filter(item =>
+                    item.LicenseTrnLimitType.trim() !== "" &&
+                    item.LicenseTrnLimitMessage.trim() !== ""
+                );
+
+                const parentAlertDiv = document.getElementById('ParentAlert');
+                parentAlertDiv.innerHTML = '';
+
+                // Map the LicenseTrnLimitColor values to actual colors
+                const colorMap = {
+                    "softwarningcolor": "#fff3cd", // Light yellow for soft warnings
+                    "Green": "#d4edda",            // Light green for digital soft warnings
+                    "Red": "#f8d7da",              // Light red for warnings
+                    "Danger": "#f5c6cb"            // Updated deeper red/pink for danger
+                };
+
+                // Map LicenseTrnLimitStatus to icons
+                const iconMap = {
+                    "SoftWarning": "fa fa-exclamation-circle mr-2",
+                    "Warning": "fa fa-warning mr-2",
+                    "Danger": "fa fa-ban mr-2"
+                };
+
+                filteredData.forEach(item => {
+                    const backgroundColor = colorMap[item.LicenseTrnLimitColor] || '#f8d7da';
+                    const iconClass = iconMap[item.LicenseTrnLimitStatus] || 'fa fa-info-circle mr-2'; // Default icon
+
+                    // Create a badge for the module name
+                    const badgeHtml = `
+                        <span class="badge" 
+                            style="background-color: ${getBadgeColor(item.LicenseTrnLimitColor)}; 
+                                    color: #fff; 
+                                    font-weight: bold; 
+                                    margin-right: 12px;">
+                            ${item.LicenseTrnLimitType}
+                        </span>
+                    `;
+
+                    // Create alert HTML with dynamic color, icon, and bold message
+                    const alertHtml = `
+                        <div class="alert" 
+                            style="
+                                background-color: ${backgroundColor}; 
+                                color: #721c24; 
+                                margin: 7px 0; 
+                                padding: 10px; 
+                                border-radius: 4px; 
+                                ">
+                            ${badgeHtml}
+                            <i class="${iconClass}"></i>
+                            ${item.LicenseTrnLimitMessage}
+                        </div>
+                    `;
+
+                    parentAlertDiv.innerHTML += alertHtml;
+                });
+
+            } catch (error) {
+                console.error('Internal Error fetching data:', error);
+            }
+        }
+
+        // Helper function to determine badge color based on LicenseTrnLimitColor
+        function getBadgeColor(colorKey) {
+            const badgeColorMap = {
+                "softwarningcolor": "#856404", // Dark yellow
+                "Green": "#155724",            // Dark green
+                "Red": "#721c24",              // Dark red
+                "Danger": "#721c24"            // Dark red for danger
+            };
+            return badgeColorMap[colorKey] || "#856404"; // Default to dark yellow
+        }
+
+        fetchTransactionBandAlert();
+    }
+
+
+    // Uncomment this block to show a customer alert
+    // window.onload = function () {
+    //     const alertDiv = document.getElementById('customerAlert');
+    //
+    //     alertDiv.style.display = 'block';
+    //
+    //     // Hide the alert after 2 seconds
+    //     setTimeout(() => {
+    //         alertDiv.classList.add('hidden');
+    //
+    //         // Completely remove it from view after the fade-out animation
+    //         setTimeout(() => {
+    //             alertDiv.style.display = 'none';
+    //         }, 500); // Match the CSS transition duration
+    //     }, 4000);
+    // };
+
     //________________________________________
     //____________ Digital ___________________
     //________________________________________
@@ -3242,7 +3524,7 @@
                         $(".progress-bar-inner-proposed-digital").css("width", proposedPer);
                         $(".progress-bar-inner-unmatched-digital").css("width", unmatchedPer);
                     }
-                    
+
 
                 } catch (error) {
                     showDigitalChartHideLoader()
@@ -4255,7 +4537,7 @@
                     const apiResponse = await response.json();
                     const { Data, Level1, Level2, Level3, Transformer } = apiResponse.SDT_ChartData;
                     const [objec] = Transformer;
-                   
+
                     //_______ Total and Amount _____
                     const { TotalSource, SourceAPI, SourceDB, SourceFILE, DestAPI, DestDB, DestFILE, TotalDest } = objec;
                     if (Transformer.length > 0) {
@@ -4571,18 +4853,18 @@
                     }
 
                     const apiResponse = await response.json();
-               
+
                     const { TransformerChart1 } = apiResponse.SDT_ChartData;
                     const seriesData = [];
                     const xAxisCategories = ['DB Count'];
                     let successDBLoad = 0, failedDBLoad = 0;
                     TransformerChart1.forEach(item => {
                         if (item.TransformerChart1Status === 'Success' && item.TransformerChart1ChartType === 'Source' && item.TransformerChart1SrcType === 'DB') {
-                            successDBLoad = item.TransformerChart1RecordLoaded; 
-                       
+                            successDBLoad = item.TransformerChart1RecordLoaded;
+
                         } else {
                             failedDBLoad = item.TransformerChart1RecordLoaded;
-                            
+
                         }
                     });
                     seriesData.push({
@@ -4594,7 +4876,7 @@
                         data: [failedDBLoad]
                     });
 
-                   
+
 
                     return {
                         series: seriesData,
@@ -4613,125 +4895,125 @@
             async function DBChartLoad(containerId, chartType, matchType, roleName, title) {
                 const data = await DBChartLoadAPIRequest(matchType, roleName);
 
-               // If no valid data is available, exit the function
-    if (!data || !data.series || data.series.length === 0) {
-        return;
-    }
+                // If no valid data is available, exit the function
+                if (!data || !data.series || data.series.length === 0) {
+                    return;
+                }
 
-    // Convert the string data to integers for proper chart rendering
-    const successData = data.series.find(item => item.name === 'Success').data.map(val => parseInt(val, 10));
-    const failedData = data.series.find(item => item.name === 'Failed').data.map(val => parseInt(val, 10));
-    let series;
+                // Convert the string data to integers for proper chart rendering
+                const successData = data.series.find(item => item.name === 'Success').data.map(val => parseInt(val, 10));
+                const failedData = data.series.find(item => item.name === 'Failed').data.map(val => parseInt(val, 10));
+                let series;
 
-    if (chartType === 'pie') {
-        // Adjust the data for pie chart
-        series = [{
-            name: 'Status',
-            colorByPoint: true,
-            data: [
-                { name: 'Success', y: successData[0] || 0 },
-                { name: 'Failed', y: failedData[0] || 0 }
-            ]
-        }];
-    } else {
-        // Use data as-is for column/bar
-        series = [
-            {
-                name: 'Success',
-                data: successData
-            },
-            {
-                name: 'Failed',
-                data: failedData
-            }
-        ];
-    }
+                if (chartType === 'pie') {
+                    // Adjust the data for pie chart
+                    series = [{
+                        name: 'Status',
+                        colorByPoint: true,
+                        data: [
+                            { name: 'Success', y: successData[0] || 0 },
+                            { name: 'Failed', y: failedData[0] || 0 }
+                        ]
+                    }];
+                } else {
+                    // Use data as-is for column/bar
+                    series = [
+                        {
+                            name: 'Success',
+                            data: successData
+                        },
+                        {
+                            name: 'Failed',
+                            data: failedData
+                        }
+                    ];
+                }
 
-    // Set chart options
-    var chartOptions = {
-        colors: ['var(--colors_materialmenu_selecteditembackground)', '#b9b26a'], // Green for success, red for failure
-        chart: {
-            renderTo: containerId,
-            type: chartType, // Specify the chart type (e.g., column, pie, etc.)
-            backgroundColor: 'rgba(255, 255, 255, 0.1)' // Chart background color
-        },
-        title: {
-            text: title,
-            style: {
-                color: 'var(--colors_materialmenu_selecteditembackground)',
-                fontSize: '20px'
-            }
-        },
-        xAxis: chartType === 'pie' ? undefined : {
-            categories: data.xAxis.categories, // Set categories from the API response
-            labels: {
-                style: {
-                    color: '#4CAF50'
-                }
-            }
-        },
-        yAxis: chartType === 'pie' ? undefined : {
-            title: {
-                text: 'Number of Records',
-                style: {
-                    color: 'var(--colors_materialmenu_selecteditembackground)',
-                    fontSize: '16px'
-                }
-            },
-            labels: {
-                style: {
-                    color: '#4CAF50'
-                }
-            }
-        },
-        legend: {
-            enabled: true,
-            itemStyle: {
-                color: '#4CAF50'
-            }
-        },
-        plotOptions: {
-            pie: {
-                allowPointSelect: true,
-                cursor: 'pointer',
-                dataLabels: {
-                    enabled: true,
-                    format: '{point.name}: {point.y}', // Display "Success: 10" or "Failed: 5"
-                    style: {
-                        color: '#000000'
-                    }
-                }
-            },
-            series: {
-                borderWidth: 0,
-                dataLabels: {
-                    enabled: true,
-                    formatter: function () {
-                        // Include the series name and value
-                        return this.y !== 0 ? `${this.series.name}: ${this.y}` : null; // Example: "Success: 10"
+                // Set chart options
+                var chartOptions = {
+                    colors: ['var(--colors_materialmenu_selecteditembackground)', '#b9b26a'], // Green for success, red for failure
+                    chart: {
+                        renderTo: containerId,
+                        type: chartType, // Specify the chart type (e.g., column, pie, etc.)
+                        backgroundColor: 'rgba(255, 255, 255, 0.1)' // Chart background color
                     },
-                    style: {
-                        color: '#000000'
-                    }
-                }
-            }
-        },
-        series: series
-    };
+                    title: {
+                        text: title,
+                        style: {
+                            color: 'var(--colors_materialmenu_selecteditembackground)',
+                            fontSize: '20px'
+                        }
+                    },
+                    xAxis: chartType === 'pie' ? undefined : {
+                        categories: data.xAxis.categories, // Set categories from the API response
+                        labels: {
+                            style: {
+                                color: '#4CAF50'
+                            }
+                        }
+                    },
+                    yAxis: chartType === 'pie' ? undefined : {
+                        title: {
+                            text: 'Number of Records',
+                            style: {
+                                color: 'var(--colors_materialmenu_selecteditembackground)',
+                                fontSize: '16px'
+                            }
+                        },
+                        labels: {
+                            style: {
+                                color: '#4CAF50'
+                            }
+                        }
+                    },
+                    legend: {
+                        enabled: true,
+                        itemStyle: {
+                            color: '#4CAF50'
+                        }
+                    },
+                    plotOptions: {
+                        pie: {
+                            allowPointSelect: true,
+                            cursor: 'pointer',
+                            dataLabels: {
+                                enabled: true,
+                                format: '{point.name}: {point.y}', // Display "Success: 10" or "Failed: 5"
+                                style: {
+                                    color: '#000000'
+                                }
+                            }
+                        },
+                        series: {
+                            borderWidth: 0,
+                            dataLabels: {
+                                enabled: true,
+                                formatter: function () {
+                                    // Include the series name and value
+                                    return this.y !== 0 ? `${this.series.name}: ${this.y}` : null; // Example: "Success: 10"
+                                },
+                                style: {
+                                    color: '#000000'
+                                }
+                            }
+                        }
+                    },
+                    series: series
+                };
 
-    // Create the chart
-    var chart = new Highcharts.Chart(chartOptions);
+                // Create the chart
+                var chart = new Highcharts.Chart(chartOptions);
 
-    // Handle chart type change (e.g., column to pie)
-    document.getElementById('chartType').addEventListener('change', function () {
-        var newType = this.value;
-        chart.update({
-            chart: {
-                type: newType // Update the chart type dynamically
+                // Handle chart type change (e.g., column to pie)
+                document.getElementById('chartType').addEventListener('change', function () {
+                    var newType = this.value;
+                    chart.update({
+                        chart: {
+                            type: newType // Update the chart type dynamically
+                        }
+                    });
+                });
             }
-        });
-    });
-}
             DBChartLoad("DBChartLoad", "column", 0, "Admin", "DB Loading");
 
 
@@ -4753,7 +5035,7 @@
                     }
 
                     const apiResponse = await response.json();
-                    
+
 
                     const { TransformerChart1 } = apiResponse.SDT_ChartData;
                     const seriesData = [];
@@ -4761,11 +5043,11 @@
                     let successDBLoad = 0, failedDBLoad = 0;
                     TransformerChart1.forEach(item => {
                         if (item.TransformerChart1Status === 'Success' && item.TransformerChart1ChartType === 'Source' && item.TransformerChart1SrcType === 'API') {
-                            successDBLoad = item.TransformerChart1RecordLoaded; 
-                       
+                            successDBLoad = item.TransformerChart1RecordLoaded;
+
                         } else {
                             failedDBLoad = item.TransformerChart1RecordLoaded;
-                            
+
                         }
                     });
                     seriesData.push({
@@ -4777,7 +5059,7 @@
                         data: [failedDBLoad]
                     });
 
-                   
+
 
                     return {
                         series: seriesData,
@@ -4793,135 +5075,135 @@
                     console.error('Error fetching data:', error);
                 }
             }
-           
+
             async function APIUploadChart(containerId, chartType, matchType, roleName, title) {
-    const data = await APIUploadChartAPIRequest(matchType, roleName);
+                const data = await APIUploadChartAPIRequest(matchType, roleName);
 
-    // If no valid data is available, exit the function
-    if (!data || !data.series || data.series.length === 0) {
-        return;
-    }
+                // If no valid data is available, exit the function
+                if (!data || !data.series || data.series.length === 0) {
+                    return;
+                }
 
-    // Convert the string data to integers for proper chart rendering
-    const successData = data.series.find(item => item.name === 'Success').data.map(val => parseInt(val, 10));
-    const failedData = data.series.find(item => item.name === 'Failed').data.map(val => parseInt(val, 10));
-    let series;
+                // Convert the string data to integers for proper chart rendering
+                const successData = data.series.find(item => item.name === 'Success').data.map(val => parseInt(val, 10));
+                const failedData = data.series.find(item => item.name === 'Failed').data.map(val => parseInt(val, 10));
+                let series;
 
-    if (chartType === 'pie') {
-        // Adjust the data for pie chart
-        series = [{
-            name: 'Status',
-            colorByPoint: true,
-            data: [
-                { name: 'Success', y: successData[0] || 0 },
-                { name: 'Failed', y: failedData[0] || 0 }
-            ]
-        }];
-    } else {
-        // Use data as-is for column/bar
-        series = [
-            {
-                name: 'Success',
-                data: successData
-            },
-            {
-                name: 'Failed',
-                data: failedData
-            }
-        ];
-    }
+                if (chartType === 'pie') {
+                    // Adjust the data for pie chart
+                    series = [{
+                        name: 'Status',
+                        colorByPoint: true,
+                        data: [
+                            { name: 'Success', y: successData[0] || 0 },
+                            { name: 'Failed', y: failedData[0] || 0 }
+                        ]
+                    }];
+                } else {
+                    // Use data as-is for column/bar
+                    series = [
+                        {
+                            name: 'Success',
+                            data: successData
+                        },
+                        {
+                            name: 'Failed',
+                            data: failedData
+                        }
+                    ];
+                }
 
-    // Set chart options
-    var chartOptions = {
-        colors: ['var(--colors_materialmenu_selecteditembackground)', '#b9b26a'], // Green for success, red for failure
-        chart: {
-            renderTo: containerId,
-            type: chartType, // Specify the chart type (e.g., column, pie, etc.)
-            backgroundColor: 'rgba(255, 255, 255, 0.1)' // Chart background color
-        },
-        title: {
-            text: title,
-            style: {
-                color: 'var(--colors_materialmenu_selecteditembackground)',
-                fontSize: '20px'
-            }
-        },
-        xAxis: chartType === 'pie' ? undefined : {
-            categories: data.xAxis.categories, // Set categories from the API response
-            labels: {
-                style: {
-                    color: '#4CAF50'
-                }
-            }
-        },
-        yAxis: chartType === 'pie' ? undefined : {
-            title: {
-                text: 'Number of Records',
-                style: {
-                    color: 'var(--colors_materialmenu_selecteditembackground)',
-                    fontSize: '16px'
-                }
-            },
-            labels: {
-                style: {
-                    color: '#4CAF50'
-                }
-            }
-        },
-        legend: {
-            enabled: true,
-            itemStyle: {
-                color: '#4CAF50'
-            }
-        },
-        plotOptions: {
-            pie: {
-                allowPointSelect: true,
-                cursor: 'pointer',
-                dataLabels: {
-                    enabled: true,
-                    format: '{point.name}: {point.y}', // Display "Success: 10" or "Failed: 5"
-                    style: {
-                        color: '#000000'
-                    }
-                }
-            },
-            series: {
-                borderWidth: 0,
-                dataLabels: {
-                    enabled: true,
-                    formatter: function () {
-                        // Include the series name and value
-                        return this.y !== 0 ? `${this.series.name}: ${this.y}` : null; // Example: "Success: 10"
+                // Set chart options
+                var chartOptions = {
+                    colors: ['var(--colors_materialmenu_selecteditembackground)', '#b9b26a'], // Green for success, red for failure
+                    chart: {
+                        renderTo: containerId,
+                        type: chartType, // Specify the chart type (e.g., column, pie, etc.)
+                        backgroundColor: 'rgba(255, 255, 255, 0.1)' // Chart background color
                     },
-                    style: {
-                        color: '#000000'
-                    }
-                }
+                    title: {
+                        text: title,
+                        style: {
+                            color: 'var(--colors_materialmenu_selecteditembackground)',
+                            fontSize: '20px'
+                        }
+                    },
+                    xAxis: chartType === 'pie' ? undefined : {
+                        categories: data.xAxis.categories, // Set categories from the API response
+                        labels: {
+                            style: {
+                                color: '#4CAF50'
+                            }
+                        }
+                    },
+                    yAxis: chartType === 'pie' ? undefined : {
+                        title: {
+                            text: 'Number of Records',
+                            style: {
+                                color: 'var(--colors_materialmenu_selecteditembackground)',
+                                fontSize: '16px'
+                            }
+                        },
+                        labels: {
+                            style: {
+                                color: '#4CAF50'
+                            }
+                        }
+                    },
+                    legend: {
+                        enabled: true,
+                        itemStyle: {
+                            color: '#4CAF50'
+                        }
+                    },
+                    plotOptions: {
+                        pie: {
+                            allowPointSelect: true,
+                            cursor: 'pointer',
+                            dataLabels: {
+                                enabled: true,
+                                format: '{point.name}: {point.y}', // Display "Success: 10" or "Failed: 5"
+                                style: {
+                                    color: '#000000'
+                                }
+                            }
+                        },
+                        series: {
+                            borderWidth: 0,
+                            dataLabels: {
+                                enabled: true,
+                                formatter: function () {
+                                    // Include the series name and value
+                                    return this.y !== 0 ? `${this.series.name}: ${this.y}` : null; // Example: "Success: 10"
+                                },
+                                style: {
+                                    color: '#000000'
+                                }
+                            }
+                        }
+                    },
+                    series: series
+                };
+
+                // Create the chart
+                var chart = new Highcharts.Chart(chartOptions);
+
+                // Handle chart type change (e.g., column to pie)
+                document.getElementById('chartType').addEventListener('change', function () {
+                    var newType = this.value;
+                    chart.update({
+                        chart: {
+                            type: newType // Update the chart type dynamically
+                        }
+                    });
+                });
             }
-        },
-        series: series
-    };
-
-    // Create the chart
-    var chart = new Highcharts.Chart(chartOptions);
-
-    // Handle chart type change (e.g., column to pie)
-    document.getElementById('chartType').addEventListener('change', function () {
-        var newType = this.value;
-        chart.update({
-            chart: {
-                type: newType // Update the chart type dynamically
-            }
-        });
-    });
-}
 
 
-          
+
             APIUploadChart("APIUploadChart", "bar", 0, "Admin", "API Loading");
 
-           
+
 
             async function fetchTransformerChartDataOverAllSource() {
                 try {
@@ -5207,6 +5489,1169 @@
         }
         Transformerchart();
     }
+
+
+    //________________________________________
+    //______________ Settlement ____________________
+    //________________________________________
+    function Settlement() {
+        //________________________________________________________
+        //______________________ Commons _________________________
+        //________________________________________________________
+        hideSettlementCharts();
+        function hideSettlementCharts() {
+            $(".EltDataLoadingFileChart").hide();
+            $(".APIUploadChart").hide();
+            $(".DBChartLoad").hide();
+            $(".SettlementOverAllChart1").hide();
+            $(".SettlementOverAllDestCount").hide();
+            $(".SettlementOverAllSourceCount").hide();
+            $(".SettlementAggingChart").hide();
+            $(".SettlementDisputeChart").hide();
+            $(".SettlementDisputeAgingChart").hide();
+        }
+        function showSettlementChartHideLoader() {
+            $(".chart-containers").hide();
+            $(".SettlementDisputeChart").show();
+            $(".SettlementAggingChart").show();
+            $(".EltDataLoadingFileChart").show();
+            $(".DBChartLoad").show();
+            $(".APIUploadChart").show();
+            $(".SettlementOverAllChart1").show();
+            $(".SettlementOverAllDestCount").show();
+            $(".SettlementOverAllSourceCount").show();
+            $(".SettlementDisputeAgingChart").show();
+        }
+
+        const currentDate = new Date();
+        const formattedDate = currentDate.toISOString().split('T')[0];
+        //const formattedDate = "2024-08-22"
+
+        const lastWeekDate = new Date(currentDate);
+        lastWeekDate.setDate(currentDate.getDate() - 7);
+        const formattedDateLastWeek = lastWeekDate.toISOString().split('T')[0];
+        
+
+        //________________________________________________________
+        //______________________ Cards ___________________________
+        //________________________________________________________
+        function LoadCardsSettlement() {
+            function LoadHeaderCardUISettlement() {
+                var headerCartSettlement = `
+                    <div class="col-xl-3 col-lg-6 col-sm-6">
+                        <div class="card card-stats card_1 mb-4 mb-xl-0" style="height: 73px;">
+                            <div class="card-body" >
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0" style="color:black !important">TOTAL PROCESS</h5>
+                                        <span class="h2 font-weight-bold mb-0" id="totalProcess" style="color:black !important">0</span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape text-white rounded-circle shadow" style="background-color:#177a9a;">
+                                            <i class="fas fa-globe"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                               <!--  <p class="mt-3 mb-0 text-muted text-sm" style="margin-top:2px !important">
+                                    <span class="text-success mr-2"><i class="fa fa-arrow-up" style="color: #177a9a"></i> <b class="totalPercSource" style="color: #177a9a">0%</b></span>
+                                    <span class="text-nowrap" style="color:black">Total Pre Voucher</span>
+                                </p>-->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-6  col-sm-6">
+                        <div class="card card-stats card_2  mb-4 mb-xl-0" style="height: 73px;">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0" style="color:black !important">Total Pre Voucher</h5>
+                                        <span class="h2 font-weight-bold mb-0" style="color:black !important" id="totalPreVoucher">0</span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape text-white rounded-circle shadow" style="background-color:#fe8612;">
+                                            <i class="fas fa-code-branch"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                              <!--   <p class="mt-3 mb-0 text-muted text-sm" style="margin-top:2px !important">
+                                    <span class="text-danger mr-2"><i class="fas fa-arrow-down" style="color: #fe8612 "></i> <b class="apiPercSource" style="color: #fe8612 ">0%</b></span>
+                                    <span class="text-nowrap" style="color:black !important">API</span>
+                                </p>-->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-6 col-sm-6">
+                        <div class="card card-stats card_3 mb-4 mb-xl-0" style="height: 73px;">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0" style="color:black !important"">Total Pre Voucher AMOUNT</h5>
+                                        <span class="h2 font-weight-bold mb-0" id="totalPreVoucherAmt" style="color:black !important">0</span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape  text-white rounded-circle shadow"  style="background-color:#058a22">
+                                            <i class="fas fa-database"></i>
+                                        </div>
+                                    </div>
+                                 </div>
+                              <!--  <p class="mt-3 mb-0 text-muted text-sm" style="margin-top:2px !important">
+                                    <span class="text-warning mr-2"><i class="fas fa-arrow-down" style="color:#058a22 !important"></i> <b style="color:#058a22 !important" class="dbPercSource"> 0%</b></span>
+                                    <span class="text-nowrap" style="color:black !important">DATABASE</span>
+                                </p>-->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-6 col-sm-6">
+                        <div class="card card-stats card_4 mb-4 mb-xl-0" style="height: 73px;">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0" style="color:black !important">SOURCE FILE</h5>
+                                        <span class="h2 font-weight-bold mb-0" style="color:black !important" id="fileTxtSource">0</span>
+
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape text-white rounded-circle shadow" style="background-color:#76407a;">
+                                            <i class="fas fa-folder-open"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                              <!--   <p class="mt-3 mb-0 text-muted text-sm" style="margin-top:2px !important">
+                                    <span class="text-success mr-2"><i class="fas fa-arrow-up" style="color: #76407a"></i> <b class="filePercSource" style="color: #76407a">0%</b></span>
+                                    <span class="text-nowrap" style="color:black !important">FILE</span>
+                                </p>-->
+                            </div>
+                        </div>
+                    </div>
+                    `;
+                $("#SettlementTransactionCards").html(headerCartSettlement);
+
+                var headerCartCircleAmountSettlement = `
+                 <div class="col-xl-3 col-lg-6 col-sm-6" style="margin-top:15px">
+                        <div class="card card-stats card_1 mb-4 mb-xl-0 " style="height: 73px;background-color: #177a9a24;border:2px solid #177a9a; box-shadow: 2px 2px 5px #00000063;">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0" style="color:black !important">TOTAL VOUCHER</h5>
+                                        <span class="h2 font-weight-bold mb-0" id="totalVoucher" style="color:black !important">0</span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape  text-white rounded-circle shadow" style="background-color:#177a9a;">
+                                            <i class="fas fa-globe"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                               <!--  <p class="mt-3 mb-0 text-muted text-sm" style="margin-top:2px !important">
+                                    <span class="text-success mr-2"><i class="fa fa-arrow-up" style="color: #177a9a"></i> <b class="totalPercDest" style="color: #177a9a">0%</b></span>
+                                    <span class="text-nowrap" style="color:black">Total Voucher Amount</span>
+                                </p>-->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-6  col-sm-6" style="margin-top:15px">
+                        <div class="card card-stats card_2  mb-4 mb-xl-0" style="height: 73px;background-color: #f1c0932b;border: 2px solid #fe8612;box-shadow: 2px 2px 5px #00000063;">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0" style="color:black !important">TOTAL VOUCHER AMOUNT</h5>
+                                        <span class="h2 font-weight-bold mb-0" style="color:black !important" id="totalVoucherAmt">0</span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape text-white rounded-circle shadow" style="background-color: #fe8612 ">
+                                            <i class="fas fa-code-branch"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                               <!--  <p class="mt-3 mb-0 text-muted text-sm" style="margin-top:2px !important">
+                                    <span class="text-danger mr-2"><i class="fas fa-arrow-down" style="color: #fe8612 "></i> <b class="apiPercDest" style="color: #fe8612 ">0%</b></span>
+                                    <span class="text-nowrap" style="color:black !important">API</span>
+                                </p>-->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-6 col-sm-6" style="margin-top:15px">
+                        <div class="card card-stats card_3 mb-4 mb-xl-0 " style="height: 73px;background-color: #058a2220;border: 2px solid #058a22;box-shadow: 2px 2px 5px #00000063;">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0" style="color:black !important">DESTINATION DATABASE</h5>
+                                        <span class="h2 font-weight-bold mb-0" id="dbTxtDest" style="color:black !important">0</span>
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape  text-white rounded-circle shadow" style="background-color: #058a22 ">
+                                            <i class="fas fa-database"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                               <!--  <p class="mt-3 mb-0 text-muted text-sm" style="margin-top:2px !important">
+                                    <span class="text-warning mr-2"><i class="fas fa-arrow-down" style="color:#058a22 !important"></i> <b style="color:#058a22 !important" class="dbPercDest"> 0%</b></span>
+                                    <span class="text-nowrap" style="color:black !important">DATABASE</span>
+                                </p>-->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-6 col-sm-6" style="margin-top:15px">
+                        <div class="card card-stats card_4 mb-4 mb-xl-0" style="height: 73px; background-color: #76407a29;border: 2px solid #76407a;box-shadow: 2px 2px 5px #00000063;">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col">
+                                        <h5 class="card-title text-uppercase text-muted mb-0" style="color:black !important">DESTINATION FILE</h5>
+                                        <span class="h2 font-weight-bold mb-0" style="color:black !important" id="fileTxtDest">0</span>
+
+                                    </div>
+                                    <div class="col-auto">
+                                        <div class="icon icon-shape  text-white rounded-circle shadow" style="background-color: #76407a">
+                                            <i class="fas fa-folder-open"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                               <!--  <p class="mt-3 mb-0 text-muted text-sm" style="margin-top:2px !important">
+                                    <span class="text-success mr-2"><i class="fas fa-arrow-up" style="color: #76407a"></i> <b class="filePercDest" style="color: #76407a">0%</b></span>
+                                    <span class="text-nowrap" style="color:black !important">FILE</span>
+                                </p>-->
+                            </div>
+                        </div>
+                    </div>
+                
+                
+                
+                
+                    
+                    `;
+                $("#SettlementAmountCards").html(headerCartCircleAmountSettlement);
+            }
+            LoadHeaderCardUISettlement()
+            async function SetSettlementCardsData() {
+                
+
+                try {
+                    let obj = {
+                        "dateTime": formattedDate, // "2024-07-29",
+                        "ApiType": "Settlement"
+                    };
+
+                    const response = await fetch('rest/prDataStatisticeAPI', {
+                        method: 'POST',
+                        headers: { 
+                            "Content-type": "application/json; charset=UTF-8", 
+                            'Authorization': token 
+                        },
+                        body: JSON.stringify(obj)
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+
+                    const apiResponse = await response.json();
+
+                    // Use JSON.stringify to display the full object
+                    console.log('Settlement', JSON.stringify(apiResponse, null, 2));
+
+                    // Extract necessary data from the response
+                    const { Data, Level1, Level2, Level3, SettlementStatistics } = apiResponse.SDT_ChartData;
+                    const [objec] = SettlementStatistics;
+                    console.log('Settlement',  apiResponse.SDT_ChartData)
+                    //_______ Total and Amount _____
+                    const { SettlementChartId, SettlementStatisticsProcess, SettlementStatisticsPreTotalVoucher, SettlementStatisticsPreTotalAmount,  SettlementStatisticsTotalVoucher, SettlementStatisticsTotalAmount} = objec;
+                    if (SettlementStatistics.length > 0) {
+                        $("#totalProcess").text(SettlementStatisticsProcess);
+                        $("#totalPreVoucher").text(SettlementStatisticsPreTotalVoucher);
+                        $("#totalPreVoucherAmt").text(SettlementStatisticsPreTotalAmount);
+                        $("#totalVoucher").text(SettlementStatisticsTotalVoucher);
+                        $("#totalVoucherAmt").text(SettlementStatisticsTotalAmount);
+
+                       
+                        $("#fileTxtSource").text(DestDB);
+
+                        // $("#totalVoucher").text(SettlementStatisticsTotalVoucher);
+                        // $("#totalVoucherAmt").text(SettlementStatisticsTotalAmount);
+                        $("#dbTxtDest").text(DestDB);
+                        $("#fileTxtDest").text(DestFILE);
+
+                        // $(".totalTxtDest").text(formatCurrencyCash(TotalDest));
+                        // $(".matchAmountTxtCash").text(formatCurrencyCash(MatchAmount));
+                        // $(".proposedAmountTxtCash").text(formatCurrencyCash(ProposedAmount));
+                        // $(".unMatchedAmountTxtCash").text(formatCurrencyCash(UnmatchAmount));
+
+                    }
+                } catch (error) {
+                    showSettlementChartHideLoader();
+                    console.log('Error fetching data:', error);
+                }
+            }
+            SetSettlementCardsData();
+            function formatCurrencySettlement(amount) {
+                const formatter = new Intl.NumberFormat('en-PK', {
+                    style: 'currency',
+                    currency: 'PKR',
+                });
+                return formatter.format(amount);
+            }
+        }
+        LoadCardsSettlement()
+        
+
+
+        //________________________________________________________
+        //______________________ Chart ___________________________
+        //________________________________________________________
+        // function Settlementchart() {
+        //     document.getElementById('SettlementOverAllChartType4').addEventListener('change', function () {
+        //         updateChartSettlement('EltDataLoadingFileChart', this.value);
+        //     });
+        //     document.getElementById('DBChartLoadType').addEventListener('change', function () {
+        //         updateChartSettlement('DBChartLoad', this.value);
+        //     });
+        //     document.getElementById('APIUploadChartType').addEventListener('change', function () {
+        //         updateChartSettlement('APIUploadChart', this.value);
+        //     });
+        //     document.getElementById('SettlementOverAllChartType3').addEventListener('change', function () {
+        //         updateChartSettlement('SettlementOverAllDestCount', this.value);
+        //     });
+        //     document.getElementById('SettlementOverAllChartType2').addEventListener('change', function () {
+        //         updateChartSettlement('SettlementOverAllSourceCount', this.value);
+        //     });
+
+
+        //     function updateChartSettlement(chartId, chartType) {
+        //         if (chartId == "EltDataLoadingFileChart") {
+        //             EltDataLoadingFileChart(chartId, chartType, 0, "Admin", "ELT File Loading");
+        //         }
+        //         else if (chartId == "DBChartLoad") {
+        //             DBChartLoad(chartId, chartType, 0, "Admin", "DB Loading");
+        //         }
+        //         else if (chartId == "APIUploadChart") {
+        //             APIUploadChart(chartId, chartType, 0, "Admin", "API Loading");
+        //         }
+        //         else if (chartId == "SettlementOverAllDestCount") {
+        //             SettlementOverAllDestCount(chartId, chartType);
+        //         }
+        //         else if (chartId == "SettlementOverAllSourceCount") {
+        //             SettlementOverAllSourceCount(chartId, chartType);
+        //         }
+
+        //     }
+        //     //------------------------------------
+        //     //---- EltDataLoadingFileChart -------
+        //     //------------------------------------
+        //     async function EltDataLoadingFileChartAPIRequest() {
+        //         try {
+        //             let obj = {
+        //                 "dateTime": formattedDate,
+        //                 "ApiType": "Settlement"
+        //             };
+
+        //             const response = await fetch('rest/prDataStatisticeAPI', {
+        //                 method: 'POST',
+        //                 headers: { "Content-type": "application/json; charset=UTF-8", 'Authorization': token },
+        //                 body: JSON.stringify(obj)
+        //             });
+
+        //             if (!response.ok) {
+        //                 throw new Error(`HTTP error! status: ${response.status}`);
+        //             }
+
+        //             const apiResponse = await response.json();
+        //             const { SettlementChart1 } = apiResponse.SDT_ChartData;
+
+
+        //             const seriesData = [];
+        //             const xAxisCategories = ['Record Read', 'Record Loaded'];
+        //             let successRead = 0, failedRead = 0, successLoaded = 0, failedLoaded = 0;
+        //             SettlementChart1.forEach(item => {
+        //                 if (item.SettlementChart1Status === 'Success') {
+        //                     successRead = item.SettlementChart1RecordRead;
+        //                     successLoaded = item.SettlementChart1RecordLoaded;
+        //                 } else if (item.SettlementChart1Status === 'Faild' || item.SettlementChart1Status === 'Failed') {
+        //                     failedRead = item.SettlementChart1RecordRead;
+        //                     failedLoaded = item.SettlementChart1RecordLoaded;
+        //                 }
+        //             });
+        //             seriesData.push({
+        //                 name: 'Success',
+        //                 data: [successRead, successLoaded]
+        //             });
+        //             seriesData.push({
+        //                 name: 'Failed',
+        //                 data: [failedRead, failedLoaded]
+        //             });
+
+
+
+        //             return {
+        //                 series: seriesData,
+        //                 xAxis: { categories: xAxisCategories }
+        //             };
+        //             // return {
+        //             //                 series: [
+        //             //                     { name: 'Overview', data: seriesData }
+        //             //                 ],
+        //             //             };
+        //         } catch (error) {
+        //             showSettlementChartHideLoader()
+        //             console.error('Error fetching data:', error);
+        //         }
+        //     }
+        //     async function EltDataLoadingFileChart(containerId, chartType, matchType, roleName, title) {
+        //         const data = await EltDataLoadingFileChartAPIRequest(matchType, roleName);
+
+        //         // If no valid data is available, exit the function
+        //         if (!data || !data.series || data.series.length === 0) {
+        //             return;
+        //         }
+
+
+        //         // Convert the string data to integers for proper chart rendering
+        //         const successData = data.series.find(item => item.name === 'Success').data.map(val => parseInt(val, 10));
+        //         const failedData = data.series.find(item => item.name === 'Failed').data.map(val => parseInt(val, 10));
+
+        //         // Set chart options
+        //         var chartOptions = {
+        //             colors: ['var(--colors_materialmenu_selecteditembackground)', '#b9b26a'], // Green for success, red for failure
+        //             chart: {
+        //                 renderTo: containerId,
+        //                 type: chartType, // Specify the chart type (e.g., column, pie, etc.)
+        //                 backgroundColor: 'rgba(255, 255, 255, 0.1)' // Chart background color
+        //             },
+        //             title: {
+        //                 text: title,
+        //                 style: {
+        //                     color: 'var(--colors_materialmenu_selecteditembackground)',
+        //                     fontSize: '20px'
+        //                 }
+        //             },
+        //             xAxis: {
+        //                 categories: data.xAxis.categories, // Set categories from the API response
+        //                 labels: {
+        //                     style: {
+        //                         color: '#4CAF50'
+        //                     }
+        //                 }
+        //             },
+        //             yAxis: {
+        //                 title: {
+        //                     text: 'Number of Records',
+        //                     style: {
+        //                         color: 'var(--colors_materialmenu_selecteditembackground)',
+        //                         fontSize: '16px'
+        //                     }
+        //                 },
+        //                 labels: {
+        //                     style: {
+        //                         color: '#4CAF50'
+        //                     }
+        //                 }
+        //             },
+        //             legend: {
+        //                 enabled: true,
+        //                 itemStyle: {
+        //                     color: '#4CAF50'
+        //                 }
+        //             },
+        //             plotOptions: {
+        //                 series: {
+        //                     borderWidth: 0,
+        //                     dataLabels: {
+        //                         enabled: true,
+        //                         // format: '{point.y}', // Display the value of the data point
+        //                         formatter: function () {
+        //                             // Hide labels for points with value 0
+        //                             return this.y !== 0 ? this.y : null;
+        //                         },
+        //                         style: {
+        //                             color: '#000000'
+        //                         }
+        //                     }
+        //                 }
+        //             },
+        //             series: [
+        //                 {
+        //                     name: 'Success', // Series for Success
+        //                     data: successData // Use the converted success data
+        //                 },
+        //                 {
+        //                     name: 'Failed', // Series for Failed
+        //                     data: failedData // Use the converted failed data
+        //                 }
+        //             ]
+        //         };
+
+        //         // Create the chart
+        //         var chart = new Highcharts.Chart(chartOptions);
+
+        //         // Handle chart type change (e.g., column to pie)
+        //         document.getElementById('chartType').addEventListener('change', function () {
+        //             var newType = this.value;
+        //             chart.update({
+        //                 chart: {
+        //                     type: newType // Update the chart type dynamically
+        //                 }
+        //             });
+        //         });
+        //     }
+        //     EltDataLoadingFileChart("EltDataLoadingFileChart", "bar", 0, "Admin", "ELT File Loading");
+
+
+        //     //------------------------------------
+        //     //---- Db records chart -------
+        //     //------------------------------------
+
+        //     async function DBChartLoadAPIRequest() {
+        //         try {
+        //             let obj = {
+        //                 "dateTime": formattedDate,
+        //                 "ApiType": "Settlement"
+        //             };
+
+        //             const response = await fetch('rest/prDataStatisticeAPI', {
+        //                 method: 'POST',
+        //                 headers: { "Content-type": "application/json; charset=UTF-8", 'Authorization': token },
+        //                 body: JSON.stringify(obj)
+        //             });
+
+        //             if (!response.ok) {
+        //                 throw new Error(`HTTP error! status: ${response.status}`);
+        //             }
+
+        //             const apiResponse = await response.json();
+
+        //             const { SettlementChart1 } = apiResponse.SDT_ChartData;
+        //             const seriesData = [];
+        //             const xAxisCategories = ['DB Count'];
+        //             let successDBLoad = 0, failedDBLoad = 0;
+        //             SettlementChart1.forEach(item => {
+        //                 if (item.SettlementChart1Status === 'Success' && item.SettlementChart1ChartType === 'Source' && item.SettlementChart1SrcType === 'DB') {
+        //                     successDBLoad = item.SettlementChart1RecordLoaded;
+
+        //                 } else {
+        //                     failedDBLoad = item.SettlementChart1RecordLoaded;
+
+        //                 }
+        //             });
+        //             seriesData.push({
+        //                 name: 'Success',
+        //                 data: [successDBLoad]
+        //             });
+        //             seriesData.push({
+        //                 name: 'Failed',
+        //                 data: [failedDBLoad]
+        //             });
+
+
+
+        //             return {
+        //                 series: seriesData,
+        //                 xAxis: { categories: xAxisCategories }
+        //             };
+        //             // return {
+        //             //                 series: [
+        //             //                     { name: 'Overview', data: seriesData }
+        //             //                 ],
+        //             //             };
+        //         } catch (error) {
+        //             showSettlementChartHideLoader()
+        //             console.error('Error fetching data:', error);
+        //         }
+        //     }
+        //     async function DBChartLoad(containerId, chartType, matchType, roleName, title) {
+        //         const data = await DBChartLoadAPIRequest(matchType, roleName);
+
+        //         // If no valid data is available, exit the function
+        //         if (!data || !data.series || data.series.length === 0) {
+        //             return;
+        //         }
+
+        //         // Convert the string data to integers for proper chart rendering
+        //         const successData = data.series.find(item => item.name === 'Success').data.map(val => parseInt(val, 10));
+        //         const failedData = data.series.find(item => item.name === 'Failed').data.map(val => parseInt(val, 10));
+        //         let series;
+
+        //         if (chartType === 'pie') {
+        //             // Adjust the data for pie chart
+        //             series = [{
+        //                 name: 'Status',
+        //                 colorByPoint: true,
+        //                 data: [
+        //                     { name: 'Success', y: successData[0] || 0 },
+        //                     { name: 'Failed', y: failedData[0] || 0 }
+        //                 ]
+        //             }];
+        //         } else {
+        //             // Use data as-is for column/bar
+        //             series = [
+        //                 {
+        //                     name: 'Success',
+        //                     data: successData
+        //                 },
+        //                 {
+        //                     name: 'Failed',
+        //                     data: failedData
+        //                 }
+        //             ];
+        //         }
+
+        //         // Set chart options
+        //         var chartOptions = {
+        //             colors: ['var(--colors_materialmenu_selecteditembackground)', '#b9b26a'], // Green for success, red for failure
+        //             chart: {
+        //                 renderTo: containerId,
+        //                 type: chartType, // Specify the chart type (e.g., column, pie, etc.)
+        //                 backgroundColor: 'rgba(255, 255, 255, 0.1)' // Chart background color
+        //             },
+        //             title: {
+        //                 text: title,
+        //                 style: {
+        //                     color: 'var(--colors_materialmenu_selecteditembackground)',
+        //                     fontSize: '20px'
+        //                 }
+        //             },
+        //             xAxis: chartType === 'pie' ? undefined : {
+        //                 categories: data.xAxis.categories, // Set categories from the API response
+        //                 labels: {
+        //                     style: {
+        //                         color: '#4CAF50'
+        //                     }
+        //                 }
+        //             },
+        //             yAxis: chartType === 'pie' ? undefined : {
+        //                 title: {
+        //                     text: 'Number of Records',
+        //                     style: {
+        //                         color: 'var(--colors_materialmenu_selecteditembackground)',
+        //                         fontSize: '16px'
+        //                     }
+        //                 },
+        //                 labels: {
+        //                     style: {
+        //                         color: '#4CAF50'
+        //                     }
+        //                 }
+        //             },
+        //             legend: {
+        //                 enabled: true,
+        //                 itemStyle: {
+        //                     color: '#4CAF50'
+        //                 }
+        //             },
+        //             plotOptions: {
+        //                 pie: {
+        //                     allowPointSelect: true,
+        //                     cursor: 'pointer',
+        //                     dataLabels: {
+        //                         enabled: true,
+        //                         format: '{point.name}: {point.y}', // Display "Success: 10" or "Failed: 5"
+        //                         style: {
+        //                             color: '#000000'
+        //                         }
+        //                     }
+        //                 },
+        //                 series: {
+        //                     borderWidth: 0,
+        //                     dataLabels: {
+        //                         enabled: true,
+        //                         formatter: function () {
+        //                             // Include the series name and value
+        //                             return this.y !== 0 ? `${this.series.name}: ${this.y}` : null; // Example: "Success: 10"
+        //                         },
+        //                         style: {
+        //                             color: '#000000'
+        //                         }
+        //                     }
+        //                 }
+        //             },
+        //             series: series
+        //         };
+
+        //         // Create the chart
+        //         var chart = new Highcharts.Chart(chartOptions);
+
+        //         // Handle chart type change (e.g., column to pie)
+        //         document.getElementById('chartType').addEventListener('change', function () {
+        //             var newType = this.value;
+        //             chart.update({
+        //                 chart: {
+        //                     type: newType // Update the chart type dynamically
+        //                 }
+        //             });
+        //         });
+        //     }
+        //     DBChartLoad("DBChartLoad", "column", 0, "Admin", "DB Loading");
+
+
+        //     async function APIUploadChartAPIRequest() {
+        //         try {
+        //             let obj = {
+        //                 "dateTime": formattedDate,
+        //                 "ApiType": "Settlement"
+        //             };
+
+        //             const response = await fetch('rest/prDataStatisticeAPI', {
+        //                 method: 'POST',
+        //                 headers: { "Content-type": "application/json; charset=UTF-8", 'Authorization': token },
+        //                 body: JSON.stringify(obj)
+        //             });
+
+        //             if (!response.ok) {
+        //                 throw new Error(`HTTP error! status: ${response.status}`);
+        //             }
+
+        //             const apiResponse = await response.json();
+
+
+        //             const { SettlementChart1 } = apiResponse.SDT_ChartData;
+        //             const seriesData = [];
+        //             const xAxisCategories = ['API Count'];
+        //             let successDBLoad = 0, failedDBLoad = 0;
+        //             SettlementChart1.forEach(item => {
+        //                 if (item.SettlementChart1Status === 'Success' && item.SettlementChart1ChartType === 'Source' && item.SettlementChart1SrcType === 'API') {
+        //                     successDBLoad = item.SettlementChart1RecordLoaded;
+
+        //                 } else {
+        //                     failedDBLoad = item.SettlementChart1RecordLoaded;
+
+        //                 }
+        //             });
+        //             seriesData.push({
+        //                 name: 'Success',
+        //                 data: [successDBLoad]
+        //             });
+        //             seriesData.push({
+        //                 name: 'Failed',
+        //                 data: [failedDBLoad]
+        //             });
+
+
+
+        //             return {
+        //                 series: seriesData,
+        //                 xAxis: { categories: xAxisCategories }
+        //             };
+        //             // return {
+        //             //                 series: [
+        //             //                     { name: 'Overview', data: seriesData }
+        //             //                 ],
+        //             //             };
+        //         } catch (error) {
+        //             showSettlementChartHideLoader()
+        //             console.error('Error fetching data:', error);
+        //         }
+        //     }
+
+        //     async function APIUploadChart(containerId, chartType, matchType, roleName, title) {
+        //         const data = await APIUploadChartAPIRequest(matchType, roleName);
+
+        //         // If no valid data is available, exit the function
+        //         if (!data || !data.series || data.series.length === 0) {
+        //             return;
+        //         }
+
+        //         // Convert the string data to integers for proper chart rendering
+        //         const successData = data.series.find(item => item.name === 'Success').data.map(val => parseInt(val, 10));
+        //         const failedData = data.series.find(item => item.name === 'Failed').data.map(val => parseInt(val, 10));
+        //         let series;
+
+        //         if (chartType === 'pie') {
+        //             // Adjust the data for pie chart
+        //             series = [{
+        //                 name: 'Status',
+        //                 colorByPoint: true,
+        //                 data: [
+        //                     { name: 'Success', y: successData[0] || 0 },
+        //                     { name: 'Failed', y: failedData[0] || 0 }
+        //                 ]
+        //             }];
+        //         } else {
+        //             // Use data as-is for column/bar
+        //             series = [
+        //                 {
+        //                     name: 'Success',
+        //                     data: successData
+        //                 },
+        //                 {
+        //                     name: 'Failed',
+        //                     data: failedData
+        //                 }
+        //             ];
+        //         }
+
+        //         // Set chart options
+        //         var chartOptions = {
+        //             colors: ['var(--colors_materialmenu_selecteditembackground)', '#b9b26a'], // Green for success, red for failure
+        //             chart: {
+        //                 renderTo: containerId,
+        //                 type: chartType, // Specify the chart type (e.g., column, pie, etc.)
+        //                 backgroundColor: 'rgba(255, 255, 255, 0.1)' // Chart background color
+        //             },
+        //             title: {
+        //                 text: title,
+        //                 style: {
+        //                     color: 'var(--colors_materialmenu_selecteditembackground)',
+        //                     fontSize: '20px'
+        //                 }
+        //             },
+        //             xAxis: chartType === 'pie' ? undefined : {
+        //                 categories: data.xAxis.categories, // Set categories from the API response
+        //                 labels: {
+        //                     style: {
+        //                         color: '#4CAF50'
+        //                     }
+        //                 }
+        //             },
+        //             yAxis: chartType === 'pie' ? undefined : {
+        //                 title: {
+        //                     text: 'Number of Records',
+        //                     style: {
+        //                         color: 'var(--colors_materialmenu_selecteditembackground)',
+        //                         fontSize: '16px'
+        //                     }
+        //                 },
+        //                 labels: {
+        //                     style: {
+        //                         color: '#4CAF50'
+        //                     }
+        //                 }
+        //             },
+        //             legend: {
+        //                 enabled: true,
+        //                 itemStyle: {
+        //                     color: '#4CAF50'
+        //                 }
+        //             },
+        //             plotOptions: {
+        //                 pie: {
+        //                     allowPointSelect: true,
+        //                     cursor: 'pointer',
+        //                     dataLabels: {
+        //                         enabled: true,
+        //                         format: '{point.name}: {point.y}', // Display "Success: 10" or "Failed: 5"
+        //                         style: {
+        //                             color: '#000000'
+        //                         }
+        //                     }
+        //                 },
+        //                 series: {
+        //                     borderWidth: 0,
+        //                     dataLabels: {
+        //                         enabled: true,
+        //                         formatter: function () {
+        //                             // Include the series name and value
+        //                             return this.y !== 0 ? `${this.series.name}: ${this.y}` : null; // Example: "Success: 10"
+        //                         },
+        //                         style: {
+        //                             color: '#000000'
+        //                         }
+        //                     }
+        //                 }
+        //             },
+        //             series: series
+        //         };
+
+        //         // Create the chart
+        //         var chart = new Highcharts.Chart(chartOptions);
+
+        //         // Handle chart type change (e.g., column to pie)
+        //         document.getElementById('chartType').addEventListener('change', function () {
+        //             var newType = this.value;
+        //             chart.update({
+        //                 chart: {
+        //                     type: newType // Update the chart type dynamically
+        //                 }
+        //             });
+        //         });
+        //     }
+
+
+
+        //     APIUploadChart("APIUploadChart", "bar", 0, "Admin", "API Loading");
+
+
+
+        //     async function fetchSettlementChartDataOverAllSource() {
+        //         try {
+        //             let obj = {
+        //                 "dateTime": formattedDate,
+        //                 "ApiType": "Settlement"
+        //             };
+        //             const response = await fetch('rest/prDataStatisticeAPI', {
+        //                 method: 'POST',
+        //                 headers: { "Content-type": "application/json; charset=UTF-8", 'Authorization': token },
+        //                 body: JSON.stringify(obj)
+        //             });
+
+        //             if (!response.ok) {
+        //                 throw new Error(`HTTP error! status: ${response.status}`);
+        //             }
+
+        //             const apiResponse = await response.json();
+        //             const { Data, Level1, Level2, Level3, Settlement } = apiResponse.SDT_ChartData;
+        //             const [objec] = Settlement;
+        //             const { TotalSource, SourceAPI, SourceDB, SourceFILE, DestAPI, DestDB, DestFILE, TotalDest } = objec;
+
+        //             const seriesData = [];
+
+        //             // Fix y values to two decimal places
+        //             seriesData.push({
+        //                 name: 'SourceFILE',
+        //                 y: parseFloat(((SourceFILE / TotalSource) * 100).toFixed(2))
+        //             });
+        //             seriesData.push({
+        //                 name: 'SourceAPI',
+        //                 y: parseFloat(((SourceAPI / TotalSource) * 100).toFixed(2))
+        //             });
+        //             seriesData.push({
+        //                 name: 'SourceDB',
+        //                 y: parseFloat(((SourceDB / TotalSource) * 100).toFixed(2))
+        //             });
+
+        //             return {
+        //                 series: [
+        //                     { name: 'Overview', data: seriesData }
+        //                 ],
+        //             };
+        //         } catch (error) {
+        //             showSettlementChartHideLoader()
+        //             console.log('Error fetching data:' + error);
+        //         }
+        //     }
+        //     async function SettlementOverAllSourceCount(containerId, chartType, matchType, roleName) {
+        //         const data = await fetchSettlementChartDataOverAllSource(matchType, roleName);
+        //         if (!data || !data.series || data.series.length === 0) {
+        //             return;
+        //         }
+        //         else {
+        //             //$("." + containerId).show();
+        //         }
+
+        //         var chartOptions = {
+        //             colors: ['var(--colors_materialmenu_selecteditembackground)', '#434348', '#90ed7d', '#f7a35c'],
+        //             chart: {
+        //                 renderTo: containerId,
+        //                 type: chartType,
+        //                 backgroundColor: 'rgba(255, 255, 255, 0.1)',
+        //                 events: {
+        //                     drilldown: function (e) {
+        //                         //alert('Drilled down to ' + e.point.name);
+        //                     }
+        //                 }
+        //             },
+        //             title: {
+        //                 text: 'Overall Source Count',
+        //                 style: {
+        //                     color: 'var(--colors_materialmenu_selecteditembackground)',
+        //                     fontSize: '20px'
+        //                 }
+        //             },
+        //             xAxis: {
+        //                 type: 'category',
+        //                 labels: {
+        //                     style: {
+        //                         color: '#4CAF50'
+        //                     }
+        //                 }
+        //             },
+        //             yAxis: {
+        //                 title: {
+        //                     text: 'Values',
+        //                     style: {
+        //                         color: 'var(--colors_materialmenu_selecteditembackground)',
+        //                         fontSize: '16px'
+        //                     }
+        //                 },
+        //                 labels: {
+        //                     style: {
+        //                         color: '#4CAF50'
+        //                     }
+        //                 }
+        //             },
+        //             legend: {
+        //                 enabled: true,
+        //                 itemStyle: {
+        //                     color: '#4CAF50'
+        //                 }
+        //             },
+        //             plotOptions: {
+        //                 series: {
+        //                     borderWidth: 0,
+        //                     dataLabels: {
+        //                         enabled: true,
+        //                         format: '{point.name}: {point.y:.1f}%',
+        //                         style: {
+        //                             color: '#000000'
+        //                         }
+        //                     }
+        //                 },
+        //                 pie: {
+        //                     showInLegend: true
+        //                 }
+        //             },
+        //             series: [{
+        //                 name: 'Source',
+        //                 colorByPoint: true,
+        //                 data: data.series[0].data
+        //             }],
+
+        //         };
+
+        //         var chart = new Highcharts.Chart(chartOptions);
+
+        //         document.getElementById('chartType').addEventListener('change', function () {
+        //             var newType = this.value.toFixed(2);
+        //             chart.update({
+        //                 chart: {
+        //                     type: newType
+        //                 }
+        //             });
+        //         });
+        //     }
+        //     SettlementOverAllSourceCount("SettlementOverAllSourceCount", "line", 0, "Admin");
+
+        //     //----------------------------
+        //     //---- Over All Chart Destination------
+        //     //----------------------------
+        //     async function fetchSettlementChartDataOverAllDest() {
+        //         try {
+        //             let obj = {
+        //                 "dateTime": formattedDate,
+        //                 "ApiType": "Settlement"
+        //             };
+        //             const response = await fetch('rest/prDataStatisticeAPI', {
+        //                 method: 'POST',
+        //                 headers: { "Content-type": "application/json; charset=UTF-8", 'Authorization': token },
+        //                 body: JSON.stringify(obj)
+        //             });
+
+        //             if (!response.ok) {
+        //                 throw new Error(`HTTP error! status: ${response.status}`);
+        //             }
+
+        //             const apiResponse = await response.json();
+        //             const { Data, Level1, Level2, Level3, Settlement } = apiResponse.SDT_ChartData;
+        //             const [objec] = Settlement;
+        //             const { TotalSource, SourceAPI, SourceDB, SourceFILE, DestAPI, DestDB, DestFILE, TotalDest } = objec;
+
+        //             const seriesData = [];
+
+        //             seriesData.push({
+        //                 name: 'DestFILE',
+        //                 y: (DestFILE / TotalDest) * 100
+        //             });
+        //             seriesData.push({
+        //                 name: 'DestAPI',
+        //                 y: (DestAPI / TotalDest) * 100
+        //             });
+        //             seriesData.push({
+        //                 name: 'DestDB',
+        //                 y: (DestDB / TotalDest) * 100
+        //             });
+
+        //             return {
+        //                 series: [
+        //                     { name: 'Overview', data: seriesData }
+        //                 ],
+        //             };
+        //         } catch (error) {
+        //             showSettlementChartHideLoader()
+        //             console.log('Error fetching data:' + error);
+        //         }
+        //     }
+        //     async function SettlementOverAllDestCount(containerId, chartType, matchType, roleName) {
+        //         const data = await fetchSettlementChartDataOverAllDest(matchType, roleName);
+        //         if (!data || !data.series || data.series.length === 0) {
+        //             return;
+        //         }
+        //         else {
+        //             //$("." + containerId).show();
+        //         }
+
+        //         var chartOptions = {
+        //             colors: ['var(--colors_materialmenu_selecteditembackground)', '#434348', '#90ed7d', '#f7a35c'],
+        //             chart: {
+        //                 renderTo: containerId,
+        //                 type: chartType,
+        //                 backgroundColor: 'rgba(255, 255, 255, 0.1)',
+        //                 events: {
+        //                     drilldown: function (e) {
+        //                         //alert('Drilled down to ' + e.point.name);
+        //                     }
+        //                 }
+        //             },
+        //             title: {
+        //                 text: 'Overall Destination Count',
+        //                 style: {
+        //                     color: 'var(--colors_materialmenu_selecteditembackground)',
+        //                     fontSize: '20px'
+        //                 }
+        //             },
+        //             xAxis: {
+        //                 type: 'category',
+        //                 labels: {
+        //                     style: {
+        //                         color: '#4CAF50'
+        //                     }
+        //                 }
+        //             },
+        //             yAxis: {
+        //                 title: {
+        //                     text: 'Values',
+        //                     style: {
+        //                         color: 'var(--colors_materialmenu_selecteditembackground)',
+        //                         fontSize: '16px'
+        //                     }
+        //                 },
+        //                 labels: {
+        //                     style: {
+        //                         color: '#4CAF50'
+        //                     }
+        //                 }
+        //             },
+        //             legend: {
+        //                 enabled: true,
+        //                 itemStyle: {
+        //                     color: '#4CAF50'
+        //                 }
+        //             },
+        //             plotOptions: {
+        //                 series: {
+        //                     borderWidth: 0,
+        //                     dataLabels: {
+        //                         enabled: true,
+        //                         format: '{point.name}: {point.y:.1f}%',
+        //                         style: {
+        //                             color: '#000000'
+        //                         }
+        //                     }
+        //                 },
+        //                 pie: {
+        //                     showInLegend: true
+        //                 }
+        //             },
+        //             series: [{
+        //                 name: 'Destination',
+        //                 colorByPoint: true,
+        //                 data: data.series[0].data
+        //             }],
+
+        //         };
+
+        //         var chart = new Highcharts.Chart(chartOptions);
+
+        //         document.getElementById('chartType').addEventListener('change', function () {
+        //             var newType = this.value;
+        //             chart.update({
+        //                 chart: {
+        //                     type: newType
+        //                 }
+        //             });
+        //         });
+        //     }
+        //     SettlementOverAllDestCount("SettlementOverAllDestCount", "pie", 0, "Admin");
+
+
+        // }
+        // Settlementchart();
+    }
+
 
     //________________________________________
     //___________ Refresh Chart ______________

@@ -852,15 +852,38 @@
                             initComplete: function () {
                                 var api = this.api();
                                 // Handle row selection
-                                $('#dataTable tbody').on('click', 'tr:not(.dtrg-group)', function () {
+                                // $('#dataTable tbody').on('click', 'tr:not(.dtrg-group)', function () {
+                                //     if (invFilterVal == '') {
+                                //         if (settleCategoryIdVal == '') {
+                                //             $(this).toggleClass('selected');
+                                //             updateSelectedRows();
+                                //         }
+                                //     }
+
+                                // });
+
+
+                                // daniyal code 
+                                $('#dataTable tbody').on('click', 'tr:not(.dtrg-group)', function (event) {
                                     if (invFilterVal == '') {
                                         if (settleCategoryIdVal == '') {
-                                            $(this).toggleClass('selected');
+
+                                            if (!event.ctrlKey) {
+                                                $('#dataTable tbody tr').removeClass('selected');
+                                                $(this).addClass('selected');
+                                            } else {
+                                                $(this).toggleClass('selected');
+                                            }
+
+                                            // Selected rows ko update karein
                                             updateSelectedRows();
                                         }
                                     }
-
                                 });
+
+
+
+                                // daniyal code 
 
 
 
@@ -1246,6 +1269,8 @@
                 //dropdownMenu.classList.toggle('open');
             });
         }
+
+
 
         function fnLoadSelect(indexSelect) {
             var colname = $('#dropdownMenuButton' + indexSelect).data('colname');
