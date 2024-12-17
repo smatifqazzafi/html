@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <title>Advanced Notification Email Template</title>
+    <style media="all" type="text/css">
+        
+        body, table, td, a {
+            -webkit-text-size-adjust: 100%;
+            -ms-text-size-adjust: 100%;
+        }
+        table, td {
+            mso-table-lspace: 0pt;
+            mso-table-rspace: 0pt;
+        }
+        img {
+            -ms-interpolation-mode: bicubic;
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #f0f4f8;
+            font-family: 'Roboto', Arial, sans-serif;
+            color: #333333;
+        }
+        .container {
+            width: 100%;
+            max-width: 600px;
+            margin: 40px auto;
+            background-color: #ffffff;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        }
+        .header {
+            padding: 20px;
+            text-align: center;
+            background: linear-gradient(135deg, #6b73ff 0%, #000dff 100%);
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 26px;
+            color: #ffffff;
+            font-weight: 700;
+        }
+        .content {
+            padding: 30px;
+        }
+        .content h2 {
+            font-size: 22px;
+            margin: 0 0 10px 0;
+            color: #333333;
+            font-weight: 700;
+        }
+        .content p {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #555555;
+            margin: 10px 0;
+        }
+        .button {
+            display: inline-block;
+            padding: 14px 28px;
+            margin: 20px 0;
+            background-color: #6b73ff;
+            color: #ffffff !important;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 700;
+            transition: background-color 0.3s ease;
+        }
+        .button:hover {
+            background-color: #575bf7;
+        }
+        .footer {
+            padding: 20px;
+            text-align: center;
+            background-color: #f0f4f8;
+            font-size: 14px;
+            color: #999999;
+        }
+        .warning .header {
+            background: linear-gradient(135deg, #f7971e 0%, #ffd200 100%);
+        }
+        .alert .header {
+            background: linear-gradient(135deg, #ff512f 0%, #dd2476 100%);
+        }
+        .critical .header {
+            background: linear-gradient(135deg, #757f9a 0%, #d7dde8 100%);
+        }
+        .icon {
+            width: 50px;
+            height: 50px;
+            margin-bottom: 20px;
+            display: inline-block;
+        }
+        @media screen and (max-width: 600px) {
+            .container {
+                margin: 20px auto;
+            }
+            .header h1 {
+                font-size: 22px;
+            }
+            .content h2 {
+                font-size: 20px;
+            }
+            .button {
+                padding: 12px 24px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <table class='container #alertType' cellpadding='0' cellspacing='0'>
+        <tr>
+            <td class='header'>
+                <h1>#TitleMesage</h1>
+            </td>
+        </tr>
+        <tr>
+            <td class='content'>
+                <div style='text-align:center;'>
+                    #alertIcon
+                </div>
+                <h2>Account Activity Alert</h2>
+                <p>Dear User,</p>
+                <p>We have detected in <b>#App_Module</b> you have reached <b>#Percentage</b> band Breached of your transactional band (<b>#LimitUsed Breached</b>). Please upgrade your license to continue uninterrupted service.</p>
+            </td>
+        </tr>
+        <tr>
+            <td class='footer'>
+                &copy; 2024 AMFCO International. All rights reserved.<br>
+                <!-- <a href='#' style='color: #999999; text-decoration: underline;'>Unsubscribe</a> -->
+            </td>
+        </tr>
+    </table>
+</body>
+</html>
