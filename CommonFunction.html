@@ -285,6 +285,16 @@
         });
 }
 
+    function formatNumberWithCommas(number) {
+
+        if (number == null || number === '' || isNaN(number)) {
+            return '0';
+        }
+        return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    }
+
+
+
     function formatDateFromString(dateString) {
     // Extract year, month, and day from the input string
 

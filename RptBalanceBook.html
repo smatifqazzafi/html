@@ -45,7 +45,7 @@
             #dataTable tbody tr.dtrg-group.dtrg-start.dtrg-level-0 {
                 background-color: var(--colors_backgroundcolor) !Important;
             }
-          
+
             /* Investigation Work Start */
 
             .tag-input-container {
@@ -287,10 +287,9 @@
                 justify-content: center !Important;
                 border-bottom: 1px solid white;
             }
-
         </style>
     </head>
-      
+
     <div id="container">
         <!-- Your content goes here -->
     </div>
@@ -309,7 +308,7 @@
             </div> -->
             <div id="mainHeader">
                 <div id="mainHeaderLeft" style="float: left;">
-            
+
                 </div>
             </div>
             <div class="table-responsive">
@@ -317,8 +316,8 @@
                     class="display table table-bordered gx-tab-spacing-fix-2 GridWithPaginationBar GridWithBorderColor WorkWith table-responsive">
                     <thead id="tableHeader">
                         <!-- Table header will be populated dynamically by JavaScript -->
-                         <!-- Loader element -->
-                         <div id="loader" style="display: none;">
+                        <!-- Loader element -->
+                        <div id="loader" style="display: none;">
                             <i class="fa fa-spinner fa-spin"></i> Loading...
                         </div>
                     </thead>
@@ -344,21 +343,7 @@
                             <option value="300">300</option>
                         </select>
                     </div>
-                    <!-- Sum of C -->
-                    <div class="col-md-2" style="padding-top:8px">
-                        <label for="sum-C">Sum of CR :</label>
-                        <label id="sum-C">0</label>
-                    </div>
-                    <!-- Sum of D -->
-                    <div class="col-md-2" style="padding-top:8px">
-                        <label for="sum-D">Sum of DR:</label>
-                        <label id="sum-D">0</label>
-                    </div>
-                    <!-- Difference of C and D -->
-                    <div class="col-md-2" style="padding-top:8px">
-                        <label for="difference-CD">Difference:</label>
-                        <label id="difference-CD">0</label>
-                    </div>
+
 
 
 
@@ -494,7 +479,7 @@
 
 
         $(document).ready(function () {
-           
+
             var columnSearchValues = [];
             var chkOrder;
             var columnDefs = [];
@@ -564,11 +549,23 @@
                                         "targets": indexs, // Assuming index corresponds to column index
                                         "render": function (data, type, row) {
                                             // Example: Format the data as needed, for example, convert it to uppercase
-                                             return formatDateFromString(data);
+                                            return formatDateFromString(data);
                                         }
                                     };
                                     columnDefs.push(columnDef);
-                                } else {
+                                }
+                                else if (column.colDataType == 'A') {
+                                    //headerFilterHtml += '<th gx-tab-padding-fix-1 WWActionGroupColumn  GridWithPaginationBar GridWithBorderColor WorkWithTitle><div class="col-md-12"><input type="date" class="mycolumnSearchDate MyGridTextBox wwp-daterange-picker-input" placeholder="Search ' + column.colName + '" data-column="' + column.colDBName + '" /> </div>' + fnGenDropDown(indexs, 13, column.colDBName, column.colName) + '</th>';
+                                    var columnDef = {
+                                        "targets": indexs, // Assuming index corresponds to column index
+                                        "render": function (data, type, row) {
+                                            // Example: Format the data as needed, for example, convert it to uppercase
+                                            return formatNumberWithCommas(data);
+                                        }
+                                    };
+                                    columnDefs.push(columnDef);
+                                }
+                                else {
                                     //  headerFilterHtml += '<th gx-tab-padding-fix-1 WWActionGroupColumn  GridWithPaginationBar GridWithBorderColor WorkWithTitle><div class="col-md-12"><input type="text" class="mycolumnSearch MyGridTextBox"  data-column="' + column.colDBName + '" /></div>' + fnGenDropDown(indexs, 25, column.colDBName, column.colName) + '</th>';
                                 }
                             }
@@ -735,8 +732,8 @@
                                     text: '<i class="fa-solid fa-download"></i> Export PDF',
                                     action: function (e, dt, node, config) {
                                         $(node).attr('id', 'ExportPdfButton');
-                                        fnExportPDFBtn("aprBalanceBookReport","BalanceBookReport");
-                                        
+                                        fnExportPDFBtn("aprBalanceBookReport", "BalanceBookReport");
+
 
                                     },
                                     init: function (dt, node, config) {
@@ -789,7 +786,7 @@
 
 
                             ],
-                            
+
 
                             "columnDefs": columnDefs,
                             initComplete: function () {
@@ -799,8 +796,8 @@
                                 $('#dataTable tbody').on('click', 'tr:not(.dtrg-group)', function () {
                                     if (invFilterVal == '') {
                                         if (settleCategoryIdVal == '') {
-                                            $(this).toggleClass('selected');
-                                            updateSelectedRows();
+                                            // $(this).toggleClass('selected');
+                                            // updateSelectedRows();
                                         }
                                     }
 
@@ -1038,7 +1035,7 @@
                 event.stopPropagation();
                 table.ajax.reload();
             });
-           
+
 
             dropdownBtn.addEventListener('click', function (event) {
                 // Stop event propagation to prevent closing the parent dropdown
@@ -1178,7 +1175,7 @@
                 }
             });
         }
-       
+
 
         function fnclearFilterButton() {
             $('#myfilterPanel').toggleClass('active');
@@ -1196,7 +1193,7 @@
                     url: 'rest/wsSaveColGridFilter',
                     type: 'GET',
                     headers: {
-                    'Authorization': pFilter.token
+                        'Authorization': pFilter.token
                     },
                     dataType: 'json',
                     data: {

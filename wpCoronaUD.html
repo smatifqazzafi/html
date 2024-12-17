@@ -8,8 +8,6 @@
         <link rel="stylesheet" href="MyAssets/Scripts/css/MyCommonCss.css">
         <link rel="stylesheet" href="MyAssets/Scripts/css/bootstrap-multiselect.css">
         <style>
-
-            
             #dataTable tbody tr.dtrg-group.dtrg-start.dtrg-level-0 {
                 background-color: var(--colors_backgroundcolor) !Important;
             }
@@ -293,7 +291,7 @@
             <div class="form-group">
                 <div class="col-md-12">
                     <div class="col-md-1" style="Padding-top:8px">
-                        <label for="pageLength">Page Length :</label>
+                        <label for="pageLength">Page Length:</label>
                     </div>
                     <div class="col-md-2">
                         <select id="pageLength" class="form-control">
@@ -435,6 +433,9 @@
 
         $(document).ready(function () {
 
+            if (fnGetPageName() == 'wpinvestigationcase') {
+                $('#sumAmtdiv').hide();
+            }
             var columnSearchValues = [];
             var chkOrder;
             var columnDefs = [];
@@ -442,7 +443,7 @@
             //     $('#myfilterPanel').addClass('active');
             // });
 
-            debugger;
+
             $('#closeFilterPanel').click(function () {
                 $('#myfilterPanel').removeClass('active');
             });
@@ -452,6 +453,9 @@
                 data: {
                     //panelType: panelType
                 },
+                headers: {
+                    'Authorization': pFilter.token
+                },
                 success: function (data) {
                     if (data && data.myCols && data.myCols.length > 0) {
                         var headerHtml = '';
@@ -459,7 +463,7 @@
                         var headerFullHtml = '';
                         showLoader();
                         filteredColList = filteredColJson !== '[]' && filteredColJson !== '' ? JSON.parse(filteredColJson) : [];
-                        //data.myCols.unshift({ colIndex: 0, colName: 'Action', colDBName: 'Action', colDataType: 2 })
+                        data.myCols.unshift({ colIndex: 0, colName: 'Action', colDBName: 'Action', colDataType: 2 })
 
                         //Remove Some Column From Array
 
@@ -504,7 +508,19 @@
                                         }
                                     };
                                     columnDefs.push(columnDef);
-                                } else {
+                                }
+                                else if (column.colDataType == 'A') {
+                                    //headerFilterHtml += '<th gx-tab-padding-fix-1 WWActionGroupColumn  GridWithPaginationBar GridWithBorderColor WorkWithTitle><div class="col-md-12"><input type="date" class="mycolumnSearchDate MyGridTextBox wwp-daterange-picker-input" placeholder="Search ' + column.colName + '" data-column="' + column.colDBName + '" /> </div>' + fnGenDropDown(indexs, 13, column.colDBName, column.colName) + '</th>';
+                                    var columnDef = {
+                                        "targets": indexs, // Assuming index corresponds to column index
+                                        "render": function (data, type, row) {
+                                            // Example: Format the data as needed, for example, convert it to uppercase
+                                             return formatNumberWithCommas(data);
+                                        }
+                                    };
+                                    columnDefs.push(columnDef);
+                                }
+                                else {
                                     //  headerFilterHtml += '<th gx-tab-padding-fix-1 WWActionGroupColumn  GridWithPaginationBar GridWithBorderColor WorkWithTitle><div class="col-md-12"><input type="text" class="mycolumnSearch MyGridTextBox"  data-column="' + column.colDBName + '" /></div>' + fnGenDropDown(indexs, 25, column.colDBName, column.colName) + '</th>';
                                 }
                             }
@@ -561,7 +577,7 @@
                         var filterFieldsHtml = `<div id="filterPanel">
                 <p id="filterMessage">Filtered by: None</p></div>`;
                         data.myCols.forEach(function (column, indexs) {
-                           
+
                             if (column.colDBName !== 'Action') {
                                 filterFieldsHtml += '<div class="filter-field">';
                                 filterFieldsHtml += fnGenDropDown(indexs, 25, column.colDBName, column.colName) + '<label style="margin-top: 5px" for="filter-' + column.colDBName + '">' + column.colName + '&nbsp</label>';
@@ -598,6 +614,9 @@
                             ajax: {
                                 url: 'rest/wsCoronaUD',
                                 type: 'GET',
+                                headers: {
+                                    'Authorization': pFilter.token
+                                },
                                 data: function (d) {
                                     var searchData = {};
                                     $('.columnSearch').each(function () {
@@ -720,15 +739,35 @@
                             initComplete: function () {
                                 var api = this.api();
                                 // Handle row selection
-                                $('#dataTable tbody').on('click', 'tr:not(.dtrg-group)', function () {
+                                // $('#dataTable tbody').on('click', 'tr:not(.dtrg-group)', function () {
+                                //     if (invFilterVal == '') {
+                                //         if (settleCategoryIdVal == '') {
+                                //             $(this).toggleClass('selected');
+                                //             updateSelectedRows();
+                                //         }
+                                //     }
+
+                                // });
+
+                                $('#dataTable tbody').on('click', 'tr:not(.dtrg-group)', function (event) {
+                                    // Agar invFilterVal aur settleCategoryIdVal ki conditions match ho rahi hain
                                     if (invFilterVal == '') {
                                         if (settleCategoryIdVal == '') {
-                                            $('#dataTable tbody tr').removeClass('selected'); // Remove 'selected' class from all rows
-                                            $(this).addClass('selected'); // Add 'selected' class to the clicked row
+                                            // Agar Ctrl key press nahi hai toh sirf ek row select ho
+                                            if (!event.ctrlKey) {
+                                                $('#dataTable tbody tr').removeClass('selected'); // Baaki rows ka selection hata de
+                                                $(this).addClass('selected'); // Sirf current row ko select kare
+                                            } else {
+                                                // Agar Ctrl key press hai, toh toggle selection for multiple rows
+                                                $(this).toggleClass('selected');
+                                            }
+
+                                            // Selected rows ko update karein
                                             updateSelectedRows();
                                         }
                                     }
                                 });
+
 
 
 
@@ -782,6 +821,9 @@
                                     url: 'rest/wsSaveColGridFilter',
                                     type: 'GET',
                                     dataType: 'json',
+                                    headers: {
+                                        'Authorization': pFilter.token
+                                    },
                                     data: {
                                         filterJson: JSON.stringify(listColumnGridFilter),
                                         savedFilterId: savedFilterId,
@@ -810,6 +852,9 @@
                                     url: 'rest/wsSaveColGridFilter',
                                     type: 'GET',
                                     dataType: 'json',
+                                    headers: {
+                                        'Authorization': pFilter.token
+                                    },
                                     data: {
                                         filterJson: JSON.stringify(listColumnGridFilter),
                                         savedFilterId: savedFilterId,
@@ -848,22 +893,107 @@
                 contextMenuItems = {};
 
                 // Conditionally add items based on the value of panelType
-                contextMenuItems["CardAccount"] = { name: "Card Account", icon: "inv" };
+                if (pFilter.matchSts === '') {
+                    contextMenuItems["Investigation"] = { name: "Start Investigation", icon: "inv" };
+                    contextMenuItems["ForceUnMatch"] = { name: "Force UnMatch", icon: "unmatch" };
+                    contextMenuItems["ForceMatch"] = { name: "Force Match", icon: "match" };
+                    contextMenuItems["ViewHistory"] = { name: "View History", icon: "vhistory" };
+                } else if (pFilter.matchSts === '%Match%') {
+                    contextMenuItems["ForceUnMatch"] = { name: "Force UnMatch", icon: "unmatch" };
+                    contextMenuItems["ViewHistory"] = { name: "View History", icon: "match" };
+                } else if (pFilter.matchSts === 'Open') {
+                    contextMenuItems["Investigation"] = { name: "Start Investigation", icon: "inv" };
+                    contextMenuItems["ForceMatch"] = { name: "Force Match", icon: "match" };
+                    contextMenuItems["ViewHistory"] = { name: "View History", icon: "vhistory" };
+                } else if (pFilter.matchSts.toString() === '4') {
 
+                    if (fnGetPageName() == 'wpauthorizationpendingcash') {
+                        contextMenuItems["Investigation"] = { name: "Start Investigation", icon: "inv" };
+                        contextMenuItems["ForceMatch"] = { name: "Accept", icon: "match" };
+                        contextMenuItems["RejectReq"] = { name: "Reject", icon: "unmatch" };
+                        contextMenuItems["ViewHistory"] = { name: "View History", icon: "vhistory" };
+                    }
+                    else if (fnGetPageName() == 'wpauthorizationumpendingcash') {
+                        contextMenuItems["Investigation"] = { name: "Start Investigation", icon: "inv" };
+                        contextMenuItems["ForceUnMatch"] = { name: "Accept", icon: "match" };
+                        contextMenuItems["RejectReqUM"] = { name: "Reject", icon: "unmatch" };
+                        contextMenuItems["ViewHistory"] = { name: "View History", icon: "vhistory" };
+                    }
+                    else if (pFilter.NoAction == 1) {
+                        contextMenuItems["NoAction"] = { name: "No Action", icon: "stop" };
+                    } else {
+                        contextMenuItems["Investigation"] = { name: "Start Investigation", icon: "inv" };
+                        contextMenuItems["ForceMatch"] = { name: "Force Match", icon: "match" };
+                        contextMenuItems["ForceUnMatch"] = { name: "Force UnMatch", icon: "unmatch" };
+                        contextMenuItems["ViewHistory"] = { name: "View History", icon: "vhistory" };
+                    }
+                }
+                else {
+                    contextMenuItems["NoAction"] = { name: "No Action", icon: "stop" };
+                }
 
                 // Initialize the context menu
                 $.contextMenu({
                     selector: '#dataTable tbody tr',
                     callback: function (key, options) {
                         var row = table.row(options.$trigger).data(); // Get data of clicked row
-
-                        if (key == 'CardAccount') {
-                            var defaultValue = 0;
-                            var firstValue = selectedColumnId.length > 0 ? selectedColumnId[0].PACCID : defaultValue;
-                            window.open('wpCoronaCardPhyAccount.aspx?PACCID=' + firstValue);
-
+                        // Perform action based on the selected row data or key
+                        const allLcSame = selectedColumnId.every(item => item.AccLifeCycleId === selectedColumnId[0].AccLifeCycleId);
+                        const masterExist = selectedColumnId.filter(item => item.CPAccCategory === 'Master').length > 0
+                        if (key == 'Investigation') {
+                            debugger;
+                            const alreadyInv = selectedColumnId.find(e => e.InvStatus >= 1);
+                            if (alreadyInv != null && alreadyInv.DataId != '') {
+                                alert('Already in Investigation Id: ' + alreadyInv.DataId);
+                            } else {
+                                showFloatingContainerStartInvestigation();
+                            }
+                        } else if (key == 'ForceMatch') {
+                            debugger;
+                            const isOnlyOpen = selectedColumnId.every(item => item.CTranProcMatchStat === 'Open');
+                           // if (allLcSame && masterExist && isOnlyOpen) {
+                           if(true){
+                                acceptForceMatch = true;
+                                fnGetAuthLevel(selectedColumnId[0].AccLifeCycleId, true, true);
+                            } else {
+                                if (!allLcSame) {
+                                    alert('Please select one Life Cycle transactions for force match');
+                                }
+                                if (!masterExist) {
+                                    alert('Please select one master transaction for force match');
+                                }
+                                if (!isOnlyOpen) {
+                                    alert('Please select only open transactions for force match');
+                                }
+                            }
                         }
-
+                        else if (key == 'ForceUnMatch') {
+                            if (allLcSame) {
+                                acceptForceMatch = true;
+                                fnGetAuthLevel(selectedColumnId[0].AccLifeCycleId, true, false);
+                            } else {
+                                alert('Please select one Life Cycle transactions for force unmatch');
+                            }
+                        }
+                        else if (key == 'RejectReq') {
+                            if (allLcSame) {
+                                fnGetAuthLevel(selectedColumnId[0].AccLifeCycleId, false, true);
+                                acceptForceMatch = false;
+                            } else {
+                                alert('Please select same match set transactions for this action');
+                            }
+                        }
+                        else if (key == 'RejectReqUM') {
+                            if (allLcSame) {
+                                fnGetAuthLevel(selectedColumnId[0].AccLifeCycleId, false, false);
+                                acceptForceMatch = false;
+                            } else {
+                                alert('Please select same match set transactions for this action');
+                            }
+                        }
+                        else if (key == 'ViewHistory') {
+                            viewHistory(selectedColumnId[0].DataId, selectedColumnId[0].AccLifeCycleId);
+                        }
                     },
                     items: contextMenuItems
                 });
@@ -910,12 +1040,27 @@
                 var selectedRows = table.rows('.selected').data();
                 selectedColumnId = [];
                 selectedRows.each(function (row, index) {
-                    selectedColumnId.push({ PACCID: row.PACCID });
+                    selectedColumnId.push({ DataId: row.GUGLGID  ,AccLifeCycleId: row.GIC20C15,  });
                 });
+            //     var sumC = 0;
+            //     var sumD = 0;
 
-            }
+            //     // Iterate through each item in the data array
+            //     $.each(selectedColumnId, function (index, item) {
+            //         if (item.Sign === "C") {
+            //             sumC += item.Amount;
+            //         } else if (item.Sign === "D") {
+            //             sumD += item.Amount;
+            //         }
+            //     });
+
+            //     // Calculate Sum of C - Sum of D
+            //     var result = (sumC - sumD).toFixed(4);
+            //     $('#sum-Amt').text(result);
+            // }
 
             getDepartments();
+            }
 
         });
         function fnGenDropDown(uniqueIndex, mleft, coldbName, colName) {
@@ -968,7 +1113,9 @@
                 data: {
                     FieldName: coldbName,
                     pFilterStr: JSON.stringify(pFilter),
-                    module:"CoronaCardAccount"
+                },
+                headers: {
+                    'Authorization': pFilter.token
                 },
                 success: function (data) {
                     // Populate multiselect dropdown with fetched data
@@ -1027,6 +1174,127 @@
 
         }
 
+        //region
+        // Pagination variables
+        let offset = 0;
+        const limit = 20;
+        let hasMoreData = true;
+        let buttonshow = 0;
+
+        function fnLoadSelect(indexSelect, Next = 0) {
+            if (Next == 0) {
+                offset = 0;
+                GetForReportGridSelect(indexSelect, Next);
+            } else {
+                offset += limit;
+                GetForReportGridSelect(indexSelect, Next);
+            }
+        }
+
+        function GetForReportGridSelect(indexSelect, Next) {
+            var colname = $('#dropdownMenuButton' + indexSelect).data('colname');
+            var coldbName = $('#dropdownMenuButton' + indexSelect).data('coldbname');
+            var btnDDL = $('#dropdownMenuButton' + indexSelect);
+            var filterDDL = $('#dropdownMenuButtonChild' + indexSelect);
+
+            // Disable button and show loading state
+            filterDDL.prop('disabled', true);
+            btnDDL.addClass('loader');
+
+            $.ajax({
+                url: 'rest/wsGetForGridSelectCashPaging', // Replace with your server endpoint URL
+                type: 'GET',
+                headers: {
+                    'Authorization': pFilter.token
+                },
+                data: {
+                    FieldName: coldbName,
+                    pFilterStr: JSON.stringify(pFilter),
+                    offset: offset,
+                    limit: limit,
+                },
+                success: function (data) {
+                    if (data.listSelect.length < limit) {
+                        hasMoreData = false;
+                    } else {
+                        hasMoreData = true;
+                    }
+
+                    $('#gridFilterDD' + indexSelect).empty();
+                    // Populate multiselect dropdown with fetched data
+                    $.each(data.listSelect, function (index, item) {
+                        if (item.colValue.length > 0) {
+                            $('#gridFilterDD' + indexSelect).append('<option value="' + item.colValue + '">' + item.colValue + '</option>');
+                        }
+                    });
+
+
+
+                    if (hasMoreData && Next == 0 && buttonshow == 0) {
+                        buttonshow = 1;
+                        $('#dropdownMenuButtonChild' + indexSelect).append(
+                            '<button id="NextButtonFilter" type="button"  onclick="fnLoadSelect(' + indexSelect + ', 1)" class="btn btn-primary"><i class="fa fa-arrow-right"></i></button>'
+                        );
+                    }
+
+
+                    // Initialize multiselect dropdown
+                    $('#gridFilterDD' + indexSelect).multiselect({
+                        buttonWidth: '200px',
+                        maxHeight: 300,
+                        nonSelectedText: `Select ${colname}`,
+                        enableFiltering: true,
+                        onChange: function (element, checked) {
+                            var selectedValues = $('#gridFilterDD' + indexSelect).val();
+                            if (selectedValues != '') {
+                                var existingSearch = listColumnGridFilter.find(function (search) {
+                                    return search.fieldName === coldbName;
+                                });
+                                if (existingSearch) {
+                                    const filteredList = listColumnGridFilter.filter(filterItem => filterItem.fieldName !== coldbName);
+                                    listColumnGridFilter = filteredList;
+                                    listColumnGridFilter.push(new colGridFilter(selectedValues, coldbName));
+                                } else {
+                                    listColumnGridFilter.push(new colGridFilter(selectedValues, coldbName));
+                                }
+                                updateFilterMessage();
+
+                            } else {
+                                var existingSearchN = listColumnGridFilter.find(function (search) {
+                                    return search.fieldName === coldbName;
+                                });
+                                if (existingSearchN) {
+                                    const filteredList = listColumnGridFilter.filter(filterItem => filterItem.fieldName !== coldbName);
+                                    listColumnGridFilter = filteredList;
+                                }
+                                updateFilterMessage();
+                            }
+                        }
+                    });
+
+
+                    $('#gridFilterDD' + indexSelect).multiselect('rebuild');
+
+                    //Close the dropdown after loading new data
+                    if (Next === 1) {
+                        btnDDL.removeClass('loader');
+                        btnDDL.dropdown('hide'); // Manually close dropdown after clicking "Next"
+                    }
+
+                    addEventListeners(indexSelect);
+                    btnDDL.removeClass('loader'); // Remove loading class
+                    filterDDL.prop('disabled', false);
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error fetching data:', error);
+                    btnDDL.removeClass('loader'); // Remove loading class
+                    filterDDL.prop('disabled', false);
+                }
+            });
+        }
+       
+
+        //endregion
         function fnclearFilterButton() {
             // This function will be called when the button with id "myButton" is clicked
             listColumnGridFilter = [];
@@ -1041,6 +1309,9 @@
                     url: 'rest/wsSaveColGridFilter',
                     type: 'GET',
                     dataType: 'json',
+                    headers: {
+                    'Authorization': pFilter.token
+                },
                     data: {
                         filterJson: JSON.stringify(listColumnGridFilter),
                         FilterColumnPosition: JSON.stringify(FilterColumnPosition),
@@ -1096,9 +1367,9 @@
 
             fetch(serviceURL, {
                 method: "POST",
-                mode: "no-cors",
+                //mode: "no-cors",
                 body: JSON.stringify(data),
-                headers: { "Content-type": "application/json; charset=UTF-8" }
+                headers: { "Content-type": "application/json; charset=UTF-8", 'Authorization': pFilter.token }
             })
                 .then(response => response.json())
                 .then(res => {
@@ -1126,6 +1397,9 @@
             $.ajax({
                 url: 'rest/wsFileDownload',
                 type: 'GET',
+                headers: {
+                    'Authorization': pFilter.token
+                },
                 // dataType: 'json',
                 // data: {
                 //     panelType: panelType,
@@ -1206,20 +1480,20 @@
 
         async function getDepartments() {
             data = {
-                Module: 'Digital'
+                Module: 'UD'
             };
 
-            // fetch('rest/wsGetDepartments', {
-            //     method: "POST",
-            //     mode: "no-cors",
-            //     body: JSON.stringify(data),
-            //     headers: { "Content-type": "application/json; charset=UTF-8" }
-            // })
-            //     .then(response => response.json())
-            //     .then(res => {
-            //         SDT_InvTemplate = res.SDT_InvTemplate;
-            //         renderTagHolder();
-            //     });
+            fetch('rest/wsGetDepartments', {
+                method: "POST",
+                //mode: "no-cors",
+                body: JSON.stringify(data),
+                headers: { "Content-type": "application/json; charset=UTF-8", 'Authorization': pFilter.token }
+            })
+                .then(response => response.json())
+                .then(res => {
+                    SDT_InvTemplate = res.SDT_InvTemplate;
+                    renderTagHolder();
+                });
         }
         function inputCheckSpace(val, event) {
             if (event.key === 'Enter' || event.key === ',' || event.key === ' ') {
@@ -1236,14 +1510,14 @@
                 colInvTemplateId: tags,
                 sTDataGroupMatchKey: selectedColumnId.map(e => e.DataId),
                 InvDataList: selectedColumnId,
-                Module: "Digital"
+                Module: "UD"
             };
 
             fetch('rest/wsStartInvestigationNew', {
                 method: "POST",
-                mode: "no-cors",
+                //mode: "no-cors",
                 body: JSON.stringify(data),
-                headers: { "Content-type": "application/json; charset=UTF-8" }
+                headers: { "Content-type": "application/json; charset=UTF-8", 'Authorization': pFilter.token }
             })
                 .then(response => response.json())
                 .then(res => {
@@ -1327,14 +1601,14 @@
         async function fnGetAuthLevel(AccLifeCycleId, accept, isForceMatchPrm) {
             var data = {
                 LCName: '',
-                moduleName: 'Digital',
+                moduleName: 'UD',
                 AccLifeCycleId: AccLifeCycleId
             };
             fetch('rest/wsGetTrLifeCycleRoleByLcName', {
                 method: "POST",
-                mode: "no-cors",
+                //mode: "no-cors",
                 body: JSON.stringify(data),
-                headers: { "Content-type": "application/json; charset=UTF-8" }
+                headers: { "Content-type": "application/json; charset=UTF-8", 'Authorization': pFilter.token }
             })
                 .then(response => response.json())
                 .then(res => {
@@ -1414,14 +1688,14 @@
             var data = {
                 DataId: DataId,
                 GrpAccId: GrpAccId,
-                Module: 'Digital'
+                Module: 'UD'
             };
 
             fetch('rest/wsGetTransactionHistory', {
                 method: "POST",
-                mode: "no-cors",
+                //mode: "no-cors",
                 body: JSON.stringify(data),
-                headers: { "Content-type": "application/json; charset=UTF-8" }
+                headers: { "Content-type": "application/json; charset=UTF-8", 'Authorization': pFilter.token }
             })
                 .then(response => response.json())
                 .then(res => {

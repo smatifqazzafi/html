@@ -340,21 +340,7 @@
                             <option value="300">300</option>
                         </select>
                     </div>
-                    <!-- Sum of C -->
-                <div class="col-md-2" style="padding-top:8px">
-                    <label for="sum-C">Sum of CR:</label>
-                    <label id="sum-C">0</label>
-                </div> 
-                <!-- Sum of D -->
-                <div class="col-md-2" style="padding-top:8px">
-                    <label for="sum-D">Sum of DR:</label>
-                    <label id="sum-D">0</label>
-                </div> 
-                <!-- Difference of C and D -->
-                <div class="col-md-2" style="padding-top:8px">
-                    <label for="difference-CD">Difference:</label>
-                    <label id="difference-CD">0</label>
-                </div> 
+                 
                 </div>
             </div>
         </div>
@@ -559,7 +545,19 @@
                                         }
                                     };
                                     columnDefs.push(columnDef);
-                                } else {
+                                }
+                                else if (column.colDataType == 'A') {
+                                    //headerFilterHtml += '<th gx-tab-padding-fix-1 WWActionGroupColumn  GridWithPaginationBar GridWithBorderColor WorkWithTitle><div class="col-md-12"><input type="date" class="mycolumnSearchDate MyGridTextBox wwp-daterange-picker-input" placeholder="Search ' + column.colName + '" data-column="' + column.colDBName + '" /> </div>' + fnGenDropDown(indexs, 13, column.colDBName, column.colName) + '</th>';
+                                    var columnDef = {
+                                        "targets": indexs, // Assuming index corresponds to column index
+                                        "render": function (data, type, row) {
+                                            // Example: Format the data as needed, for example, convert it to uppercase
+                                             return formatNumberWithCommas(data);
+                                        }
+                                    };
+                                    columnDefs.push(columnDef);
+                                }
+                                else {
                                     //  headerFilterHtml += '<th gx-tab-padding-fix-1 WWActionGroupColumn  GridWithPaginationBar GridWithBorderColor WorkWithTitle><div class="col-md-12"><input type="text" class="mycolumnSearch MyGridTextBox"  data-column="' + column.colDBName + '" /></div>' + fnGenDropDown(indexs, 25, column.colDBName, column.colName) + '</th>';
                                 }
                             }
@@ -788,8 +786,8 @@
                                 $('#dataTable tbody').on('click', 'tr:not(.dtrg-group)', function () {
                                     if (invFilterVal == '') {
                                         if (settleCategoryIdVal == '') {
-                                            $(this).toggleClass('selected');
-                                             updateSelectedRows();
+                                            // $(this).toggleClass('selected');
+                                            //  updateSelectedRows();
                                         }
                                     }
 

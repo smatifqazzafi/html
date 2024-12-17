@@ -420,6 +420,8 @@
     }
 
     function getLifeCycleCombo(sdt, currentLifeCycle) {
+        debugger;
+        
         let levelName = sdt.HierarchyLevelName;
         let levelType = sdt.HierarchyLevelType; 
 
@@ -438,18 +440,35 @@
         else {
             auxHTML = auxHTML + `<option value=' '> </option>`;
         }
+
+
+        // DANIYAL CODE 
+
         SDT_LifeCycle.forEach(x => {
-            let auxSelected = '';
-            //if(currentLifeCycle == x.TrLifeCycleName) auxSelected = 'selected';
+    let auxSelected = '';
+    //if(currentLifeCycle == x.TrLifeCycleName) auxSelected = 'selected';
             ////console.log(currentLifeCycle.filter(y => y.LifeCycleName == x.TrLifeCycleName));
             //console.log(x.AccLifeCycleName.trim());
             //console.log(currentLifeCycle);
-            if (currentLifeCycle.filter(y => y.LifeCycleName.trim() == x.AccLifeCycleName.trim()).length > 0) auxSelected = "✓";
+    // Check if the current lifecycle exists in the currentLifeCycle list
+    if (currentLifeCycle.filter(y => y.LifeCycleName.trim() == x.AccLifeCycleName.trim()).length > 0) {
+        auxSelected = "✓";
+    }
 
-            if ((x.Module == 'Digital' && levelType == 'Digital Admin') || (x.Module == 'Cash' && levelType == 'Cash Admin') || (x.Module == 'NonFinalcial' && levelType == 'Non Financial Admin') || levelType == 'Administrator') {
-                auxHTML = auxHTML + `<option value='${x.AccLifeCycleId}'>${auxSelected} ${x.AccLifeCycleName}</option>`;
-            }
-        });
+    // Add conditions for various modules
+    //console.log(x.Module+""+ levelType);
+    if (
+        (x.Module == 'Digital' && levelType == 'Digital Admin') || 
+        (x.Module == 'Cash' && levelType == 'Cash Admin') || 
+        (x.Module == 'NonFinalcial' && levelType == 'Non Financial Admin') || 
+        (x.Module == 'UD' && levelType == 'UD Admin') || levelType == 'Administrator'
+    ) {
+        auxHTML += `<option value='${x.AccLifeCycleId}'>${auxSelected} ${x.AccLifeCycleName}</option>`;
+    }
+});
+
+
+    // DANIYAL CODE 
 
         auxHTML = auxHTML + `</select>`;
 

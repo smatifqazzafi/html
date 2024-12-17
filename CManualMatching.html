@@ -293,10 +293,10 @@
                             <option value="300">300</option>
                         </select>
                     </div>
-                    <div class="col-md-1" style="Padding-top:8px">
+                    <!-- <div class="col-md-1" style="Padding-top:8px">
                         <label for="sum-Amt">Sum :</label>
                         <label id="sum-Amt">0</label>
-                    </div>
+                    </div> -->
                 </div>
             </div>
         </div>
@@ -553,7 +553,19 @@
                                         }
                                     };
                                     columnDefs.push(columnDef);
-                                } else {
+                                }
+                                else if (column.colDataType == 'A') {
+                                    //headerFilterHtml += '<th gx-tab-padding-fix-1 WWActionGroupColumn  GridWithPaginationBar GridWithBorderColor WorkWithTitle><div class="col-md-12"><input type="date" class="mycolumnSearchDate MyGridTextBox wwp-daterange-picker-input" placeholder="Search ' + column.colName + '" data-column="' + column.colDBName + '" /> </div>' + fnGenDropDown(indexs, 13, column.colDBName, column.colName) + '</th>';
+                                    var columnDef = {
+                                        "targets": indexs, // Assuming index corresponds to column index
+                                        "render": function (data, type, row) {
+                                            // Example: Format the data as needed, for example, convert it to uppercase
+                                             return formatNumberWithCommas(data);
+                                        }
+                                    };
+                                    columnDefs.push(columnDef);
+                                }
+                                else {
                                     //  headerFilterHtml += '<th gx-tab-padding-fix-1 WWActionGroupColumn  GridWithPaginationBar GridWithBorderColor WorkWithTitle><div class="col-md-12"><input type="text" class="mycolumnSearch MyGridTextBox"  data-column="' + column.colDBName + '" /></div>' + fnGenDropDown(indexs, 25, column.colDBName, column.colName) + '</th>';
                                 }
                             }
@@ -1421,7 +1433,19 @@
                                         }
                                     };
                                     columnDefs2.push(columnDef2);
-                                } else {
+                                } 
+                                else if (column.colDataType == 'A') {
+                                    //headerFilterHtml += '<th gx-tab-padding-fix-1 WWActionGroupColumn  GridWithPaginationBar GridWithBorderColor WorkWithTitle><div class="col-md-12"><input type="date" class="mycolumnSearchDate MyGridTextBox wwp-daterange-picker-input" placeholder="Search ' + column.colName + '" data-column="' + column.colDBName + '" /> </div>' + fnGenDropDown(indexs, 13, column.colDBName, column.colName) + '</th>';
+                                    var columnDef2 = {
+                                        "targets": indexs, // Assuming index corresponds to column index
+                                        "render": function (data, type, row) {
+                                            // Example: Format the data as needed, for example, convert it to uppercase
+                                             return formatNumberWithCommas(data);
+                                        }
+                                    };
+                                    columnDef2.push(columnDef2);
+                                }
+                                else {
                                     //  headerFilterHtml2 += '<th gx-tab-padding-fix-1 WWActionGroupColumn  GridWithPaginationBar GridWithBorderColor WorkWithTitle><div class="col-md-12"><input type="text" class="mycolumnSearch MyGridTextBox"  data-column="' + column.colDBName + '" /></div>' + fnGenDropDown2(indexs, 25, column.colDBName, column.colName) + '</th>';
                                 }
                             }
