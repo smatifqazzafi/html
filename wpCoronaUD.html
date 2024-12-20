@@ -316,7 +316,7 @@
         <div id="grayContainer"></div>
     </div>
     <div id="floatingContainerStartInvestigation" class="floatingContainerClass">
-        <div id="floatingContainerTitleStartInvestigation" class="TextBlockTitleMaterial">
+        <div id="floatingContainerTitleStartInvestigation" style="color: #000;" class="TextBlockTitleMaterial">
             Start Investigation
         </div>
         <div style="margin-top: 20px; font-size: 12px;">
@@ -356,7 +356,7 @@
 
     <!-- Investigation End -->
     <div id="floatingContainer" class="floatingContainerClass">
-        <div id="floatingContainerTitle" class="TextBlockTitleMaterial">
+        <div id="floatingContainerTitle" style="color: #000;" class="TextBlockTitleMaterial">
             You are about to force the matching of several transactions
         </div>
         <div style="margin-top: 20px; font-size: 12px;">
@@ -372,7 +372,7 @@
         </div>
     </div>
     <div id="floatingContainerHistory" class="floatingContainerClass">
-        <div id="floatingContainerHistoryTitle" class="TextBlockTitleMaterial">
+        <div id="floatingContainerHistoryTitle" style="color: #000;" class="TextBlockTitleMaterial">
             Transaction History
         </div>
         <div style="margin-top: 20px; font-size: 12px;">
@@ -657,15 +657,14 @@
 
                             },
                             rowCallback: function (row, data, index) {
-                                //Ahmed
-                                // if (data.DTranProcMatchStat.includes('Match')) {
-                                //     $(row).css('color', 'green');
-                                // } else if (data.DTranProcMatchStat === 'Open') {
-                                //     $(row).css('color', 'red');
-                                // }
-                                // else if (data.DTranProcMatchStat === 'Propose') {
-                                //     $(row).css('color', 'yellow');
-                                // }
+                                if (data.GUSTAT.startsWith('M')) {
+                                    $(row).css('color', 'green');
+                                } else if (data.GUSTAT.startsWith('O')) {
+                                    $(row).css('color', 'red');
+                                }
+                                else if (data.GUSTAT.startsWith('P')) {
+                                    $(row).css('color', '#eed202');
+                                }
                             },
                             // rowGroup: {
                             //     dataSrc: function (row) {
@@ -845,7 +844,7 @@
                             FilterColumnPosition = JSON.stringify(orderq);
                         });
                         table.on('column-visibility.dt', function (e, settings, column, state) {
-                            debugger;
+                            
                             var visibility = table.columns().visible().toArray();
                             if (savedFilterId > 0) {
                                 $.ajax({
@@ -893,27 +892,29 @@
                 contextMenuItems = {};
 
                 // Conditionally add items based on the value of panelType
-                if (pFilter.matchSts === '') {
+
+                debugger;
+                if (pFilter.matchSts === "") {
                     contextMenuItems["Investigation"] = { name: "Start Investigation", icon: "inv" };
                     contextMenuItems["ForceUnMatch"] = { name: "Force UnMatch", icon: "unmatch" };
                     contextMenuItems["ForceMatch"] = { name: "Force Match", icon: "match" };
                     contextMenuItems["ViewHistory"] = { name: "View History", icon: "vhistory" };
-                } else if (pFilter.matchSts === '%Match%') {
+                } else if (pFilter.matchSts === '%M%') {
                     contextMenuItems["ForceUnMatch"] = { name: "Force UnMatch", icon: "unmatch" };
                     contextMenuItems["ViewHistory"] = { name: "View History", icon: "match" };
-                } else if (pFilter.matchSts === 'Open') {
+                } else if (pFilter.matchSts === '%O%') {
                     contextMenuItems["Investigation"] = { name: "Start Investigation", icon: "inv" };
                     contextMenuItems["ForceMatch"] = { name: "Force Match", icon: "match" };
                     contextMenuItems["ViewHistory"] = { name: "View History", icon: "vhistory" };
                 } else if (pFilter.matchSts.toString() === '4') {
 
-                    if (fnGetPageName() == 'wpauthorizationpendingcash') {
+                    if (fnGetPageName() == 'wpudauthorizationpending') {
                         contextMenuItems["Investigation"] = { name: "Start Investigation", icon: "inv" };
                         contextMenuItems["ForceMatch"] = { name: "Accept", icon: "match" };
                         contextMenuItems["RejectReq"] = { name: "Reject", icon: "unmatch" };
                         contextMenuItems["ViewHistory"] = { name: "View History", icon: "vhistory" };
                     }
-                    else if (fnGetPageName() == 'wpauthorizationumpendingcash') {
+                    else if (fnGetPageName() == 'wpudauthorizationunpending') {
                         contextMenuItems["Investigation"] = { name: "Start Investigation", icon: "inv" };
                         contextMenuItems["ForceUnMatch"] = { name: "Accept", icon: "match" };
                         contextMenuItems["RejectReqUM"] = { name: "Reject", icon: "unmatch" };
@@ -936,12 +937,11 @@
                 $.contextMenu({
                     selector: '#dataTable tbody tr',
                     callback: function (key, options) {
-                        var row = table.row(options.$trigger).data(); // Get data of clicked row
-                        // Perform action based on the selected row data or key
+                        var row = table.row(options.$trigger).data(); 
+                        
                         const allLcSame = selectedColumnId.every(item => item.AccLifeCycleId === selectedColumnId[0].AccLifeCycleId);
-                        const masterExist = selectedColumnId.filter(item => item.CPAccCategory === 'Master').length > 0
                         if (key == 'Investigation') {
-                            debugger;
+                            
                             const alreadyInv = selectedColumnId.find(e => e.InvStatus >= 1);
                             if (alreadyInv != null && alreadyInv.DataId != '') {
                                 alert('Already in Investigation Id: ' + alreadyInv.DataId);
@@ -949,18 +949,14 @@
                                 showFloatingContainerStartInvestigation();
                             }
                         } else if (key == 'ForceMatch') {
-                            debugger;
-                            const isOnlyOpen = selectedColumnId.every(item => item.CTranProcMatchStat === 'Open');
-                           // if (allLcSame && masterExist && isOnlyOpen) {
-                           if(true){
+                            
+                            const isOnlyOpen = selectedColumnId.every(item => item.GUSTAT.startsWith('O'));
+                            if (allLcSame  && isOnlyOpen) {
                                 acceptForceMatch = true;
                                 fnGetAuthLevel(selectedColumnId[0].AccLifeCycleId, true, true);
                             } else {
                                 if (!allLcSame) {
                                     alert('Please select one Life Cycle transactions for force match');
-                                }
-                                if (!masterExist) {
-                                    alert('Please select one master transaction for force match');
                                 }
                                 if (!isOnlyOpen) {
                                     alert('Please select only open transactions for force match');
@@ -968,11 +964,14 @@
                             }
                         }
                         else if (key == 'ForceUnMatch') {
-                            if (allLcSame) {
+                            const isOnlyMatch = selectedColumnId.every(item => item.GUSTAT.startsWith('M'));
+                            if (allLcSame && isOnlyMatch) {
                                 acceptForceMatch = true;
                                 fnGetAuthLevel(selectedColumnId[0].AccLifeCycleId, true, false);
                             } else {
-                                alert('Please select one Life Cycle transactions for force unmatch');
+                               if (!isOnlyMatch) {
+                                    alert('Please select only Match transactions for force Un match');
+                                }
                             }
                         }
                         else if (key == 'RejectReq') {
@@ -1001,7 +1000,7 @@
 
             // Event listener for column search input
             $('#myfilterFieldsContainer').on('change', '.mycolumnSearch', function (e) {
-                debugger;
+                
                 var columnName = $(this).data('column');
                 var searchValue = $(this).val();
                 var existingSearch = columnSearchValues.find(function (search) {
@@ -1017,7 +1016,7 @@
                 table.ajax.reload();
             });
             $('#myfilterFieldsContainer').on('change', '.mycolumnSearchDate', function (e) {
-                debugger;
+                
                 var columnName = $(this).data('column');
                 var searchValue = $(this).val();
                 searchValue = formatDateToText(searchValue)
@@ -1040,7 +1039,7 @@
                 var selectedRows = table.rows('.selected').data();
                 selectedColumnId = [];
                 selectedRows.each(function (row, index) {
-                    selectedColumnId.push({ DataId: row.GUGLGID  ,AccLifeCycleId: row.GIC20C15,  });
+                    selectedColumnId.push({ DataId: row.GUGLGID,GUSTAT: row.GUSTAT, AccLifeCycleId: row.ContainerId});
                 });
             //     var sumC = 0;
             //     var sumD = 0;
@@ -1090,7 +1089,7 @@
             dropdownBtn.addEventListener('click', function (event) {
                 // Stop event propagation to prevent closing the parent dropdown
                 event.stopPropagation();
-                // debugger;
+                // 
                 // Toggle the dropdown menu visibility
                 var dropdownMenu = this;
                 var divd = dropdownMenu.querySelector('.btn-group');
@@ -1100,7 +1099,7 @@
         }
 
         function fnLoadSelect(indexSelect) {
-            debugger;
+            
             var colname = $('#dropdownMenuButton' + indexSelect).data('colname');
             var coldbName = $('#dropdownMenuButton' + indexSelect).data('coldbname');
             var btnDDL = $('#dropdownMenuButton' + indexSelect);
@@ -1292,7 +1291,7 @@
                 }
             });
         }
-       
+
 
         //endregion
         function fnclearFilterButton() {
@@ -1303,15 +1302,15 @@
             // Add your code here to perform actions when the button is clicked
         };
         function fnsaveFilterButton() {
-            debugger;
+            
             if (savedFilterId > 0) {
                 $.ajax({
                     url: 'rest/wsSaveColGridFilter',
                     type: 'GET',
                     dataType: 'json',
                     headers: {
-                    'Authorization': pFilter.token
-                },
+                        'Authorization': pFilter.token
+                    },
                     data: {
                         filterJson: JSON.stringify(listColumnGridFilter),
                         FilterColumnPosition: JSON.stringify(FilterColumnPosition),
@@ -1616,7 +1615,7 @@
                         alert(res.errorDescription);
                     }
                     else {
-                        debugger;
+                        
                         p_TrLifeCycleRoles = res.TrLifeCycleRoleMatchUserRoles;
                         if (p_TrLifeCycleRoles == 0) {
                             alert('You have no right for this action');
@@ -1653,15 +1652,15 @@
             (ev) => {
                 ev.preventDefault();
                 let sendComments = document.getElementById('floatingContainerComments').value;
-                debugger;
+                
                 if (sendComments) {
                     //   if(panelMode == 2 || panelMode == 3)
                     // {
                     if (isForceMatch) {
-                        callWebService('rest/wsMatchProposedTransactions', sendComments);
+                        callWebService('rest/wsManualMatchTransactionsUD', sendComments);
                     }
                     else if (!isForceMatch) {
-                        callWebService('rest/wsUnMatchTransactions', sendComments);
+                        callWebService('rest/wsManualUnMatchTransactionsUD', sendComments);
                     }
                 }
                 else {
@@ -1684,7 +1683,7 @@
         //Force Match End
         //History Start
         async function viewHistory(DataId, GrpAccId) {
-            debugger;
+            
             var data = {
                 DataId: DataId,
                 GrpAccId: GrpAccId,
@@ -1704,7 +1703,7 @@
                 });
         }
         function renderHistory(r, TDataKey) {
-            debugger;
+            
             let allEvents = r.SDT_DataEvent.map(
                 function (x) {
                     return {
@@ -1725,9 +1724,9 @@
                     }
                 });
 
-            let auxHTML = `<table style="display: block;" class="mainGridStyle header-fixed"><thead><tr><th class="thS">Creation Date</th><th class="thS">Match Status</th></tr></thead>
+            let auxHTML1 = `<table style="display: block;" class="mainGridStyle header-fixed"><thead><tr><th class="thS">Creation Date</th><th class="thS">Match Status</th></tr></thead>
                     <tbody><tr><td class="cTdPad">${r.LoadDate.replace('T', ' ')}</td><td class="cTdPad">${r.MatchStatus}</td></tr></tbody></table> <br><br>`;
-
+            let auxHTML = ''
             auxHTML = auxHTML + `<table style="display: block;" class="mainGridStyle header-fixed"><thead><tr><th class="thS">Date/Time</th><th class="thS">Event</th><th class="thS">User</th><th class="thS">Comments</th></tr></thead><tbody>`;
 
             try {
