@@ -171,6 +171,7 @@
                 border-radius: 3px;
                 cursor: pointer;
                 min-width: 0px !Important;
+                background-color: var(--colors_danger_condform);
             }
 
             /*  .dt-button {
@@ -253,6 +254,19 @@
                 justify-content: center !Important;
                 border-bottom: 1px solid white;
             }
+
+            h4 {
+                /* font-size: 18px; */
+                color: var(--colors_backgroundcolor);
+            }
+
+            .myfilter-panel {
+                background-color: var(--colors_basecolor);
+            }
+
+            label.page-length {
+                color: #5c5a5a !important;
+            }
         </style>
     </head>
     <div id="container">
@@ -291,7 +305,7 @@
             <div class="form-group">
                 <div class="col-md-12">
                     <div class="col-md-1" style="Padding-top:8px">
-                        <label for="pageLength">Page Length:</label>
+                        <label for="pageLength" class="page-length">Page Length:</label>
                     </div>
                     <div class="col-md-2">
                         <select id="pageLength" class="form-control">
@@ -303,9 +317,19 @@
                             <option value="300">300</option>
                         </select>
                     </div>
-                    <div id="sumAmtdiv" class="col-md-1" style="Padding-top:8px">
-                        <label for="sum-Amt">Sum :</label>
-                        <label id="sum-Amt">0</label>
+                    <div class="col-md-2" style="padding-top:8px">
+                        <label for="sum-C">Sum of CR :</label>
+                        <label id="sum-C">0</label>
+                    </div>
+                   
+                    <div class="col-md-2" style="padding-top:8px">
+                        <label for="sum-D">Sum of DR:</label>
+                        <label id="sum-D">0</label>
+                    </div>
+                    
+                    <div class="col-md-2" style="padding-top:8px">
+                        <label for="difference-CD">Difference:</label>
+                        <label id="difference-CD">0</label>
                     </div>
                 </div>
             </div>
@@ -434,10 +458,18 @@
         var p_TrLifeCycleRoles = 1;
         var authorizationPanel = false;
 
+        let lastSelectedIndex = null; // Store the starting point of selection
+        let currentSelectedIndex = null; // Track the current selection point during Shift key navigation
+        let lastDirection = null; // Tracks the last navigation direction ('up' or 'down')
+
+
         $(document).ready(function () {
 
             if (fnGetPageName() == 'wpinvestigationcase') {
-                $('#sumAmtdiv').hide();
+                // $('#sumAmtdiv').hide();
+                $('#sum-C').hide();
+                 $('#sum-D').hide();
+                 $('#difference-CD').hide();
             }
             var columnSearchValues = [];
             var chkOrder;
@@ -580,7 +612,7 @@
                         data.myCols.forEach(function (column, indexs) {
                             if (column.colDBName !== 'Action') {
                                 filterFieldsHtml += '<div class="filter-field">';
-                                filterFieldsHtml += fnGenDropDown(indexs, 25, column.colDBName, column.colName) + '<label style="margin-top: 5px" for="filter-' + column.colDBName + '">' + column.colName + '&nbsp</label>';
+                                filterFieldsHtml += fnGenDropDown(indexs, 25, column.colDBName, column.colName) + '<label class="label-title" style="margin-top: 5px" for="filter-' + column.colDBName + '">' + column.colName + '&nbsp</label>';
                                 if (column.colDataType == 'D') {
                                     filterFieldsHtml += '<input type="date" class="mycolumnSearchDate MyGridTextBox wwp-daterange-picker-input" placeholder="Search ' + column.colName + '" data-column="' + column.colDBName + '" />'; //+ fnGenDropDown(indexs, 13, column.colDBName, column.colName);
                                 } else {
@@ -747,21 +779,162 @@
                                 //     }
 
                                 // });
-
+                                debugger;
                                 $('#dataTable tbody').on('click', 'tr:not(.dtrg-group)', function (event) {
-                                    // Agar invFilterVal aur settleCategoryIdVal ki conditions match ho rahi hain
+                                    let rows = $('#dataTable tbody tr');
+                                    let clickedIndex = rows.index(this);
+
                                     if (invFilterVal == '') {
                                         if (settleCategoryIdVal == '') {
-                                            // Agar Ctrl key press nahi hai toh sirf ek row select ho
                                             if (!event.ctrlKey) {
-                                                $('#dataTable tbody tr').removeClass('selected'); // Baaki rows ka selection hata de
-                                                $(this).addClass('selected'); // Sirf current row ko select kare
+                                                // Single click: Clear all selections and select only the clicked row
+                                                rows.removeClass('selected'); // Remove selection from all rows
+                                                $(this).addClass('selected'); // Select the clicked row
+
+                                                // Update both last and current selected indices
+                                                lastSelectedIndex = clickedIndex;
+                                                currentSelectedIndex = clickedIndex;
                                             } else {
-                                                // Agar Ctrl key press hai, toh toggle selection for multiple rows
-                                                $(this).toggleClass('selected');
+                                                currentSelectedIndex = clickedIndex;
+                                                if ($(this).hasClass('selected')) {
+                                                    // rows.removeClass('selected'); 
+                                                    $(this).removeClass('selected'); // Deselect the clicked row
+                                                } else {
+                                                    // $(this).addClass('selected'); // Select the clicked row
+                                                    rows.eq(currentSelectedIndex).addClass('selected');
+                                                }
+
+                                            }
+                                        }
+                                        // Ensure DataTable is initialized correctly before calling updateSelectedRows
+                                        updateSelectedRows();
+                                    }
+
+                                });
+                                $(document).on('keydown', function (event) {
+
+                                    let rows = $('#dataTable tbody tr');
+                                    if (invFilterVal == '') {
+                                        if (settleCategoryIdVal == '') {
+                                            if(event.key === 'ArrowDown'){
+                                                if (selectedColumnId.length == 0){
+                                                    currentSelectedIndex++;
+                                                    lastSelectedIndex = currentSelectedIndex;
+                                                    rows.eq(currentSelectedIndex).addClass('selected'); // Select new row                                            
+                                               }
+                                            }
+                                            if (event.shiftKey) {
+                                                const allLcSame = selectedColumnId.every(item => item.AccLifeCycleId === selectedColumnId[0].AccLifeCycleId);
+                                                const masterExist = selectedColumnId.filter(item => item.CPAccCategory === 'Master').length > 0
+                                                switch (event.key.toLowerCase()) {
+                                                    case 'i':
+                                                        if (selectedColumnId.length > 0) {
+                                                            // alert('Start investigation');
+
+                                                            const alreadyInv = selectedColumnId.find(e => e.InvStatus >= 1);
+                                                            if (alreadyInv != null && alreadyInv.DataId != '') {
+                                                                alert('Already in Investigation Id: ' + alreadyInv.DataId);
+                                                            } else {
+                                                                showFloatingContainerStartInvestigation();
+                                                            }
+
+                                                        }
+                                                        else{
+                                                            alert('No records selected. Please select at least one record to proceed with this action');
+                                                        }
+                                                        break;
+                                                    case 'u':
+                                                        if (selectedColumnId.length > 0) {
+                                                            if (allLcSame) {
+                                                                acceptForceMatch = true;
+                                                                fnGetAuthLevel(selectedColumnId[0].AccLifeCycleId, true, false);
+                                                            } else {
+                                                                alert('Please select one Life Cycle transactions for force unmatch');
+                                                            }
+                                                        }
+                                                        else{
+                                                            alert('No records selected. Please select at least one record to proceed with this action');
+                                                        }
+                                                        break;
+                                                    case 'm':
+                                                        if (selectedColumnId.length > 0) {
+                                                            const isOnlyOpen = selectedColumnId.every(item => item.CTranProcMatchStat === 'Open');
+                                                            if (allLcSame && masterExist && isOnlyOpen) {
+                                                                acceptForceMatch = true;
+                                                                fnGetAuthLevel(selectedColumnId[0].AccLifeCycleId, true, true);
+                                                            } else {
+                                                                if (!allLcSame) {
+                                                                    alert('Please select one Life Cycle transactions for force match');
+                                                                }
+                                                                if (!masterExist) {
+                                                                    alert('Please select one master transaction for force match');
+                                                                }
+                                                                if (!isOnlyOpen) {
+                                                                    alert('Please select only open transactions for force match');
+                                                                }
+                                                            }
+                                                        }
+                                                        else{
+                                                            alert('No records selected. Please select at least one record to proceed with this action');
+                                                        }
+                                                        break;
+                                                    case 'h':
+                                                        if (selectedColumnId.length > 0) {
+                                                            viewHistory(selectedColumnId[0].DataId, selectedColumnId[0].AccLifeCycleId);
+                                                        }
+                                                        else{
+                                                            alert('No records selected. Please select at least one record to proceed with this action');
+                                                        }
+                                                        break;
+                                                    default:
+                                                        break;
+                                                }
                                             }
 
-                                            // Selected rows ko update karein
+                                            if (settleCategoryIdVal === '' && lastSelectedIndex !== null) {
+                                                if (event.shiftKey) {
+                                                    // Handle Shift + Arrow Down
+                                                    if (event.key === 'ArrowDown') {
+                                                        if (currentSelectedIndex < rows.length - 1) {
+                                                            currentSelectedIndex++; // Move selection down
+                                                            rows.eq(currentSelectedIndex).addClass('selected');
+                                                        }
+                                                    }
+
+                                                    // Handle Shift + Arrow Up
+                                                    if (event.key === 'ArrowUp') {
+                                                        if (currentSelectedIndex > 0) {
+                                                            if (currentSelectedIndex > lastSelectedIndex) {
+                                                                // Shrink selection going upward
+                                                                rows.eq(currentSelectedIndex).removeClass('selected');
+                                                                currentSelectedIndex--;
+                                                            } else {
+                                                                // Extend selection upward
+                                                                currentSelectedIndex--;
+                                                                rows.eq(currentSelectedIndex).addClass('selected');
+                                                            }
+                                                        }
+                                                    }
+                                                } else {
+                                                    // Handle Arrow Up/Down without Shift
+                                                    if (event.key === 'ArrowDown') {
+                                                        if (currentSelectedIndex < rows.length - 1) {
+                                                            rows.removeClass('selected'); // Clear current selection
+                                                            currentSelectedIndex++;
+                                                            lastSelectedIndex = currentSelectedIndex;
+                                                            rows.eq(currentSelectedIndex).addClass('selected'); // Select new row
+                                                        }
+                                                    }
+                                                    if (event.key === 'ArrowUp') {
+                                                        if (currentSelectedIndex > 0) {
+                                                            rows.removeClass('selected'); // Clear current selection
+                                                            currentSelectedIndex--;
+                                                            lastSelectedIndex = currentSelectedIndex;
+                                                            rows.eq(currentSelectedIndex).addClass('selected'); // Select new row
+                                                        }
+                                                    }
+                                                }
+                                            }
                                             updateSelectedRows();
                                         }
                                     }
@@ -893,38 +1066,38 @@
 
                 // Conditionally add items based on the value of panelType
                 if (pFilter.matchSts === '') {
-                    contextMenuItems["Investigation"] = { name: "Start Investigation", icon: "inv" };
-                    contextMenuItems["ForceUnMatch"] = { name: "Force UnMatch", icon: "unmatch" };
-                    contextMenuItems["ForceMatch"] = { name: "Force Match", icon: "match" };
-                    contextMenuItems["ViewHistory"] = { name: "View History", icon: "vhistory" };
+                    contextMenuItems["Investigation"] = { name: "Start Investigation (Shift + I)", icon: "inv" };
+                    contextMenuItems["ForceUnMatch"] = { name: "Force UnMatch (Shift + U)", icon: "unmatch" };
+                    contextMenuItems["ForceMatch"] = { name: "Force Match (Shift + M)", icon: "match" };
+                    contextMenuItems["ViewHistory"] = { name: "View History (Shift + H)", icon: "vhistory" };
                 } else if (pFilter.matchSts === '%Match%') {
-                    contextMenuItems["ForceUnMatch"] = { name: "Force UnMatch", icon: "unmatch" };
-                    contextMenuItems["ViewHistory"] = { name: "View History", icon: "match" };
+                    contextMenuItems["ForceUnMatch"] = { name: "Force UnMatch (Shift + U)", icon: "unmatch" };
+                    contextMenuItems["ViewHistory"] = { name: "View History (Shift + H)", icon: "match" };
                 } else if (pFilter.matchSts === 'Open') {
-                    contextMenuItems["Investigation"] = { name: "Start Investigation", icon: "inv" };
-                    contextMenuItems["ForceMatch"] = { name: "Force Match", icon: "match" };
-                    contextMenuItems["ViewHistory"] = { name: "View History", icon: "vhistory" };
+                    contextMenuItems["Investigation"] = { name: "Start Investigation (Shift + I)", icon: "inv" };
+                    contextMenuItems["ForceMatch"] = { name: "Force Match (Shift + M)", icon: "match" };
+                    contextMenuItems["ViewHistory"] = { name: "View History (Shift + H)", icon: "vhistory" };
                 } else if (pFilter.matchSts.toString() === '4') {
 
                     if (fnGetPageName() == 'wpauthorizationpendingcash') {
-                        contextMenuItems["Investigation"] = { name: "Start Investigation", icon: "inv" };
+                        contextMenuItems["Investigation"] = { name: "Start Investigation (Shift + I)", icon: "inv" };
                         contextMenuItems["ForceMatch"] = { name: "Accept", icon: "match" };
                         contextMenuItems["RejectReq"] = { name: "Reject", icon: "unmatch" };
-                        contextMenuItems["ViewHistory"] = { name: "View History", icon: "vhistory" };
+                        contextMenuItems["ViewHistory"] = { name: "View History (Shift + H)", icon: "vhistory" };
                     }
                     else if (fnGetPageName() == 'wpauthorizationumpendingcash') {
-                        contextMenuItems["Investigation"] = { name: "Start Investigation", icon: "inv" };
+                        contextMenuItems["Investigation"] = { name: "Start Investigation (Shift + I)", icon: "inv" };
                         contextMenuItems["ForceUnMatch"] = { name: "Accept", icon: "match" };
                         contextMenuItems["RejectReqUM"] = { name: "Reject", icon: "unmatch" };
-                        contextMenuItems["ViewHistory"] = { name: "View History", icon: "vhistory" };
+                        contextMenuItems["ViewHistory"] = { name: "View History (Shift + H)", icon: "vhistory" };
                     }
                     else if (pFilter.NoAction == 1) {
                         contextMenuItems["NoAction"] = { name: "No Action", icon: "stop" };
                     } else {
-                        contextMenuItems["Investigation"] = { name: "Start Investigation", icon: "inv" };
-                        contextMenuItems["ForceMatch"] = { name: "Force Match", icon: "match" };
-                        contextMenuItems["ForceUnMatch"] = { name: "Force UnMatch", icon: "unmatch" };
-                        contextMenuItems["ViewHistory"] = { name: "View History", icon: "vhistory" };
+                        contextMenuItems["Investigation"] = { name: "Start Investigation (Shift + I)", icon: "inv" };
+                        contextMenuItems["ForceMatch"] = { name: "Force Match (Shift + M)", icon: "match" };
+                        contextMenuItems["ForceUnMatch"] = { name: "Force UnMatch (Shift + U)", icon: "unmatch" };
+                        contextMenuItems["ViewHistory"] = { name: "View History (Shift + H)", icon: "vhistory" };
                     }
                 }
                 else {
@@ -1053,8 +1226,19 @@
                 });
 
                 // Calculate Sum of C - Sum of D
-                var result = (sumC - sumD).toFixed(4);
-                $('#sum-Amt').text(result);
+                // Update the respective divs with the sums
+                $('#sum-C').text(sumC.toFixed(4));
+                $('#sum-D').text(sumD.toFixed(4));
+
+                // Calculate the absolute difference and determine CR/DR
+                // Calculate the difference or show "0.0000"
+                if (sumC === 0 && sumD === 0) {
+                    $('#difference-CD').text('0.0000'); // Default value when no rows are selected
+                } else {
+                    var difference = Math.abs(sumC - sumD).toFixed(4);
+                    var suffix = sumC > sumD ? " CR" : " DR"; // Determine if CR or DR is needed
+                    $('#difference-CD').text(difference + suffix);
+                }
             }
 
             getDepartments();

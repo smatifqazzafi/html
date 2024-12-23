@@ -45,7 +45,7 @@
             #dataTable tbody tr.dtrg-group.dtrg-start.dtrg-level-0 {
                 background-color: var(--colors_backgroundcolor) !Important;
             }
-
+          
             /* Investigation Work Start */
 
             .tag-input-container {
@@ -261,7 +261,7 @@
                 position: fixed;
                 right: 0;
                 top: 0;
-                width: 300px;
+                width: 360px;
                 height: 100%;
                 background-color: #f4f4f4;
                 box-shadow: -2px 0 5px rgba(0, 0, 0, 0.5);
@@ -287,9 +287,19 @@
                 justify-content: center !Important;
                 border-bottom: 1px solid white;
             }
+            h4 {
+            /* font-size: 18px; */
+            color: var(--colors_backgroundcolor);
+        }
+        .myfilter-panel {
+                background-color: var(--colors_basecolor);
+        }
+        label.page-length{
+            color: #5c5a5a !important;
+        }
         </style>
     </head>
-
+      
     <div id="container">
         <!-- Your content goes here -->
     </div>
@@ -308,7 +318,7 @@
             </div> -->
             <div id="mainHeader">
                 <div id="mainHeaderLeft" style="float: left;">
-
+            
                 </div>
             </div>
             <div class="table-responsive">
@@ -316,8 +326,8 @@
                     class="display table table-bordered gx-tab-spacing-fix-2 GridWithPaginationBar GridWithBorderColor WorkWith table-responsive">
                     <thead id="tableHeader">
                         <!-- Table header will be populated dynamically by JavaScript -->
-                        <!-- Loader element -->
-                        <div id="loader" style="display: none;">
+                         <!-- Loader element -->
+                         <div id="loader" style="display: none;">
                             <i class="fa fa-spinner fa-spin"></i> Loading...
                         </div>
                     </thead>
@@ -331,7 +341,7 @@
                 <div class="col-md-12">
 
                     <div class="col-md-1" style="Padding-top:8px">
-                        <label for="pageLength">Page Length:</label>
+                        <label for="pageLength" class="page-length">Page Length:</label>
                     </div>
                     <div class="col-md-2">
                         <select id="pageLength" class="form-control">
@@ -343,7 +353,7 @@
                             <option value="300">300</option>
                         </select>
                     </div>
-
+                   
 
 
 
@@ -479,7 +489,7 @@
 
 
         $(document).ready(function () {
-
+           
             var columnSearchValues = [];
             var chkOrder;
             var columnDefs = [];
@@ -549,18 +559,18 @@
                                         "targets": indexs, // Assuming index corresponds to column index
                                         "render": function (data, type, row) {
                                             // Example: Format the data as needed, for example, convert it to uppercase
-                                            return formatDateFromString(data);
+                                             return formatDateFromString(data);
                                         }
                                     };
                                     columnDefs.push(columnDef);
-                                }
+                                } 
                                 else if (column.colDataType == 'A') {
                                     //headerFilterHtml += '<th gx-tab-padding-fix-1 WWActionGroupColumn  GridWithPaginationBar GridWithBorderColor WorkWithTitle><div class="col-md-12"><input type="date" class="mycolumnSearchDate MyGridTextBox wwp-daterange-picker-input" placeholder="Search ' + column.colName + '" data-column="' + column.colDBName + '" /> </div>' + fnGenDropDown(indexs, 13, column.colDBName, column.colName) + '</th>';
                                     var columnDef = {
                                         "targets": indexs, // Assuming index corresponds to column index
                                         "render": function (data, type, row) {
                                             // Example: Format the data as needed, for example, convert it to uppercase
-                                            return formatNumberWithCommas(data);
+                                             return formatNumberWithCommas(data);
                                         }
                                     };
                                     columnDefs.push(columnDef);
@@ -624,7 +634,7 @@
                         data.myCols.forEach(function (column, indexs) {
                             if (column.colDBName !== 'Action') {
                                 filterFieldsHtml += '<div class="filter-field">';
-                                filterFieldsHtml += fnGenDropDown(indexs, 25, column.colDBName, column.colName) + '<label style="margin-top: 5px" for="filter-' + column.colDBName + '">' + column.colName + '&nbsp</label>';
+                                filterFieldsHtml += fnGenDropDown(indexs, 25, column.colDBName, column.colName) + '<label class="label-title" style="margin-top: 5px" for="filter-' + column.colDBName + '">' + column.colName + '&nbsp</label>';
                                 if (column.colDataType == 'D') {
                                     filterFieldsHtml += '<input type="date" class="mycolumnSearchDate MyGridTextBox wwp-daterange-picker-input" placeholder="Search ' + column.colName + '" data-column="' + column.colDBName + '" />'; //+ fnGenDropDown(indexs, 13, column.colDBName, column.colName);
                                 } else {
@@ -662,6 +672,7 @@
                                     'Authorization': pFilter.token
                                 },
                                 data: function (d) {
+                                    $('#dataTable_filter').hide();
                                     var searchData = {};
                                     $('.columnSearch').each(function () {
                                         var column = $(this).data('column');
@@ -728,19 +739,19 @@
                                         $(node).addClass('dt-button buttons-collection buttons-colvis');
                                     }
                                 },
-                                {
-                                    text: '<i class="fa-solid fa-download"></i> Export PDF',
-                                    action: function (e, dt, node, config) {
-                                        $(node).attr('id', 'ExportPdfButton');
-                                        fnExportPDFBtn("aprBalanceBookReport", "BalanceBookReport");
-
-
-                                    },
-                                    init: function (dt, node, config) {
-                                        $(node).attr('id', 'ExportPdfButton');
-                                        $(node).addClass('dt-button buttons-collection buttons-colvis');
-                                    }
-                                },
+                                //{
+                                //    text: '<i class="fa-solid fa-download"></i> Export PDF',
+                                //    action: function (e, dt, node, config) {
+                                //        $(node).attr('id', 'ExportPdfButton');
+                                //        fnExportPDFBtn("aprBalanceBookReport","BalanceBookReport");
+                                //        
+//
+                                //    },
+                                //    init: function (dt, node, config) {
+                                //        $(node).attr('id', 'ExportPdfButton');
+                                //        $(node).addClass('dt-button buttons-collection buttons-colvis');
+                                //    }
+                                //},
                                 // {
                                 //     extend: 'csv',
                                 //     text: '<i class="fa fa-download"></i> CSV'
@@ -786,7 +797,7 @@
 
 
                             ],
-
+                            
 
                             "columnDefs": columnDefs,
                             initComplete: function () {
@@ -1035,7 +1046,7 @@
                 event.stopPropagation();
                 table.ajax.reload();
             });
-
+           
 
             dropdownBtn.addEventListener('click', function (event) {
                 // Stop event propagation to prevent closing the parent dropdown
@@ -1175,7 +1186,7 @@
                 }
             });
         }
-
+       
 
         function fnclearFilterButton() {
             $('#myfilterPanel').toggleClass('active');
@@ -1193,7 +1204,7 @@
                     url: 'rest/wsSaveColGridFilter',
                     type: 'GET',
                     headers: {
-                        'Authorization': pFilter.token
+                    'Authorization': pFilter.token
                     },
                     dataType: 'json',
                     data: {

@@ -7,6 +7,7 @@
         <link rel="stylesheet" href="MyAssets/Scripts/css/jquery.contextMenu.min.css">
         <link rel="stylesheet" href="MyAssets/Scripts/css/MyCommonCss.css">
         <link rel="stylesheet" href="MyAssets/Scripts/css/bootstrap-multiselect.css">
+        <script src="MyAssets/Elt/EltJS.js"></script>
         <style>
             #dataTable tbody tr.dtrg-group.dtrg-start.dtrg-level-0 {
                 background-color: var(--colors_backgroundcolor) !Important;
@@ -431,6 +432,11 @@
         var p_TrLifeCycleRoles = 1;
         var authorizationPanel = false;
 
+        let lastSelectedIndex = null; // Store the starting point of selection
+        let currentSelectedIndex = null; // Track the current selection point during Shift key navigation
+        let lastDirection = null; // Tracks the last navigation direction ('up' or 'down')
+
+
         $(document).ready(function () {
 
             if (fnGetPageName() == 'wpinvestigationcase') {
@@ -442,6 +448,8 @@
             // $('#openFilterPanel').click(function () {
             //     $('#myfilterPanel').addClass('active');
             // });
+
+            getDepartments();
 
 
             $('#closeFilterPanel').click(function () {
@@ -749,20 +757,171 @@
                                 // });
 
                                 $('#dataTable tbody').on('click', 'tr:not(.dtrg-group)', function (event) {
-                                    // Agar invFilterVal aur settleCategoryIdVal ki conditions match ho rahi hain
+                                    let rows = $('#dataTable tbody tr');
+                                    let clickedIndex = rows.index(this);
+
                                     if (invFilterVal == '') {
                                         if (settleCategoryIdVal == '') {
-                                            // Agar Ctrl key press nahi hai toh sirf ek row select ho
                                             if (!event.ctrlKey) {
-                                                $('#dataTable tbody tr').removeClass('selected'); // Baaki rows ka selection hata de
-                                                $(this).addClass('selected'); // Sirf current row ko select kare
-                                            } else {
-                                                // Agar Ctrl key press hai, toh toggle selection for multiple rows
-                                                $(this).toggleClass('selected');
-                                            }
+                                                // Single click: Clear all selections and select only the clicked row
+                                                rows.removeClass('selected'); // Remove selection from all rows
+                                                $(this).addClass('selected'); // Select the clicked row
 
-                                            // Selected rows ko update karein
-                                            updateSelectedRows();
+                                                // Update both last and current selected indices
+                                                lastSelectedIndex = clickedIndex;
+                                                currentSelectedIndex = clickedIndex;
+                                            } else {
+                                                // currentSelectedIndex = clickedIndex;
+                                                // rows.eq(currentSelectedIndex).addClass('selected');
+
+                                                currentSelectedIndex = clickedIndex;
+                                                if ($(this).hasClass('selected')) {
+                                                    // rows.removeClass('selected'); 
+                                                    $(this).removeClass('selected'); // Deselect the clicked row
+                                                } else {
+                                                    // $(this).addClass('selected'); // Select the clicked row
+                                                    rows.eq(currentSelectedIndex).addClass('selected');
+                                                }
+
+                                            }
+                                        }
+                                        // Ensure DataTable is initialized correctly before calling updateSelectedRows
+                                        updateSelectedRows();
+                                    }
+
+                                });
+                                $(document).on('keydown', function (event) {
+
+                                    let rows = $('#dataTable tbody tr');
+                                    if (invFilterVal == '') {
+                                        if (settleCategoryIdVal == '') {
+                                            if(event.key === 'ArrowDown'){
+                                                if (selectedColumnId.length == 0){
+                                                    currentSelectedIndex++;
+                                                    lastSelectedIndex = currentSelectedIndex;
+                                                    rows.eq(currentSelectedIndex).addClass('selected'); // Select new row                                            
+                                               }
+                                            }
+                                            if (event.shiftKey) {
+                                                const allLcSame = selectedColumnId.every(item => item.AccLifeCycleId === selectedColumnId[0].AccLifeCycleId);
+                                                switch (event.key.toLowerCase()) {
+                                                    case 'i':
+                                                        if (selectedColumnId.length > 0) {
+                                                            // alert('Start investigation');
+
+                                                            const alreadyInv = selectedColumnId.find(e => e.InvStatus >= 1);
+                                                            if (alreadyInv != null && alreadyInv.DataId != '') {
+                                                                alert('Already in Investigation Id: ' + alreadyInv.DataId);
+                                                            } else {
+                                                                showFloatingContainerStartInvestigation();
+                                                            }
+
+                                                        }
+                                                        else{
+                                                            alert('No records selected. Please select at least one record to proceed with this action');
+                                                        }
+                                                        break;
+                                                    case 'u':
+                                                        if (selectedColumnId.length > 0) {
+                                                             const isOnlyMatch = selectedColumnId.every(item => item.GUSTAT.startsWith('M'));
+                                                            if (allLcSame && isOnlyMatch) {
+                                                                acceptForceMatch = true;
+                                                                fnGetAuthLevel(selectedColumnId[0].AccLifeCycleId, true, false);
+                                                            } else {
+                                                                alert('Please select one Life Cycle transactions for force unmatch');
+                                                            }
+                                                        }
+                                                        else{
+                                                            alert('No records selected. Please select at least one record to proceed with this action');
+                                                        }
+                                                        break;
+                                                    case 'm':
+                                                        if (selectedColumnId.length > 0) {
+                                                             const isOnlyOpen = selectedColumnId.every(item => item.GUSTAT.startsWith('O'));
+                                                            if (allLcSame && isOnlyOpen) {
+                                                                acceptForceMatch = true;
+                                                                fnGetAuthLevel(selectedColumnId[0].AccLifeCycleId, true, true);
+                                                            } else {
+                                                                if (!allLcSame) {
+                                                                    alert('Please select one Life Cycle transactions for force match');
+                                                                }
+                                                                if (!isOnlyOpen) {
+                                                                    alert('Please select only open transactions for force match');
+                                                                }
+                                                            }
+                                                        }
+                                                        else{
+                                                            alert('No records selected. Please select at least one record to proceed with this action');
+                                                        }
+                                                        break;
+                                                    case 'c':
+                                                        if (allLcSame) {
+                                                            fnGetAuthLevel(selectedColumnId[0].AccLifeCycleId, false, true);
+                                                            acceptForceMatch = false;
+                                                        }
+                                                        else{
+                                                            alert('No records selected. Please select at least one record to proceed with this action');
+                                                        }
+                                                        break;
+                                                    case 'h':
+                                                        if (selectedColumnId.length > 0) {
+                                                            viewHistory(selectedColumnId[0].DataId, selectedColumnId[0].AccLifeCycleId);
+                                                        }
+                                                        else{
+                                                            alert('No records selected. Please select at least one record to proceed with this action');
+                                                        }
+                                                        break;
+                                                    default:
+                                                        break;
+                                                }
+                                            }
+                                            if (settleCategoryIdVal === '' && lastSelectedIndex !== null) {
+                                                if (event.shiftKey) {
+                                                    // Handle Shift + Arrow Down
+                                                    if (event.key === 'ArrowDown') {
+                                                        if (currentSelectedIndex < rows.length - 1) {
+                                                            currentSelectedIndex++; // Move selection down
+                                                            rows.eq(currentSelectedIndex).addClass('selected');
+                                                        }
+                                                    }
+
+                                                    // Handle Shift + Arrow Up
+                                                    if (event.key === 'ArrowUp') {
+                                                        if (currentSelectedIndex > 0) {
+                                                            if (currentSelectedIndex > lastSelectedIndex) {
+                                                                // Shrink selection going upward
+                                                                rows.eq(currentSelectedIndex).removeClass('selected');
+                                                                currentSelectedIndex--;
+                                                            } else {
+                                                                // Extend selection upward
+                                                                currentSelectedIndex--;
+                                                                rows.eq(currentSelectedIndex).addClass('selected');
+                                                            }
+                                                        }
+                                                    }
+                                                } 
+                                                else {
+                                                    // Handle Arrow Up/Down without Shift
+                                                    if (event.key === 'ArrowDown') {
+                                                        if (currentSelectedIndex < rows.length - 1) {
+                                                            rows.removeClass('selected'); // Clear current selection
+                                                            currentSelectedIndex++;
+                                                            lastSelectedIndex = currentSelectedIndex;
+                                                            rows.eq(currentSelectedIndex).addClass('selected'); // Select new row
+                                                        }
+                                                        
+                                                    }
+                                                    if (event.key === 'ArrowUp') {
+                                                        if (currentSelectedIndex > 0) {
+                                                            rows.removeClass('selected'); // Clear current selection
+                                                            currentSelectedIndex--;
+                                                            lastSelectedIndex = currentSelectedIndex;
+                                                            rows.eq(currentSelectedIndex).addClass('selected'); // Select new row
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                             updateSelectedRows();
                                         }
                                     }
                                 });
@@ -1058,7 +1217,7 @@
             //     $('#sum-Amt').text(result);
             // }
 
-            getDepartments();
+             // getDepartments();
             }
 
         });
@@ -1790,6 +1949,9 @@
                 case 'Open':
                     return 'Open';
                     break;
+                case 'ForceOpen':
+                    return 'Force Open';
+                    break;
                 case 'FOR':
                     return 'Force Match: Complete';
                     break;
@@ -1826,11 +1988,52 @@
                 case 'UMR':
                     return 'Force Unmatch: Reject';
                     break;
+                case 'FC':
+                    return 'Force Close: Complete';
+                    break;
+                case 'FC1':
+                    return 'Force Close: Initiate';
+                    break;
+                case 'FC2':
+                    return 'Force Close: Authorize';
+                    break;
+                case 'UM3':
+                    return 'Force Close: Approve';
+                    break;
+                case 'FCR':
+                    return 'Force Unmatch: Reject';
+                    break;
                 default:
                     return 'Unknown';
             }
         }
 
         //History End
+    </script>
+    <script>
+        const jsonToCsv = (jsonData) => {
+            const keys = Object.keys(jsonData[0]);
+            const csvRows = [keys.join(',')];
+
+            jsonData.forEach(obj => {
+                
+                const values = keys.map(key => JSON.stringify(obj[key], (key, value) => value === null ? '' : value));
+                csvRows.push(values.join(','));
+            });
+
+            return csvRows.join('\n');
+        };
+        const downloadCsv = (jsonData, filename = 'data.csv') => {
+            const csvData = jsonToCsv(jsonData);
+            const blob = new Blob([csvData], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = filename;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        };
     </script>
 </body>

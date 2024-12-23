@@ -203,7 +203,8 @@
                 border: none;
                 border-radius: 3px;
                 cursor: pointer;
-                min-width: 0px !Important;
+                min-width: 0px !important;
+                background-color: var(--colors_danger_condform);
             }
 
             /*  .dt-button {
@@ -286,6 +287,16 @@
                 justify-content: center !Important;
                 border-bottom: 1px solid white;
             }
+            h4 {
+            /* font-size: 18px; */
+            color: var(--colors_backgroundcolor);
+        }
+        .myfilter-panel {
+                background-color: var(--colors_basecolor);
+        }
+        label.page-length{
+            color: #5c5a5a !important;
+        }
         </style>
     </head>
 
@@ -328,7 +339,7 @@
             <div class="form-group">
                 <div class="col-md-12">
                     <div class="col-md-1" style="Padding-top:8px">
-                        <label for="pageLength">Page Length:</label>
+                        <label for="pageLength" class="page-length">Page Length:</label>
                     </div>
                     <div class="col-md-2">
                         <select id="pageLength" class="form-control">
@@ -493,6 +504,7 @@
                     ModuleName: 'UBPSCoreSummary'
                 },
                 success: function (data) {
+                    $('#dataTable_filter').hide();
                     console.log('headerFullHtml',data);
                     if (data && data.myCols && data.myCols.length > 0) {
                         var headerHtml = '';
@@ -618,7 +630,7 @@
                            
                             if (column.colDBName !== 'Action') {
                                 filterFieldsHtml += '<div class="filter-field">';
-                                filterFieldsHtml += fnGenDropDown(indexs, 25, column.colDBName, column.colName) + '<label style="margin-top: 5px" for="filter-' + column.colDBName + '">' + column.colName + '&nbsp</label>';
+                                filterFieldsHtml += fnGenDropDown(indexs, 25, column.colDBName, column.colName) + '<label class="label-title" style="margin-top: 5px" for="filter-' + column.colDBName + '">' + column.colName + '&nbsp</label>';
                                 if (column.colDataType == 'D') {
                                     filterFieldsHtml += '<input type="date" class="mycolumnSearchDate MyGridTextBox wwp-daterange-picker-input" placeholder="Search ' + column.colName + '" data-column="' + column.colDBName + '" />'; //+ fnGenDropDown(indexs, 13, column.colDBName, column.colName);
                                 } else {

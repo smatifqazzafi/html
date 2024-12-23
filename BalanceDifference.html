@@ -185,6 +185,7 @@
                 border-radius: 3px;
                 cursor: pointer;
                 min-width: 0px !Important;
+                background-color: var(--colors_danger_condform);
             }
 
             /*  .dt-button {
@@ -324,6 +325,16 @@
                 justify-content: center !Important;
                 border-bottom: 1px solid white;
             }
+            h4 {
+            /* font-size: 18px; */
+            color: var(--colors_backgroundcolor);
+        }
+        .myfilter-panel {
+                background-color: var(--colors_basecolor);
+        }
+        label.page-length{
+            color: #5c5a5a !important;
+        }
         </style>
     </head>
     <div id="container">
@@ -362,7 +373,7 @@
             <div class="form-group">
                 <div class="col-md-12">
                     <div class="col-md-1" style="Padding-top:8px">
-                        <label for="pageLength">Page Length:</label>
+                        <label for="pageLength" class="page-length">Page Length:</label>
                     </div>
                     <div class="col-md-2">
                         <select id="pageLength" class="form-control">
@@ -648,14 +659,14 @@
                                         }
                                     };
                                     columnDefs.push(columnDef);
-                                }
+                                } 
                                 else if (column.colDataType == 'A') {
                                     //headerFilterHtml += '<th gx-tab-padding-fix-1 WWActionGroupColumn  GridWithPaginationBar GridWithBorderColor WorkWithTitle><div class="col-md-12"><input type="date" class="mycolumnSearchDate MyGridTextBox wwp-daterange-picker-input" placeholder="Search ' + column.colName + '" data-column="' + column.colDBName + '" /> </div>' + fnGenDropDown(indexs, 13, column.colDBName, column.colName) + '</th>';
                                     var columnDef = {
                                         "targets": indexs, // Assuming index corresponds to column index
                                         "render": function (data, type, row) {
                                             // Example: Format the data as needed, for example, convert it to uppercase
-                                            return formatNumberWithCommas(data);
+                                             return formatNumberWithCommas(data);
                                         }
                                     };
                                     columnDefs.push(columnDef);
@@ -877,21 +888,21 @@
 
                                 // daniyal code 
                                 $('#dataTable tbody').on('click', 'tr:not(.dtrg-group)', function (event) {
-                                    if (invFilterVal == '') {
-                                        if (settleCategoryIdVal == '') {
+    if (invFilterVal == '') {
+        if (settleCategoryIdVal == '') {
 
-                                            if (!event.ctrlKey) {
-                                                $('#dataTable tbody tr').removeClass('selected');
-                                                $(this).addClass('selected');
-                                            } else {
-                                                $(this).toggleClass('selected');
-                                            }
+            if (!event.ctrlKey) {
+                $('#dataTable tbody tr').removeClass('selected'); 
+                $(this).addClass('selected'); 
+            } else {
+                $(this).toggleClass('selected');
+            }
 
-                                            // Selected rows ko update karein
-                                            updateSelectedRows();
-                                        }
-                                    }
-                                });
+            // Selected rows ko update karein
+            updateSelectedRows();
+        }
+    }
+});
 
 
 
@@ -1282,7 +1293,7 @@
             });
         }
 
-
+        
 
         function fnLoadSelect(indexSelect) {
             var colname = $('#dropdownMenuButton' + indexSelect).data('colname');

@@ -3,7 +3,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
 <script src="MyAssets/Scripts/chart_chartAccessibility.js"></script>
 
-
 <style>
     body {
         font-family: 'Roboto', sans-serif;
@@ -248,7 +247,7 @@
     .h2,
     .h5 {
         font-family: inherit;
-        font-weight: 600;
+        font-weight: 400 !important;
         line-height: 1.5;
         margin-bottom: .5rem;
         color: #32325d;
@@ -334,24 +333,26 @@
         background-clip: border-box;
     }
 
+    h5.card-title.text-uppercase.text-muted.mb-0 {
+        font-weight: 500 !important;
+    }
+
     .card-body {
         padding: 1.5rem;
         flex: 1 1 auto;
     }
 
     .card-title {
-        margin-bottom: 1.25rem;
-        font-size: 10px;
+        font-family: var(--fonts_primary-regular);
+        font-size: var(--fontsizes_s);
+        font-weight: normal;
     }
 
     .chart-containers {
         display: flex;
         justify-content: center;
-        /* Center horizontally */
         align-items: center;
-        /* Center vertically */
         height: 80vh;
-        /* Full viewport height */
         position: relative;
         width: 98%;
         margin-left: 15px;
@@ -1345,7 +1346,7 @@
                 RenderCash();
                 Cash();
             }
-            else if (hasDigitalModule && !hasCashModule && !hasTransformerModule && !hasSettlementModule  && !hasDisputeModule) {
+            else if (hasDigitalModule && !hasCashModule && !hasTransformerModule && !hasSettlementModule && !hasDisputeModule) {
                 RenderDigital();
                 Digital();
             } else if (hasDigitalModule && hasCashModule && hasTransformerModule && hasSettlementModule && hasDisputeModule) {
@@ -2076,56 +2077,141 @@
     }
     RoleLicensceBaseUI();
 
-    //___________ Refresh Button __________
-    function handleModuleRefresh(hasDigitalModule, hasCashModule, hasTransformerModule, hasSettlementModule, hasDisputeModule) {
-        if (!hasDigitalModule && !hasCashModule && hasTransformerModule && !hasSettlementModule && !hasDisputeModule) {
-            RefreshModule("Transformer");
-        }
-        else if (!hasDigitalModule && !hasCashModule && !hasTransformerModule && hasSettlementModule && !hasDisputeModule) {
-            RefreshModule("Settlement");
-        }
-        else if (!hasDigitalModule && !hasCashModule && !hasTransformerModule && !hasSettlementModule && hasDisputeModule) {
-            RefreshModule("Dispute");
-        }
-        else if (!hasDigitalModule && hasCashModule && !hasTransformerModule && !hasSettlementModule  && !hasDisputeModule) {
-            RefreshModule("Cash");
-        }
-        else if (hasDigitalModule && !hasCashModule && !hasTransformerModule && !hasSettlementModule  && !hasDisputeModule) {
-            RefreshModule("Digital");
-        } else if (hasDigitalModule && hasCashModule && hasTransformerModule && hasSettlementModule  && hasDisputeModule) {
-            if (RoleName === "Admin") {
-                RefreshModule("Digital,Cash,Transformer,Settlement");
-            } else if (RoleName === "Digital Admin" || RoleName === "Digital User") {
-                RefreshModule("Digital");
-            } else if (RoleName === "Cash Admin" || RoleName === "Digital User") {
-                RefreshModule("Cash");
-            }
-            else if (RoleName === "Transformer Admin" || RoleName === "Digital User") {
-                RefreshModule("Transformer");
-            }
-            else if (RoleName === "Settlement Admin" || RoleName === "Settlement User") {
-                RefreshModule("Settlement");
-            }
-            else if (RoleName === "Dispute Admin" || RoleName === "Dispute User") {
-                RefreshModule("Dispute");
-            }
-        }
-    }
-
-    document.addEventListener('DOMContentLoaded', function () {
-        const button = document.querySelector('.refreshBtn');
-        button.addEventListener('click', function () {
-            let { CurrentRole, LicenseModules } = RoleBaseModuleGloble;
+    //___________ Refresh Logic ___________
+    const refreshData = async (isPageLoad = false) => {
+        try {
+            const { CurrentRole, LicenseModules } = RoleBaseModuleGloble;
             RoleName = CurrentRole;
 
-            let hasTransformerModule = LicenseModules.some(l => l.AppModuleName === "Transformer");
-            let hasDigitalModule = LicenseModules.some(l => l.AppModuleName === "Digital");
-            let hasCashModule = LicenseModules.some(l => l.AppModuleName === "Cash");
-            let hasSettlementModule = LicenseModules.some(l => l.AppModuleName === "Settlement");
-            let hasDisputeModule = LicenseModules.some(l => l.AppModuleName === "Dispute");
+            const hasTransformerModule = LicenseModules.some(l => l.AppModuleName === "Transformer");
+            const hasDigitalModule = LicenseModules.some(l => l.AppModuleName === "Digital");
+            const hasCashModule = LicenseModules.some(l => l.AppModuleName === "Cash");
+            const hasSettlementModule = LicenseModules.some(l => l.AppModuleName === "Settlement");
+            const hasDisputeModule = LicenseModules.some(l => l.AppModuleName === "Dispute");
 
-            handleModuleRefresh(hasDigitalModule, hasCashModule, hasTransformerModule, hasSettlementModule, hasDisputeModule);
-        });
+            handleModuleRefresh(
+                hasDigitalModule,
+                hasCashModule,
+                hasTransformerModule,
+                hasSettlementModule,
+                hasDisputeModule,
+                isPageLoad
+            );
+        } catch (error) {
+            console.error('Error during data refresh:', error);
+        }
+    };
+
+    //___________ Refresh Button Handler ___________
+    const handleModuleRefresh = (
+        hasDigitalModule,
+        hasCashModule,
+        hasTransformerModule,
+        hasSettlementModule,
+        hasDisputeModule,
+        isPageLoad
+    ) => {
+        if (
+            !hasDigitalModule &&
+            !hasCashModule &&
+            hasTransformerModule &&
+            !hasSettlementModule &&
+            !hasDisputeModule
+        ) {
+            RefreshModule("Transformer", isPageLoad);
+        } else if (
+            !hasDigitalModule &&
+            !hasCashModule &&
+            !hasTransformerModule &&
+            hasSettlementModule &&
+            !hasDisputeModule
+        ) {
+            RefreshModule("Settlement", isPageLoad);
+        } else if (
+            !hasDigitalModule &&
+            !hasCashModule &&
+            !hasTransformerModule &&
+            !hasSettlementModule &&
+            hasDisputeModule
+        ) {
+            RefreshModule("Dispute", isPageLoad);
+        } else if (
+            !hasDigitalModule &&
+            hasCashModule &&
+            !hasTransformerModule &&
+            !hasSettlementModule &&
+            !hasDisputeModule
+        ) {
+            RefreshModule("Cash", isPageLoad);
+        } else if (
+            hasDigitalModule &&
+            !hasCashModule &&
+            !hasTransformerModule &&
+            !hasSettlementModule &&
+            !hasDisputeModule
+        ) {
+            RefreshModule("Digital", isPageLoad);
+        } else if (
+            hasDigitalModule &&
+            hasCashModule &&
+            hasTransformerModule &&
+            hasSettlementModule &&
+            hasDisputeModule
+        ) {
+            switch (RoleName) {
+                case "Admin":
+                    RefreshModule("Digital,Cash,Transformer,Settlement,Dispute", isPageLoad);
+                    break;
+                case "Digital Admin":
+                case "Digital User":
+                    RefreshModule("Digital", isPageLoad);
+                    break;
+                case "Cash Admin":
+                    RefreshModule("Cash", isPageLoad);
+                    break;
+                case "Transformer Admin":
+                    RefreshModule("Transformer", isPageLoad);
+                    break;
+                case "Settlement Admin":
+                case "Settlement User":
+                    RefreshModule("Settlement", isPageLoad);
+                    break;
+                case "Dispute Admin":
+                case "Dispute User":
+                    RefreshModule("Dispute", isPageLoad);
+                    break;
+                default:
+                    console.warn(`Unhandled RoleName: ${RoleName}`);
+            }
+        } else {
+            console.warn('Unhandled module combination:', {
+                hasDigitalModule,
+                hasCashModule,
+                hasTransformerModule,
+                hasSettlementModule,
+                hasDisputeModule,
+            });
+        }
+    };
+
+    //___________ DOM Content Loaded Handler ___________
+    document.addEventListener('DOMContentLoaded', () => {
+        const refreshButton = document.querySelector('.refreshBtn');
+
+        if (refreshButton) {
+            // Add click event listener to the refresh button
+            refreshButton.addEventListener('click', () => {
+                refreshData(true);
+            });
+        } else {
+            console.warn('Refresh button with class .refreshBtn not found.');
+        }
+
+        // Start the automatic refresh timer
+        //const refreshInterval = 2000;
+        //setInterval(() => {
+          //  refreshData(false);
+        //}, refreshInterval);
     });
 
 </script>
@@ -2135,7 +2221,7 @@
 <!--__________________ UI_Module Functionality ______________-->
 <!--_________________________________________________________-->
 <script>
-function LoadAlert() {
+    function LoadAlert() {
         async function fetchTransactionBandAlert() {
             try {
                 const response = await fetch('rest/wsGetTransactionBandAlert', {
@@ -2230,7 +2316,6 @@ function LoadAlert() {
 
         fetchTransactionBandAlert();
     }
-
 
     // Uncomment this block to show a customer alert
     // window.onload = function () {
@@ -2745,113 +2830,225 @@ function LoadAlert() {
                 }
             }
             async function DigitalOverAllChart1(containerId, chartType, title, date) {
-                const data = await fetchDigitalChartDataOverAll(date);
+                try {
+                    const data = await fetchDigitalChartDataOverAll(date);
 
-                if (!data || !data.series || data.series.length === 0) {
-                    return;
-                }
+                    let chartOptions;
 
-                const chartOptions = {
-                    colors: ['#7cb5ec', '#434348', '#90ed7d', '#f7a35c', '#8085e9', '#f15c80', '#e4d354', '#8d4654', '#91e8e1'],
-                    chart: {
-                        renderTo: containerId,
-                        type: chartType,
-                        backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                        events: {
-                            drilldown: function (e) {
-                                this.setTitle({ text: e.point.name });
-                            },
-                            drillup: function (e) {
-                                this.setTitle({ text: title });
-                            }
-                        }
-                    },
-                    title: {
-                        text: title,
-                        style: {
-                            color: 'var(--colors_materialmenu_selecteditembackground)',
-                            fontSize: '20px'
-                        }
-                    },
-                    xAxis: {
-                        type: 'category',
-                        labels: {
-                            style: {
-                                color: '#2b908f'
-                            }
-                        }
-                    },
-                    yAxis: {
-                        title: {
-                            text: 'Values',
-                            style: {
-                                color: 'var(--colors_materialmenu_selecteditembackground)',
-                                fontSize: '16px'
-                            }
-                        },
-                        labels: {
-                            style: {
-                                color: 'var(--colors_materialmenu_selecteditembackground)'
-                            },
-                            formatter: function () {
-                                return this.value === 0 ? '' : this.value;
-                            }
-                        }
-                    },
-                    legend: {
-                        enabled: false // Disable the legend to remove the series names and logos
-                        //enabled: true,
-                        //itemStyle: {
-                        //    color: '#2b908f'
-                        //}
-                    },
-                    plotOptions: {
-                        pie: {
-                            allowPointSelect: true,
-                            cursor: 'pointer',
-                            dataLabels: {
-                                enabled: true,
-                                format: '{point.name}: {point.y:.2f} ({point.percentage:.2f}%)',
-                                style: {
-                                    color: '#000000'
+                    if (data && data.series && data.series.length > 0) {
+                        // **Data Exists:** Configure the chart with the fetched data
+                        chartOptions = {
+                            colors: ['#7cb5ec', '#434348', '#90ed7d', '#f7a35c', '#8085e9', '#f15c80', '#e4d354', '#8d4654', '#91e8e1'],
+                            chart: {
+                                type: chartType,
+                                backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                                events: {
+                                    drilldown: function (e) {
+                                        this.setTitle({ text: e.point.name });
+                                    },
+                                    drillup: function () {
+                                        this.setTitle({ text: title });
+                                    }
                                 }
                             },
-                            showInLegend: true
-                        }
-                    },
-                    series: data.series,
-                    drilldown: {
-                        series: data.drilldown.series || [],
-                        drillUpButton: {
-                            relativeTo: 'spacingBox',
-                            position: {
-                                y: 0,
-                                x: 0
+                            title: {
+                                text: title,
+                                style: {
+                                    color: 'var(--colors_materialmenu_selecteditembackground)',
+                                    fontSize: '20px'
+                                }
                             },
-                            theme: {
-                                fill: 'white',
-                                'stroke-width': 1,
-                                stroke: 'silver',
-                                r: 0
+                            xAxis: {
+                                type: 'category',
+                                labels: {
+                                    style: {
+                                        color: '#2b908f'
+                                    }
+                                }
+                            },
+                            yAxis: {
+                                title: {
+                                    text: 'Values',
+                                    style: {
+                                        color: 'var(--colors_materialmenu_selecteditembackground)',
+                                        fontSize: '16px'
+                                    }
+                                },
+                                labels: {
+                                    style: {
+                                        color: 'var(--colors_materialmenu_selecteditembackground)'
+                                    },
+                                    formatter: function () {
+                                        return this.value === 0 ? '' : this.value;
+                                    }
+                                }
+                            },
+                            legend: {
+                                enabled: false // Disable the legend to remove the series names and logos
+                            },
+                            plotOptions: {
+                                pie: {
+                                    allowPointSelect: true,
+                                    cursor: 'pointer',
+                                    dataLabels: {
+                                        enabled: true,
+                                        format: '{point.name}: {point.y:.2f} ({point.percentage:.2f}%)',
+                                        style: {
+                                            color: '#000000'
+                                        }
+                                    },
+                                    showInLegend: true
+                                }
+                            },
+                            series: data.series,
+                            drilldown: {
+                                series: data.drilldown?.series || [],
+                                drillUpButton: {
+                                    relativeTo: 'spacingBox',
+                                    position: {
+                                        y: 0,
+                                        x: 0
+                                    },
+                                    theme: {
+                                        fill: 'white',
+                                        'stroke-width': 1,
+                                        stroke: 'silver',
+                                        r: 0
+                                    }
+                                }
+                            },
+                            tooltip: {
+                                formatter: function () {
+                                    if (this.point.drilldown) {
+                                        return `<b>${this.point.name}</b><br/>Total Amount: ${Highcharts.numberFormat(this.y, 2)} (${Highcharts.numberFormat(this.percentage, 2)}%)`;
+                                    } else {
+                                        return `<b>${this.point.name}</b><br/>${Highcharts.numberFormat(this.y, 2)} (${Highcharts.numberFormat(this.percentage, 2)}%)`;
+                                    }
+                                }
                             }
-                        }
-                    },
-                    tooltip: {
-                        formatter: function () {
-                            if (this.point.drilldown) {
-                                return `<b>${this.point.name}</b><br/>Total Amount: ${Highcharts.numberFormat(this.y, 2)} (${Highcharts.numberFormat(this.percentage, 2)}%)`;
-                            } else {
-                                return `<b>${this.point.name}</b><br/>${Highcharts.numberFormat(this.y, 2)} (${Highcharts.numberFormat(this.percentage, 2)}%)`;
+                        };
+                    } else {
+                        // **No Data:** Configure an empty chart with the specified title
+                        chartOptions = {
+                            chart: {
+                                type: chartType,
+                                backgroundColor: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            title: {
+                                text: title, // Keep the original title "Transaction Amount"
+                                style: {
+                                    color: 'var(--colors_materialmenu_selecteditembackground)',
+                                    fontSize: '20px'
+                                }
+                            },
+                            xAxis: {
+                                type: 'category',
+                                labels: {
+                                    enabled: false // Hide labels since there's no data
+                                },
+                                visible: false // Hide the X-axis entirely
+                            },
+                            yAxis: {
+                                title: {
+                                    text: 'Values',
+                                    style: {
+                                        color: 'var(--colors_materialmenu_selecteditembackground)',
+                                        fontSize: '16px'
+                                    }
+                                },
+                                labels: {
+                                    enabled: false // Hide labels since there's no data
+                                },
+                                visible: false // Hide the Y-axis entirely
+                            },
+                            legend: {
+                                enabled: false // Disable the legend
+                            },
+                            series: [{
+                                name: 'No Data',
+                                data: [], // Empty data
+                                dataLabels: {
+                                    enabled: false // Disable data labels
+                                }
+                            }],
+                            plotOptions: {
+                                pie: {
+                                    dataLabels: {
+                                        enabled: false // Disable data labels for pie chart
+                                    }
+                                }
+                            },
+                            tooltip: {
+                                enabled: false // Disable tooltips since there's no data
                             }
-                        }
+                        };
                     }
-                };
 
+                    // **Render the Chart:** Always call Highcharts.chart with the configured options
+                    Highcharts.chart(containerId, chartOptions);
+                } catch (error) {
+                    console.error('Error fetching or rendering chart data:', error);
 
+                    // **Optional:** Render an empty chart with the title if an error occurs
+                    const emptyChartOptions = {
+                        chart: {
+                            type: chartType,
+                            backgroundColor: 'rgba(255, 255, 255, 0.1)'
+                        },
+                        title: {
+                            text: title, // "Transaction Amount"
+                            style: {
+                                color: 'var(--colors_materialmenu_selecteditembackground)',
+                                fontSize: '20px'
+                            }
+                        },
+                        xAxis: {
+                            type: 'category',
+                            labels: {
+                                enabled: false
+                            },
+                            visible: false
+                        },
+                        yAxis: {
+                            title: {
+                                text: 'Values',
+                                style: {
+                                    color: 'var(--colors_materialmenu_selecteditembackground)',
+                                    fontSize: '16px'
+                                }
+                            },
+                            labels: {
+                                enabled: false
+                            },
+                            visible: false
+                        },
+                        legend: {
+                            enabled: false
+                        },
+                        series: [{
+                            name: 'No Data',
+                            data: [],
+                            dataLabels: {
+                                enabled: false
+                            }
+                        }],
+                        plotOptions: {
+                            pie: {
+                                dataLabels: {
+                                    enabled: false
+                                }
+                            }
+                        },
+                        tooltip: {
+                            enabled: false
+                        }
+                    };
 
-                Highcharts.chart(containerId, chartOptions);
+                    Highcharts.chart(containerId, emptyChartOptions);
+                }
             }
             DigitalOverAllChart1("DigitalOverAllChart1", "pie", "Transaction Amount", formattedDate);
+
 
 
             //----------------------------
@@ -3184,98 +3381,277 @@ function LoadAlert() {
                 }
             }
             async function DigitalDisputeAgingChart(containerId, chartType, title, type) {
-                const data = await LoadDigitalDisputesAggingData();
-                if (!data || data.length === 0) {
-                    return;
-                }
+                try {
+                    const data = await LoadDigitalDisputesAggingData();
 
-                // Prepare data for Highcharts
-                const chartData = data.map(item => {
-                    return {
-                        name: item.Aging,
-                        y: item.Count,
-                        drilldown: item.Date
-                    };
-                });
+                    let chartOptions;
 
-                var chartOptions = {
-                    colors: ['#7cb5ec', '#434348', '#90ed7d', '#f7a35c'],
-                    chart: {
-                        renderTo: containerId,
-                        type: chartType,
-                        backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                        events: {
-                            drilldown: function (e) {
-                                // Custom drilldown logic if needed
-                            }
-                        }
-                    },
-                    title: {
-                        text: title,
-                        style: {
-                            color: '#333333',
-                            fontSize: '20px'
-                        }
-                    },
-                    xAxis: {
-                        type: 'category',
-                        labels: {
-                            style: {
-                                color: '#4CAF50'
-                            }
-                        }
-                    },
-                    yAxis: {
-                        title: {
-                            text: 'Count',
-                            style: {
-                                color: '#333333',
-                                fontSize: '16px'
-                            }
-                        },
-                        labels: {
-                            style: {
-                                color: '#4CAF50'
-                            }
-                        }
-                    },
-                    legend: {
-                        enabled: true,
-                        itemStyle: {
-                            color: '#4CAF50'
-                        }
-                    },
-                    plotOptions: {
-                        series: {
-                            borderWidth: 0,
-                            dataLabels: {
-                                enabled: true,
-                                format: '{point.name}: {point.y}',
+                    if (data && data.length > 0) {
+                        // **Data Exists:** Configure the chart with the fetched data
+                        const chartData = data.map(item => ({
+                            name: item.Aging,
+                            y: item.Count,
+                            drilldown: item.Date
+                        }));
+
+                        chartOptions = {
+                            colors: ['#7cb5ec', '#434348', '#90ed7d', '#f7a35c'],
+                            chart: {
+                                type: chartType,
+                                backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                                events: {
+                                    drilldown: function (e) {
+                                        // Custom drilldown logic if needed
+                                        // Example: Set title to the drilldown category
+                                        if (!e.seriesOptions) {
+                                            this.setTitle({ text: e.point.name });
+                                        }
+                                    },
+                                    drillup: function () {
+                                        this.setTitle({ text: title });
+                                    }
+                                }
+                            },
+                            title: {
+                                text: title,
                                 style: {
-                                    color: '#000000'
+                                    color: '#333333',
+                                    fontSize: '20px'
+                                }
+                            },
+                            xAxis: {
+                                type: 'category',
+                                labels: {
+                                    style: {
+                                        color: '#4CAF50'
+                                    }
+                                }
+                            },
+                            yAxis: {
+                                title: {
+                                    text: 'Count',
+                                    style: {
+                                        color: '#333333',
+                                        fontSize: '16px'
+                                    }
+                                },
+                                labels: {
+                                    style: {
+                                        color: '#4CAF50'
+                                    }
+                                }
+                            },
+                            legend: {
+                                enabled: true,
+                                itemStyle: {
+                                    color: '#4CAF50'
+                                }
+                            },
+                            plotOptions: {
+                                series: {
+                                    borderWidth: 0,
+                                    dataLabels: {
+                                        enabled: true,
+                                        format: '{point.name}: {point.y}',
+                                        style: {
+                                            color: '#000000'
+                                        }
+                                    }
+                                },
+                                pie: {
+                                    showInLegend: true
+                                }
+                            },
+                            series: [{
+                                name: 'Dispute Aging',
+                                data: chartData
+                            }],
+                            tooltip: {
+                                formatter: function () {
+                                    return `<b>${this.point.name}</b><br/>Count: ${this.point.y}`;
+                                }
+                            }
+                        };
+                    } else {
+                        // **No Data:** Configure an empty chart with the specified title
+                        chartOptions = {
+                            chart: {
+                                type: chartType,
+                                backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                                events: {
+                                    load: function () {
+                                        const chart = this;
+                                        // Add a placeholder text in the center
+                                        chart.renderer.text(
+                                            'No data available',
+                                            chart.plotWidth / 2 + chart.plotLeft,
+                                            chart.plotHeight / 2 + chart.plotTop
+                                        )
+                                            .css({
+                                                color: '#555555',
+                                                fontSize: '16px',
+                                                textAlign: 'center'
+                                            })
+                                            .attr({
+                                                align: 'center'
+                                            })
+                                            .add();
+                                    }
+                                }
+                            },
+                            title: {
+                                text: title, // "Disputes Aging"
+                                style: {
+                                    color: '#333333',
+                                    fontSize: '20px'
+                                }
+                            },
+                            xAxis: {
+                                type: 'category',
+                                labels: {
+                                    enabled: false // Hide labels since there's no data
+                                },
+                                visible: false // Hide the X-axis entirely
+                            },
+                            yAxis: {
+                                title: {
+                                    text: 'Count',
+                                    style: {
+                                        color: '#333333',
+                                        fontSize: '16px'
+                                    }
+                                },
+                                labels: {
+                                    enabled: false // Hide labels since there's no data
+                                },
+                                visible: false // Hide the Y-axis entirely
+                            },
+                            legend: {
+                                enabled: false // Disable the legend
+                            },
+                            series: [{
+                                name: 'Dispute Aging',
+                                data: [], // Empty data
+                                dataLabels: {
+                                    enabled: false // Disable data labels
+                                }
+                            }],
+                            plotOptions: {
+                                series: {
+                                    dataLabels: {
+                                        enabled: false // Disable data labels
+                                    }
+                                },
+                                pie: {
+                                    showInLegend: false
+                                }
+                            },
+                            tooltip: {
+                                enabled: false // Disable tooltips since there's no data
+                            }
+                        };
+                    }
+
+                    // **Render the Chart:** Always call Highcharts.chart with the configured options
+                    const chart = Highcharts.chart(containerId, chartOptions);
+
+                    // **Event Listener for Chart Type Change:**
+                    // Ensure that the element with ID 'chartType' exists
+                    const chartTypeSelector = document.getElementById('chartType');
+                    if (chartTypeSelector) {
+                        chartTypeSelector.addEventListener('change', function () {
+                            const newType = this.value;
+                            chart.update({
+                                chart: {
+                                    type: newType
+                                }
+                            });
+                        });
+                    }
+
+                } catch (error) {
+                    console.error('Error rendering chart:', error);
+
+                    // **Render an Empty Chart with the Title in Case of Errors**
+                    const emptyChartOptions = {
+                        chart: {
+                            type: chartType,
+                            backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                            events: {
+                                load: function () {
+                                    const chart = this;
+                                    // Add a placeholder text in the center
+                                    chart.renderer.text(
+                                        'No data available',
+                                        chart.plotWidth / 2 + chart.plotLeft,
+                                        chart.plotHeight / 2 + chart.plotTop
+                                    )
+                                        .css({
+                                            color: '#555555',
+                                            fontSize: '16px',
+                                            textAlign: 'center'
+                                        })
+                                        .attr({
+                                            align: 'center'
+                                        })
+                                        .add();
                                 }
                             }
                         },
-                        pie: {
-                            showInLegend: true
+                        title: {
+                            text: title, // "Disputes Aging"
+                            style: {
+                                color: '#333333',
+                                fontSize: '20px'
+                            }
+                        },
+                        xAxis: {
+                            type: 'category',
+                            labels: {
+                                enabled: false
+                            },
+                            visible: false
+                        },
+                        yAxis: {
+                            title: {
+                                text: 'Count',
+                                style: {
+                                    color: '#333333',
+                                    fontSize: '16px'
+                                }
+                            },
+                            labels: {
+                                enabled: false
+                            },
+                            visible: false
+                        },
+                        legend: {
+                            enabled: false
+                        },
+                        series: [{
+                            name: 'Dispute Aging',
+                            data: [],
+                            dataLabels: {
+                                enabled: false
+                            }
+                        }],
+                        plotOptions: {
+                            series: {
+                                dataLabels: {
+                                    enabled: false
+                                }
+                            },
+                            pie: {
+                                showInLegend: false
+                            }
+                        },
+                        tooltip: {
+                            enabled: false
                         }
-                    },
-                    series: [{
-                        name: 'Dispute Aging',
-                        data: chartData
-                    }]
-                };
+                    };
 
-                var chart = new Highcharts.Chart(chartOptions);
-
-                document.getElementById('chartType').addEventListener('change', function () {
-                    var newType = this.value;
-                    chart.update({
-                        chart: {
-                            type: newType
-                        }
-                    });
-                });
+                    Highcharts.chart(containerId, emptyChartOptions);
+                }
             }
             DigitalDisputeAgingChart("DigitalDisputeAgingChart", "line", "Disputes Aging");
         }
@@ -3705,10 +4081,9 @@ function LoadAlert() {
                     CashAggingChart(chartId, chartType, 'Amount Aging');
                 }
                 else if (chartId == "CashDisputeAgingChart") {
-                    CashDisputeAgingChart(chartId, chartType, "Dispute Aging", "");
+                    CashDisputeAgingChart(chartId, chartType, "Disputes Aging", "");
                 }
             }
-
 
             //----------------------------
             //---- Over All Chart 1 ------
@@ -3778,113 +4153,179 @@ function LoadAlert() {
             }
 
             async function CashOverAllChart1(containerId, chartType, title, date) {
-                const data = await fetchCashChartDataOverAll(date);
+                try {
+                    const data = await fetchCashChartDataOverAll(date);
 
-                if (!data || !data.series || data.series.length === 0) {
-                    return;
-                }
+                    let chartOptions;
 
-                const chartOptions = {
-                    colors: ['#7cb5ec', '#434348', '#90ed7d', '#f7a35c', '#8085e9', '#f15c80', '#e4d354', '#8d4654', '#91e8e1'],
-                    chart: {
-                        renderTo: containerId,
-                        type: chartType,
-                        backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                        events: {
-                            drilldown: function (e) {
-                                this.setTitle({ text: e.point.name });
-                            },
-                            drillup: function (e) {
-                                this.setTitle({ text: title });
-                            }
-                        }
-                    },
-                    title: {
-                        text: title,
-                        style: {
-                            color: 'var(--colors_materialmenu_selecteditembackground)',
-                            fontSize: '20px'
-                        }
-                    },
-                    xAxis: {
-                        type: 'category',
-                        labels: {
-                            style: {
-                                color: '#2b908f'
-                            }
-                        }
-                    },
-                    yAxis: {
-                        title: {
-                            text: 'Values',
-                            style: {
-                                color: 'var(--colors_materialmenu_selecteditembackground)',
-                                fontSize: '16px'
-                            }
-                        },
-                        labels: {
-                            style: {
-                                color: 'var(--colors_materialmenu_selecteditembackground)'
-                            },
-                            formatter: function () {
-                                return this.value === 0 ? '' : this.value;
-                            }
-                        }
-                    },
-                    legend: {
-                        enabled: false // Disable the legend to remove the series names and logos
-                        //enabled: true,
-                        //itemStyle: {
-                        //    color: '#2b908f'
-                        //}
-                    },
-                    plotOptions: {
-                        pie: {
-                            allowPointSelect: true,
-                            cursor: 'pointer',
-                            dataLabels: {
-                                enabled: true,
-                                format: '{point.name}: {point.y:.2f} ({point.percentage:.2f}%)',
-                                style: {
-                                    color: '#000000'
+                    if (data && data.series && data.series.length > 0) {
+                        // Data exists: Configure the chart with the fetched data
+                        chartOptions = {
+                            colors: ['#7cb5ec', '#434348', '#90ed7d', '#f7a35c', '#8085e9', '#f15c80', '#e4d354', '#8d4654', '#91e8e1'],
+                            chart: {
+                                renderTo: containerId,
+                                type: chartType,
+                                backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                                events: {
+                                    drilldown: function (e) {
+                                        this.setTitle({ text: e.point.name });
+                                    },
+                                    drillup: function (e) {
+                                        this.setTitle({ text: title });
+                                    }
                                 }
                             },
-                            showInLegend: true
-                        }
-                    },
-                    series: data.series,
-                    drilldown: {
-                        series: data.drilldown.series || [],
-                        drillUpButton: {
-                            relativeTo: 'spacingBox',
-                            position: {
-                                y: 0,
-                                x: 0
+                            title: {
+                                text: title,
+                                style: {
+                                    color: 'var(--colors_materialmenu_selecteditembackground)',
+                                    fontSize: '20px'
+                                }
                             },
-                            theme: {
-                                fill: 'white',
-                                'stroke-width': 1,
-                                stroke: 'silver',
-                                r: 0
+                            xAxis: {
+                                type: 'category',
+                                labels: {
+                                    style: {
+                                        color: '#2b908f'
+                                    }
+                                }
+                            },
+                            yAxis: {
+                                title: {
+                                    text: 'Values',
+                                    style: {
+                                        color: 'var(--colors_materialmenu_selecteditembackground)',
+                                        fontSize: '16px'
+                                    }
+                                },
+                                labels: {
+                                    style: {
+                                        color: 'var(--colors_materialmenu_selecteditembackground)'
+                                    },
+                                    formatter: function () {
+                                        return this.value === 0 ? '' : this.value;
+                                    }
+                                }
+                            },
+                            legend: {
+                                enabled: false
+                            },
+                            plotOptions: {
+                                pie: {
+                                    allowPointSelect: true,
+                                    cursor: 'pointer',
+                                    dataLabels: {
+                                        enabled: true,
+                                        format: '{point.name}: {point.y:.2f} ({point.percentage:.2f}%)',
+                                        style: {
+                                            color: '#000000'
+                                        }
+                                    },
+                                    showInLegend: true
+                                }
+                            },
+                            series: data.series,
+                            drilldown: {
+                                series: data.drilldown.series || [],
+                                drillUpButton: {
+                                    relativeTo: 'spacingBox',
+                                    position: {
+                                        y: 0,
+                                        x: 0
+                                    },
+                                    theme: {
+                                        fill: 'white',
+                                        'stroke-width': 1,
+                                        stroke: 'silver',
+                                        r: 0
+                                    }
+                                }
+                            },
+                            tooltip: {
+                                formatter: function () {
+                                    if (this.point.drilldown) {
+                                        return `<b>${this.point.name}</b><br/>Total Amount: ${Highcharts.numberFormat(this.y, 2)} (${Highcharts.numberFormat(this.percentage, 2)}%)`;
+                                    } else {
+                                        return `<b>${this.point.name}</b><br/>${Highcharts.numberFormat(this.y, 2)} (${Highcharts.numberFormat(this.percentage, 2)}%)`;
+                                    }
+                                }
                             }
-                        }
-                    },
-                    tooltip: {
-                        formatter: function () {
-                            if (this.point.drilldown) {
-                                return `<b>${this.point.name}</b><br/>Total Amount: ${Highcharts.numberFormat(this.y, 2)} (${Highcharts.numberFormat(this.percentage, 2)}%)`;
-                            } else {
-                                return `<b>${this.point.name}</b><br/>${Highcharts.numberFormat(this.y, 2)} (${Highcharts.numberFormat(this.percentage, 2)}%)`;
+                        };
+                    } else {
+                        // No data: Configure an empty chart
+                        chartOptions = {
+                            chart: {
+                                renderTo: containerId,
+                                type: chartType,
+                                backgroundColor: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            title: {
+                                text: title,
+                                style: {
+                                    color: 'var(--colors_materialmenu_selecteditembackground)',
+                                    fontSize: '20px'
+                                }
+                            },
+                            xAxis: {
+                                visible: false
+                            },
+                            yAxis: {
+                                visible: false
+                            },
+                            legend: {
+                                enabled: false
+                            },
+                            series: [{
+                                name: 'Empty',
+                                data: [] // No data
+                            }],
+                            tooltip: {
+                                enabled: false
                             }
-                        }
+                        };
                     }
-                };
 
+                    // Render the chart
+                    Highcharts.chart(containerId, chartOptions);
+                } catch (error) {
+                    console.error('Error rendering chart:', error);
 
-
-                Highcharts.chart(containerId, chartOptions);
+                    // Render an empty chart with the title in case of errors
+                    Highcharts.chart(containerId, {
+                        chart: {
+                            renderTo: containerId,
+                            type: chartType,
+                            backgroundColor: 'rgba(255, 255, 255, 0.1)'
+                        },
+                        title: {
+                            text: title,
+                            style: {
+                                color: 'var(--colors_materialmenu_selecteditembackground)',
+                                fontSize: '20px'
+                            }
+                        },
+                        xAxis: {
+                            visible: false
+                        },
+                        yAxis: {
+                            visible: false
+                        },
+                        legend: {
+                            enabled: false
+                        },
+                        series: [{
+                            name: 'Empty',
+                            data: [] // No data
+                        }],
+                        tooltip: {
+                            enabled: false
+                        }
+                    });
+                }
             }
+            // Call the function
             CashOverAllChart1("CashOverAllChart1", "pie", "Transaction Amount", formattedDate);
+
 
             //----------------------------
             //---- Over All Chart 2 ------
@@ -4081,88 +4522,276 @@ function LoadAlert() {
                 }
             }
             async function CashAggingChart(containerId, chartType, title, type) {
-                const data = await fetchCashChartDataAging();
-                if (!data || !data.series || data.series.length === 0) {
-                    return;
-                } else {
-                    $("." + containerId).show();
-                }
+                try {
+                    const data = await fetchCashChartDataAging();
 
-                // Update series name based on type
-                var chartOptions = {
-                    colors: ['var(--colors_materialmenu_selecteditembackground)', '#434348', '#90ed7d', '#f7a35c'],
-                    chart: {
-                        renderTo: containerId,
-                        type: chartType,
-                        backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                        events: {
-                            drilldown: function (e) {
-                                //alert('Drilled down to ' + e.point.name);
-                            }
-                        }
-                    },
-                    title: {
-                        text: title,
-                        style: {
-                            color: 'var(--colors_materialmenu_selecteditembackground)',
-                            fontSize: '20px'
-                        }
-                    },
-                    xAxis: {
-                        type: 'category',
-                        labels: {
-                            style: {
-                                color: '#4CAF50'
-                            }
-                        }
-                    },
-                    yAxis: {
-                        title: {
-                            text: 'Y-Axis',
-                            style: {
-                                color: 'var(--colors_materialmenu_selecteditembackground)',
-                                fontSize: '16px'
-                            }
-                        },
-                        labels: {
-                            style: {
-                                color: '#4CAF50'
-                            }
-                        }
-                    },
-                    legend: {
-                        enabled: true,
-                        itemStyle: {
-                            color: '#4CAF50'
-                        }
-                    },
-                    plotOptions: {
-                        series: {
-                            borderWidth: 0,
-                            dataLabels: {
-                                enabled: true,
-                                format: '{point.name} Ago: {point.y:.1f}',
+                    let chartOptions;
+
+                    if (data && data.series && data.series.length > 0) {
+                        // **Data Exists:** Configure the chart with the fetched data
+                        chartOptions = {
+                            colors: ['var(--colors_materialmenu_selecteditembackground)', '#434348', '#90ed7d', '#f7a35c'],
+                            chart: {
+                                type: chartType,
+                                backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                                events: {
+                                    drilldown: function (e) {
+                                        // Custom drilldown logic if needed
+                                        // Example: Set title to the drilldown category
+                                        if (!e.seriesOptions) {
+                                            this.setTitle({ text: e.point.name });
+                                        }
+                                    },
+                                    drillup: function () {
+                                        this.setTitle({ text: title });
+                                    }
+                                }
+                            },
+                            title: {
+                                text: title,
                                 style: {
-                                    color: '#000000'
+                                    color: 'var(--colors_materialmenu_selecteditembackground)',
+                                    fontSize: '20px'
+                                }
+                            },
+                            xAxis: {
+                                type: 'category',
+                                labels: {
+                                    style: {
+                                        color: '#4CAF50'
+                                    }
+                                }
+                            },
+                            yAxis: {
+                                title: {
+                                    text: 'Y-Axis',
+                                    style: {
+                                        color: 'var(--colors_materialmenu_selecteditembackground)',
+                                        fontSize: '16px'
+                                    }
+                                },
+                                labels: {
+                                    style: {
+                                        color: '#4CAF50'
+                                    }
+                                }
+                            },
+                            legend: {
+                                enabled: true,
+                                itemStyle: {
+                                    color: '#4CAF50'
+                                }
+                            },
+                            plotOptions: {
+                                series: {
+                                    borderWidth: 0,
+                                    dataLabels: {
+                                        enabled: true,
+                                        format: '{point.name} Ago: {point.y:.1f}',
+                                        style: {
+                                            color: '#000000'
+                                        }
+                                    }
+                                },
+                                pie: {
+                                    showInLegend: true
+                                }
+                            },
+                            series: data.series,
+                            tooltip: {
+                                formatter: function () {
+                                    return `<b>${this.point.name}</b><br/>Ago: ${this.point.y.toFixed(1)}`;
+                                }
+                            }
+                        };
+                    } else {
+                        // **No Data:** Configure an empty chart with the title and a placeholder message
+                        chartOptions = {
+                            colors: ['#d3d3d3'], // Light gray color for empty chart
+                            chart: {
+                                type: chartType,
+                                backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                                events: {
+                                    load: function () {
+                                        const chart = this;
+                                        // Add a placeholder text in the center
+                                        chart.renderer.text(
+                                            'No data available',
+                                            chart.plotWidth / 2 + chart.plotLeft,
+                                            chart.plotHeight / 2 + chart.plotTop
+                                        )
+                                            .css({
+                                                color: '#555555',
+                                                fontSize: '16px',
+                                                textAlign: 'center'
+                                            })
+                                            .attr({
+                                                align: 'center'
+                                            })
+                                            .add();
+                                    },
+                                    drilldown: function () {
+                                        // Prevent drilldown when no data
+                                    },
+                                    drillup: function () {
+                                        // Prevent drillup when no data
+                                    }
+                                }
+                            },
+                            title: {
+                                text: title, // "Agings"
+                                style: {
+                                    color: 'var(--colors_materialmenu_selecteditembackground)',
+                                    fontSize: '20px'
+                                }
+                            },
+                            xAxis: {
+                                visible: false // Hide the X-axis
+                            },
+                            yAxis: {
+                                visible: false, // Hide the Y-axis
+                                title: {
+                                    text: 'Y-Axis',
+                                    style: {
+                                        color: 'var(--colors_materialmenu_selecteditembackground)',
+                                        fontSize: '16px'
+                                    }
+                                },
+                                labels: {
+                                    enabled: false // Hide labels since there's no data
+                                }
+                            },
+                            legend: {
+                                enabled: false // Disable the legend
+                            },
+                            series: [{
+                                name: 'Agings',
+                                data: [], // No data
+                                dataLabels: {
+                                    enabled: false // Disable data labels
+                                }
+                            }],
+                            plotOptions: {
+                                series: {
+                                    dataLabels: {
+                                        enabled: false // Disable data labels
+                                    }
+                                },
+                                pie: {
+                                    showInLegend: false
+                                }
+                            },
+                            tooltip: {
+                                enabled: false // Disable tooltips since there's no data
+                            }
+                        };
+                    }
+
+                    // **Render the Chart:** Always call Highcharts.chart with the configured options
+                    const chart = Highcharts.chart(containerId, chartOptions);
+
+                    // **Event Listener for Chart Type Change:**
+                    // Ensure that the element with ID 'chartType' exists
+                    const chartTypeSelector = document.getElementById('chartType');
+                    if (chartTypeSelector) {
+                        chartTypeSelector.addEventListener('change', function () {
+                            const newType = this.value;
+                            chart.update({
+                                chart: {
+                                    type: newType
+                                }
+                            });
+                        });
+                    }
+
+                } catch (error) {
+                    console.error('Error rendering Cash Aging chart:', error);
+
+                    // **Render an Empty Chart with the Title and Placeholder Message in Case of Errors**
+                    const emptyChartOptions = {
+                        colors: ['#d3d3d3'], // Light gray color for empty chart
+                        chart: {
+                            type: chartType,
+                            backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                            events: {
+                                load: function () {
+                                    const chart = this;
+                                    // Add a placeholder text in the center
+                                    chart.renderer.text(
+                                        'No data available',
+                                        chart.plotWidth / 2 + chart.plotLeft,
+                                        chart.plotHeight / 2 + chart.plotTop
+                                    )
+                                        .css({
+                                            color: '#555555',
+                                            fontSize: '16px',
+                                            textAlign: 'center'
+                                        })
+                                        .attr({
+                                            align: 'center'
+                                        })
+                                        .add();
+                                },
+                                drilldown: function () {
+                                    // Prevent drilldown when no data
+                                },
+                                drillup: function () {
+                                    // Prevent drillup when no data
                                 }
                             }
                         },
-                        pie: {
-                            showInLegend: true
+                        title: {
+                            text: title, // "Agings"
+                            style: {
+                                color: 'var(--colors_materialmenu_selecteditembackground)',
+                                fontSize: '20px'
+                            }
+                        },
+                        xAxis: {
+                            visible: false // Hide the X-axis
+                        },
+                        yAxis: {
+                            visible: false, // Hide the Y-axis
+                            title: {
+                                text: 'Y-Axis',
+                                style: {
+                                    color: 'var(--colors_materialmenu_selecteditembackground)',
+                                    fontSize: '16px'
+                                }
+                            },
+                            labels: {
+                                enabled: false // Hide labels since there's no data
+                            }
+                        },
+                        legend: {
+                            enabled: false // Disable the legend
+                        },
+                        series: [{
+                            name: 'Agings',
+                            data: [], // No data
+                            dataLabels: {
+                                enabled: false // Disable data labels
+                            }
+                        }],
+                        plotOptions: {
+                            series: {
+                                dataLabels: {
+                                    enabled: false // Disable data labels
+                                }
+                            },
+                            pie: {
+                                showInLegend: false
+                            }
+                        },
+                        tooltip: {
+                            enabled: false // Disable tooltips since there's no data
                         }
-                    },
-                    series: data.series
-                };
-                var chart = new Highcharts.Chart(chartOptions);
-                document.getElementById('chartType').addEventListener('change', function () {
-                    var newType = this.value;
-                    chart.update({
-                        chart: {
-                            type: newType
-                        }
-                    });
-                });
+                    };
+
+                    Highcharts.chart(containerId, emptyChartOptions);
+                }
             }
+
             CashAggingChart("CashAggingChart", "line", "Agings", "DigitalLC");
 
             //----------------------------
@@ -4216,99 +4845,237 @@ function LoadAlert() {
                 }
             }
             async function CashDisputeAgingChart(containerId, chartType, title, type) {
-                const data = await LoadCashDisputesAggingData();
-                if (!data || data.length === 0) {
-                    return;
-                }
+                try {
+                    const data = await LoadCashDisputesAggingData();
 
-                // Prepare data for Highcharts
-                const chartData = data.map(item => {
-                    return {
-                        name: item.Aging,
-                        y: item.Count,
-                        drilldown: item.Date
-                    };
-                });
+                    let chartOptions;
 
-                var chartOptions = {
-                    colors: ['#7cb5ec', '#434348', '#90ed7d', '#f7a35c'],
-                    chart: {
-                        renderTo: containerId,
-                        type: chartType,
-                        backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                        events: {
-                            drilldown: function (e) {
-                                // Custom drilldown logic if needed
-                            }
-                        }
-                    },
-                    title: {
-                        text: title,
-                        style: {
-                            color: '#333333',
-                            fontSize: '20px'
-                        }
-                    },
-                    xAxis: {
-                        type: 'category',
-                        labels: {
-                            style: {
-                                color: '#4CAF50'
-                            }
-                        }
-                    },
-                    yAxis: {
-                        title: {
-                            text: 'Count',
-                            style: {
-                                color: '#333333',
-                                fontSize: '16px'
-                            }
-                        },
-                        labels: {
-                            style: {
-                                color: '#4CAF50'
-                            }
-                        }
-                    },
-                    legend: {
-                        enabled: true,
-                        itemStyle: {
-                            color: '#4CAF50'
-                        }
-                    },
-                    plotOptions: {
-                        series: {
-                            borderWidth: 0,
-                            dataLabels: {
-                                enabled: true,
-                                format: '{point.name}: {point.y}',
+                    if (data && data.length > 0) {
+                        // **Data Exists:** Configure the chart with the fetched data
+                        const chartData = data.map(item => ({
+                            name: item.Aging,
+                            y: item.Count,
+                            drilldown: item.Date
+                        }));
+
+                        chartOptions = {
+                            colors: ['#7cb5ec', '#434348', '#90ed7d', '#f7a35c'],
+                            chart: {
+                                type: chartType,
+                                backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                                events: {
+                                    drilldown: function (e) {
+                                        // Custom drilldown logic if needed
+                                        // Example: Set title to the drilldown category
+                                        if (!e.seriesOptions) {
+                                            this.setTitle({ text: e.point.name });
+                                        }
+                                    },
+                                    drillup: function () {
+                                        this.setTitle({ text: title });
+                                    }
+                                }
+                            },
+                            title: {
+                                text: title,
                                 style: {
-                                    color: '#000000'
+                                    color: '#333333',
+                                    fontSize: '20px'
+                                }
+                            },
+                            xAxis: {
+                                type: 'category',
+                                labels: {
+                                    style: {
+                                        color: '#4CAF50'
+                                    }
+                                }
+                            },
+                            yAxis: {
+                                title: {
+                                    text: 'Count',
+                                    style: {
+                                        color: '#333333',
+                                        fontSize: '16px'
+                                    }
+                                },
+                                labels: {
+                                    style: {
+                                        color: '#4CAF50'
+                                    }
+                                }
+                            },
+                            legend: {
+                                enabled: true,
+                                itemStyle: {
+                                    color: '#4CAF50'
+                                }
+                            },
+                            plotOptions: {
+                                series: {
+                                    borderWidth: 0,
+                                    dataLabels: {
+                                        enabled: true,
+                                        format: '{point.name}: {point.y}',
+                                        style: {
+                                            color: '#000000'
+                                        }
+                                    }
+                                },
+                                pie: {
+                                    showInLegend: true
+                                }
+                            },
+                            series: [{
+                                name: 'Dispute Aging',
+                                data: chartData
+                            }],
+                            tooltip: {
+                                formatter: function () {
+                                    return `<b>${this.point.name}</b><br/>Count: ${this.point.y}`;
+                                }
+                            }
+                        };
+                    } else {
+                        // **No Data:** Configure an empty chart with a placeholder message
+                        chartOptions = {
+                            chart: {
+                                type: chartType,
+                                backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                                events: {
+                                    load: function () {
+                                        const chart = this;
+                                        // Add a placeholder text in the center
+                                        chart.renderer.text(
+                                            'No data available',
+                                            chart.plotWidth / 2 + chart.plotLeft,
+                                            chart.plotHeight / 2 + chart.plotTop
+                                        )
+                                            .css({
+                                                color: '#555555',
+                                                fontSize: '16px',
+                                                textAlign: 'center'
+                                            })
+                                            .attr({
+                                                align: 'center'
+                                            })
+                                            .add();
+                                    },
+                                    drilldown: function () {
+                                        // Prevent drilldown when no data
+                                    },
+                                    drillup: function () {
+                                        // Prevent drillup when no data
+                                    }
+                                }
+                            },
+                            title: {
+                                text: title,
+                                style: {
+                                    color: '#333333',
+                                    fontSize: '20px'
+                                }
+                            },
+                            xAxis: {
+                                visible: false // Hide the X-axis
+                            },
+                            yAxis: {
+                                visible: false // Hide the Y-axis
+                            },
+                            legend: {
+                                enabled: false // Disable the legend
+                            },
+                            series: [{
+                                name: 'Dispute Aging',
+                                data: [] // No data
+                            }],
+                            tooltip: {
+                                enabled: false // Disable tooltips
+                            }
+                        };
+                    }
+
+                    // **Render the Chart:** Always call Highcharts.chart with the configured options
+                    const chart = Highcharts.chart(containerId, chartOptions);
+
+                    // **Event Listener for Chart Type Change:**
+                    // Ensure that the element with ID 'chartType' exists
+                    const chartTypeSelector = document.getElementById('chartType');
+                    if (chartTypeSelector) {
+                        chartTypeSelector.addEventListener('change', function () {
+                            const newType = this.value;
+                            chart.update({
+                                chart: {
+                                    type: newType
+                                }
+                            });
+                        });
+                    }
+
+                } catch (error) {
+                    console.error('Error rendering chart:', error);
+
+                    // **Render an Empty Chart with the Title and Placeholder Message in Case of Errors**
+                    const emptyChartOptions = {
+                        chart: {
+                            type: chartType,
+                            backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                            events: {
+                                load: function () {
+                                    const chart = this;
+                                    // Add a placeholder text in the center
+                                    chart.renderer.text(
+                                        'No data available',
+                                        chart.plotWidth / 2 + chart.plotLeft,
+                                        chart.plotHeight / 2 + chart.plotTop
+                                    )
+                                        .css({
+                                            color: '#555555',
+                                            fontSize: '16px',
+                                            textAlign: 'center'
+                                        })
+                                        .attr({
+                                            align: 'center'
+                                        })
+                                        .add();
+                                },
+                                drilldown: function () {
+                                    // Prevent drilldown when no data
+                                },
+                                drillup: function () {
+                                    // Prevent drillup when no data
                                 }
                             }
                         },
-                        pie: {
-                            showInLegend: true
+                        title: {
+                            text: title,
+                            style: {
+                                color: '#333333',
+                                fontSize: '20px'
+                            }
+                        },
+                        xAxis: {
+                            visible: false // Hide the X-axis
+                        },
+                        yAxis: {
+                            visible: false // Hide the Y-axis
+                        },
+                        legend: {
+                            enabled: false // Disable the legend
+                        },
+                        series: [{
+                            name: 'Dispute Aging',
+                            data: [] // No data
+                        }],
+                        tooltip: {
+                            enabled: false // Disable tooltips
                         }
-                    },
-                    series: [{
-                        name: 'Dispute Aging',
-                        data: chartData
-                    }]
-                };
+                    };
 
-                var chart = new Highcharts.Chart(chartOptions);
-
-                document.getElementById('chartType').addEventListener('change', function () {
-                    var newType = this.value;
-                    chart.update({
-                        chart: {
-                            type: newType
-                        }
-                    });
-                });
+                    Highcharts.chart(containerId, emptyChartOptions);
+                }
             }
+
             CashDisputeAgingChart("CashDisputeAgingChart", "line", "Disputes Aging");
         }
         Cashchart();
@@ -4966,7 +5733,6 @@ function LoadAlert() {
             //------------------------------------
             //---- Db records chart -------
             //------------------------------------
-
             async function DBChartLoadAPIRequest() {
                 try {
                     let obj = {
@@ -5662,7 +6428,7 @@ function LoadAlert() {
         const lastWeekDate = new Date(currentDate);
         lastWeekDate.setDate(currentDate.getDate() - 7);
         const formattedDateLastWeek = lastWeekDate.toISOString().split('T')[0];
-        
+
 
         //________________________________________________________
         //______________________ Cards ___________________________
@@ -5854,7 +6620,7 @@ function LoadAlert() {
             }
             LoadHeaderCardUISettlement()
             async function SetSettlementCardsData() {
-                
+
 
                 try {
                     let obj = {
@@ -5864,9 +6630,9 @@ function LoadAlert() {
 
                     const response = await fetch('rest/prDataStatisticeAPI', {
                         method: 'POST',
-                        headers: { 
-                            "Content-type": "application/json; charset=UTF-8", 
-                            'Authorization': token 
+                        headers: {
+                            "Content-type": "application/json; charset=UTF-8",
+                            'Authorization': token
                         },
                         body: JSON.stringify(obj)
                     });
@@ -5883,9 +6649,9 @@ function LoadAlert() {
                     // Extract necessary data from the response
                     const { Data, Level1, Level2, Level3, SettlementStatistics } = apiResponse.SDT_ChartData;
                     const [objec] = SettlementStatistics;
-                    console.log('Settlement',  apiResponse.SDT_ChartData)
+                    console.log('Settlement', apiResponse.SDT_ChartData)
                     //_______ Total and Amount _____
-                    const { SettlementChartId, SettlementStatisticsProcess, SettlementStatisticsPreTotalVoucher, SettlementStatisticsPreTotalAmount,  SettlementStatisticsTotalVoucher, SettlementStatisticsTotalAmount} = objec;
+                    const { SettlementChartId, SettlementStatisticsProcess, SettlementStatisticsPreTotalVoucher, SettlementStatisticsPreTotalAmount, SettlementStatisticsTotalVoucher, SettlementStatisticsTotalAmount } = objec;
                     if (SettlementStatistics.length > 0) {
                         $("#totalProcess").text(SettlementStatisticsProcess);
                         $("#totalPreVoucher").text(SettlementStatisticsPreTotalVoucher);
@@ -5893,7 +6659,7 @@ function LoadAlert() {
                         $("#totalVoucher").text(SettlementStatisticsTotalVoucher);
                         $("#totalVoucherAmt").text(SettlementStatisticsTotalAmount);
 
-                       
+
                         $("#fileTxtSource").text(DestDB);
 
                         // $("#totalVoucher").text(SettlementStatisticsTotalVoucher);
@@ -5922,866 +6688,6 @@ function LoadAlert() {
             }
         }
         LoadCardsSettlement()
-        
-
-
-        //________________________________________________________
-        //______________________ Chart ___________________________
-        //________________________________________________________
-        // function Settlementchart() {
-        //     document.getElementById('SettlementOverAllChartType4').addEventListener('change', function () {
-        //         updateChartSettlement('EltDataLoadingFileChart', this.value);
-        //     });
-        //     document.getElementById('DBChartLoadType').addEventListener('change', function () {
-        //         updateChartSettlement('DBChartLoad', this.value);
-        //     });
-        //     document.getElementById('APIUploadChartType').addEventListener('change', function () {
-        //         updateChartSettlement('APIUploadChart', this.value);
-        //     });
-        //     document.getElementById('SettlementOverAllChartType3').addEventListener('change', function () {
-        //         updateChartSettlement('SettlementOverAllDestCount', this.value);
-        //     });
-        //     document.getElementById('SettlementOverAllChartType2').addEventListener('change', function () {
-        //         updateChartSettlement('SettlementOverAllSourceCount', this.value);
-        //     });
-
-
-        //     function updateChartSettlement(chartId, chartType) {
-        //         if (chartId == "EltDataLoadingFileChart") {
-        //             EltDataLoadingFileChart(chartId, chartType, 0, "Admin", "ELT File Loading");
-        //         }
-        //         else if (chartId == "DBChartLoad") {
-        //             DBChartLoad(chartId, chartType, 0, "Admin", "DB Loading");
-        //         }
-        //         else if (chartId == "APIUploadChart") {
-        //             APIUploadChart(chartId, chartType, 0, "Admin", "API Loading");
-        //         }
-        //         else if (chartId == "SettlementOverAllDestCount") {
-        //             SettlementOverAllDestCount(chartId, chartType);
-        //         }
-        //         else if (chartId == "SettlementOverAllSourceCount") {
-        //             SettlementOverAllSourceCount(chartId, chartType);
-        //         }
-
-        //     }
-        //     //------------------------------------
-        //     //---- EltDataLoadingFileChart -------
-        //     //------------------------------------
-        //     async function EltDataLoadingFileChartAPIRequest() {
-        //         try {
-        //             let obj = {
-        //                 "dateTime": formattedDate,
-        //                 "ApiType": "Settlement"
-        //             };
-
-        //             const response = await fetch('rest/prDataStatisticeAPI', {
-        //                 method: 'POST',
-        //                 headers: { "Content-type": "application/json; charset=UTF-8", 'Authorization': token },
-        //                 body: JSON.stringify(obj)
-        //             });
-
-        //             if (!response.ok) {
-        //                 throw new Error(`HTTP error! status: ${response.status}`);
-        //             }
-
-        //             const apiResponse = await response.json();
-        //             const { SettlementChart1 } = apiResponse.SDT_ChartData;
-
-
-        //             const seriesData = [];
-        //             const xAxisCategories = ['Record Read', 'Record Loaded'];
-        //             let successRead = 0, failedRead = 0, successLoaded = 0, failedLoaded = 0;
-        //             SettlementChart1.forEach(item => {
-        //                 if (item.SettlementChart1Status === 'Success') {
-        //                     successRead = item.SettlementChart1RecordRead;
-        //                     successLoaded = item.SettlementChart1RecordLoaded;
-        //                 } else if (item.SettlementChart1Status === 'Faild' || item.SettlementChart1Status === 'Failed') {
-        //                     failedRead = item.SettlementChart1RecordRead;
-        //                     failedLoaded = item.SettlementChart1RecordLoaded;
-        //                 }
-        //             });
-        //             seriesData.push({
-        //                 name: 'Success',
-        //                 data: [successRead, successLoaded]
-        //             });
-        //             seriesData.push({
-        //                 name: 'Failed',
-        //                 data: [failedRead, failedLoaded]
-        //             });
-
-
-
-        //             return {
-        //                 series: seriesData,
-        //                 xAxis: { categories: xAxisCategories }
-        //             };
-        //             // return {
-        //             //                 series: [
-        //             //                     { name: 'Overview', data: seriesData }
-        //             //                 ],
-        //             //             };
-        //         } catch (error) {
-        //             showSettlementChartHideLoader()
-        //             console.error('Error fetching data:', error);
-        //         }
-        //     }
-        //     async function EltDataLoadingFileChart(containerId, chartType, matchType, roleName, title) {
-        //         const data = await EltDataLoadingFileChartAPIRequest(matchType, roleName);
-
-        //         // If no valid data is available, exit the function
-        //         if (!data || !data.series || data.series.length === 0) {
-        //             return;
-        //         }
-
-
-        //         // Convert the string data to integers for proper chart rendering
-        //         const successData = data.series.find(item => item.name === 'Success').data.map(val => parseInt(val, 10));
-        //         const failedData = data.series.find(item => item.name === 'Failed').data.map(val => parseInt(val, 10));
-
-        //         // Set chart options
-        //         var chartOptions = {
-        //             colors: ['var(--colors_materialmenu_selecteditembackground)', '#b9b26a'], // Green for success, red for failure
-        //             chart: {
-        //                 renderTo: containerId,
-        //                 type: chartType, // Specify the chart type (e.g., column, pie, etc.)
-        //                 backgroundColor: 'rgba(255, 255, 255, 0.1)' // Chart background color
-        //             },
-        //             title: {
-        //                 text: title,
-        //                 style: {
-        //                     color: 'var(--colors_materialmenu_selecteditembackground)',
-        //                     fontSize: '20px'
-        //                 }
-        //             },
-        //             xAxis: {
-        //                 categories: data.xAxis.categories, // Set categories from the API response
-        //                 labels: {
-        //                     style: {
-        //                         color: '#4CAF50'
-        //                     }
-        //                 }
-        //             },
-        //             yAxis: {
-        //                 title: {
-        //                     text: 'Number of Records',
-        //                     style: {
-        //                         color: 'var(--colors_materialmenu_selecteditembackground)',
-        //                         fontSize: '16px'
-        //                     }
-        //                 },
-        //                 labels: {
-        //                     style: {
-        //                         color: '#4CAF50'
-        //                     }
-        //                 }
-        //             },
-        //             legend: {
-        //                 enabled: true,
-        //                 itemStyle: {
-        //                     color: '#4CAF50'
-        //                 }
-        //             },
-        //             plotOptions: {
-        //                 series: {
-        //                     borderWidth: 0,
-        //                     dataLabels: {
-        //                         enabled: true,
-        //                         // format: '{point.y}', // Display the value of the data point
-        //                         formatter: function () {
-        //                             // Hide labels for points with value 0
-        //                             return this.y !== 0 ? this.y : null;
-        //                         },
-        //                         style: {
-        //                             color: '#000000'
-        //                         }
-        //                     }
-        //                 }
-        //             },
-        //             series: [
-        //                 {
-        //                     name: 'Success', // Series for Success
-        //                     data: successData // Use the converted success data
-        //                 },
-        //                 {
-        //                     name: 'Failed', // Series for Failed
-        //                     data: failedData // Use the converted failed data
-        //                 }
-        //             ]
-        //         };
-
-        //         // Create the chart
-        //         var chart = new Highcharts.Chart(chartOptions);
-
-        //         // Handle chart type change (e.g., column to pie)
-        //         document.getElementById('chartType').addEventListener('change', function () {
-        //             var newType = this.value;
-        //             chart.update({
-        //                 chart: {
-        //                     type: newType // Update the chart type dynamically
-        //                 }
-        //             });
-        //         });
-        //     }
-        //     EltDataLoadingFileChart("EltDataLoadingFileChart", "bar", 0, "Admin", "ELT File Loading");
-
-
-        //     //------------------------------------
-        //     //---- Db records chart -------
-        //     //------------------------------------
-
-        //     async function DBChartLoadAPIRequest() {
-        //         try {
-        //             let obj = {
-        //                 "dateTime": formattedDate,
-        //                 "ApiType": "Settlement"
-        //             };
-
-        //             const response = await fetch('rest/prDataStatisticeAPI', {
-        //                 method: 'POST',
-        //                 headers: { "Content-type": "application/json; charset=UTF-8", 'Authorization': token },
-        //                 body: JSON.stringify(obj)
-        //             });
-
-        //             if (!response.ok) {
-        //                 throw new Error(`HTTP error! status: ${response.status}`);
-        //             }
-
-        //             const apiResponse = await response.json();
-
-        //             const { SettlementChart1 } = apiResponse.SDT_ChartData;
-        //             const seriesData = [];
-        //             const xAxisCategories = ['DB Count'];
-        //             let successDBLoad = 0, failedDBLoad = 0;
-        //             SettlementChart1.forEach(item => {
-        //                 if (item.SettlementChart1Status === 'Success' && item.SettlementChart1ChartType === 'Source' && item.SettlementChart1SrcType === 'DB') {
-        //                     successDBLoad = item.SettlementChart1RecordLoaded;
-
-        //                 } else {
-        //                     failedDBLoad = item.SettlementChart1RecordLoaded;
-
-        //                 }
-        //             });
-        //             seriesData.push({
-        //                 name: 'Success',
-        //                 data: [successDBLoad]
-        //             });
-        //             seriesData.push({
-        //                 name: 'Failed',
-        //                 data: [failedDBLoad]
-        //             });
-
-
-
-        //             return {
-        //                 series: seriesData,
-        //                 xAxis: { categories: xAxisCategories }
-        //             };
-        //             // return {
-        //             //                 series: [
-        //             //                     { name: 'Overview', data: seriesData }
-        //             //                 ],
-        //             //             };
-        //         } catch (error) {
-        //             showSettlementChartHideLoader()
-        //             console.error('Error fetching data:', error);
-        //         }
-        //     }
-        //     async function DBChartLoad(containerId, chartType, matchType, roleName, title) {
-        //         const data = await DBChartLoadAPIRequest(matchType, roleName);
-
-        //         // If no valid data is available, exit the function
-        //         if (!data || !data.series || data.series.length === 0) {
-        //             return;
-        //         }
-
-        //         // Convert the string data to integers for proper chart rendering
-        //         const successData = data.series.find(item => item.name === 'Success').data.map(val => parseInt(val, 10));
-        //         const failedData = data.series.find(item => item.name === 'Failed').data.map(val => parseInt(val, 10));
-        //         let series;
-
-        //         if (chartType === 'pie') {
-        //             // Adjust the data for pie chart
-        //             series = [{
-        //                 name: 'Status',
-        //                 colorByPoint: true,
-        //                 data: [
-        //                     { name: 'Success', y: successData[0] || 0 },
-        //                     { name: 'Failed', y: failedData[0] || 0 }
-        //                 ]
-        //             }];
-        //         } else {
-        //             // Use data as-is for column/bar
-        //             series = [
-        //                 {
-        //                     name: 'Success',
-        //                     data: successData
-        //                 },
-        //                 {
-        //                     name: 'Failed',
-        //                     data: failedData
-        //                 }
-        //             ];
-        //         }
-
-        //         // Set chart options
-        //         var chartOptions = {
-        //             colors: ['var(--colors_materialmenu_selecteditembackground)', '#b9b26a'], // Green for success, red for failure
-        //             chart: {
-        //                 renderTo: containerId,
-        //                 type: chartType, // Specify the chart type (e.g., column, pie, etc.)
-        //                 backgroundColor: 'rgba(255, 255, 255, 0.1)' // Chart background color
-        //             },
-        //             title: {
-        //                 text: title,
-        //                 style: {
-        //                     color: 'var(--colors_materialmenu_selecteditembackground)',
-        //                     fontSize: '20px'
-        //                 }
-        //             },
-        //             xAxis: chartType === 'pie' ? undefined : {
-        //                 categories: data.xAxis.categories, // Set categories from the API response
-        //                 labels: {
-        //                     style: {
-        //                         color: '#4CAF50'
-        //                     }
-        //                 }
-        //             },
-        //             yAxis: chartType === 'pie' ? undefined : {
-        //                 title: {
-        //                     text: 'Number of Records',
-        //                     style: {
-        //                         color: 'var(--colors_materialmenu_selecteditembackground)',
-        //                         fontSize: '16px'
-        //                     }
-        //                 },
-        //                 labels: {
-        //                     style: {
-        //                         color: '#4CAF50'
-        //                     }
-        //                 }
-        //             },
-        //             legend: {
-        //                 enabled: true,
-        //                 itemStyle: {
-        //                     color: '#4CAF50'
-        //                 }
-        //             },
-        //             plotOptions: {
-        //                 pie: {
-        //                     allowPointSelect: true,
-        //                     cursor: 'pointer',
-        //                     dataLabels: {
-        //                         enabled: true,
-        //                         format: '{point.name}: {point.y}', // Display "Success: 10" or "Failed: 5"
-        //                         style: {
-        //                             color: '#000000'
-        //                         }
-        //                     }
-        //                 },
-        //                 series: {
-        //                     borderWidth: 0,
-        //                     dataLabels: {
-        //                         enabled: true,
-        //                         formatter: function () {
-        //                             // Include the series name and value
-        //                             return this.y !== 0 ? `${this.series.name}: ${this.y}` : null; // Example: "Success: 10"
-        //                         },
-        //                         style: {
-        //                             color: '#000000'
-        //                         }
-        //                     }
-        //                 }
-        //             },
-        //             series: series
-        //         };
-
-        //         // Create the chart
-        //         var chart = new Highcharts.Chart(chartOptions);
-
-        //         // Handle chart type change (e.g., column to pie)
-        //         document.getElementById('chartType').addEventListener('change', function () {
-        //             var newType = this.value;
-        //             chart.update({
-        //                 chart: {
-        //                     type: newType // Update the chart type dynamically
-        //                 }
-        //             });
-        //         });
-        //     }
-        //     DBChartLoad("DBChartLoad", "column", 0, "Admin", "DB Loading");
-
-
-        //     async function APIUploadChartAPIRequest() {
-        //         try {
-        //             let obj = {
-        //                 "dateTime": formattedDate,
-        //                 "ApiType": "Settlement"
-        //             };
-
-        //             const response = await fetch('rest/prDataStatisticeAPI', {
-        //                 method: 'POST',
-        //                 headers: { "Content-type": "application/json; charset=UTF-8", 'Authorization': token },
-        //                 body: JSON.stringify(obj)
-        //             });
-
-        //             if (!response.ok) {
-        //                 throw new Error(`HTTP error! status: ${response.status}`);
-        //             }
-
-        //             const apiResponse = await response.json();
-
-
-        //             const { SettlementChart1 } = apiResponse.SDT_ChartData;
-        //             const seriesData = [];
-        //             const xAxisCategories = ['API Count'];
-        //             let successDBLoad = 0, failedDBLoad = 0;
-        //             SettlementChart1.forEach(item => {
-        //                 if (item.SettlementChart1Status === 'Success' && item.SettlementChart1ChartType === 'Source' && item.SettlementChart1SrcType === 'API') {
-        //                     successDBLoad = item.SettlementChart1RecordLoaded;
-
-        //                 } else {
-        //                     failedDBLoad = item.SettlementChart1RecordLoaded;
-
-        //                 }
-        //             });
-        //             seriesData.push({
-        //                 name: 'Success',
-        //                 data: [successDBLoad]
-        //             });
-        //             seriesData.push({
-        //                 name: 'Failed',
-        //                 data: [failedDBLoad]
-        //             });
-
-
-
-        //             return {
-        //                 series: seriesData,
-        //                 xAxis: { categories: xAxisCategories }
-        //             };
-        //             // return {
-        //             //                 series: [
-        //             //                     { name: 'Overview', data: seriesData }
-        //             //                 ],
-        //             //             };
-        //         } catch (error) {
-        //             showSettlementChartHideLoader()
-        //             console.error('Error fetching data:', error);
-        //         }
-        //     }
-
-        //     async function APIUploadChart(containerId, chartType, matchType, roleName, title) {
-        //         const data = await APIUploadChartAPIRequest(matchType, roleName);
-
-        //         // If no valid data is available, exit the function
-        //         if (!data || !data.series || data.series.length === 0) {
-        //             return;
-        //         }
-
-        //         // Convert the string data to integers for proper chart rendering
-        //         const successData = data.series.find(item => item.name === 'Success').data.map(val => parseInt(val, 10));
-        //         const failedData = data.series.find(item => item.name === 'Failed').data.map(val => parseInt(val, 10));
-        //         let series;
-
-        //         if (chartType === 'pie') {
-        //             // Adjust the data for pie chart
-        //             series = [{
-        //                 name: 'Status',
-        //                 colorByPoint: true,
-        //                 data: [
-        //                     { name: 'Success', y: successData[0] || 0 },
-        //                     { name: 'Failed', y: failedData[0] || 0 }
-        //                 ]
-        //             }];
-        //         } else {
-        //             // Use data as-is for column/bar
-        //             series = [
-        //                 {
-        //                     name: 'Success',
-        //                     data: successData
-        //                 },
-        //                 {
-        //                     name: 'Failed',
-        //                     data: failedData
-        //                 }
-        //             ];
-        //         }
-
-        //         // Set chart options
-        //         var chartOptions = {
-        //             colors: ['var(--colors_materialmenu_selecteditembackground)', '#b9b26a'], // Green for success, red for failure
-        //             chart: {
-        //                 renderTo: containerId,
-        //                 type: chartType, // Specify the chart type (e.g., column, pie, etc.)
-        //                 backgroundColor: 'rgba(255, 255, 255, 0.1)' // Chart background color
-        //             },
-        //             title: {
-        //                 text: title,
-        //                 style: {
-        //                     color: 'var(--colors_materialmenu_selecteditembackground)',
-        //                     fontSize: '20px'
-        //                 }
-        //             },
-        //             xAxis: chartType === 'pie' ? undefined : {
-        //                 categories: data.xAxis.categories, // Set categories from the API response
-        //                 labels: {
-        //                     style: {
-        //                         color: '#4CAF50'
-        //                     }
-        //                 }
-        //             },
-        //             yAxis: chartType === 'pie' ? undefined : {
-        //                 title: {
-        //                     text: 'Number of Records',
-        //                     style: {
-        //                         color: 'var(--colors_materialmenu_selecteditembackground)',
-        //                         fontSize: '16px'
-        //                     }
-        //                 },
-        //                 labels: {
-        //                     style: {
-        //                         color: '#4CAF50'
-        //                     }
-        //                 }
-        //             },
-        //             legend: {
-        //                 enabled: true,
-        //                 itemStyle: {
-        //                     color: '#4CAF50'
-        //                 }
-        //             },
-        //             plotOptions: {
-        //                 pie: {
-        //                     allowPointSelect: true,
-        //                     cursor: 'pointer',
-        //                     dataLabels: {
-        //                         enabled: true,
-        //                         format: '{point.name}: {point.y}', // Display "Success: 10" or "Failed: 5"
-        //                         style: {
-        //                             color: '#000000'
-        //                         }
-        //                     }
-        //                 },
-        //                 series: {
-        //                     borderWidth: 0,
-        //                     dataLabels: {
-        //                         enabled: true,
-        //                         formatter: function () {
-        //                             // Include the series name and value
-        //                             return this.y !== 0 ? `${this.series.name}: ${this.y}` : null; // Example: "Success: 10"
-        //                         },
-        //                         style: {
-        //                             color: '#000000'
-        //                         }
-        //                     }
-        //                 }
-        //             },
-        //             series: series
-        //         };
-
-        //         // Create the chart
-        //         var chart = new Highcharts.Chart(chartOptions);
-
-        //         // Handle chart type change (e.g., column to pie)
-        //         document.getElementById('chartType').addEventListener('change', function () {
-        //             var newType = this.value;
-        //             chart.update({
-        //                 chart: {
-        //                     type: newType // Update the chart type dynamically
-        //                 }
-        //             });
-        //         });
-        //     }
-
-
-
-        //     APIUploadChart("APIUploadChart", "bar", 0, "Admin", "API Loading");
-
-
-
-        //     async function fetchSettlementChartDataOverAllSource() {
-        //         try {
-        //             let obj = {
-        //                 "dateTime": formattedDate,
-        //                 "ApiType": "Settlement"
-        //             };
-        //             const response = await fetch('rest/prDataStatisticeAPI', {
-        //                 method: 'POST',
-        //                 headers: { "Content-type": "application/json; charset=UTF-8", 'Authorization': token },
-        //                 body: JSON.stringify(obj)
-        //             });
-
-        //             if (!response.ok) {
-        //                 throw new Error(`HTTP error! status: ${response.status}`);
-        //             }
-
-        //             const apiResponse = await response.json();
-        //             const { Data, Level1, Level2, Level3, Settlement } = apiResponse.SDT_ChartData;
-        //             const [objec] = Settlement;
-        //             const { TotalSource, SourceAPI, SourceDB, SourceFILE, DestAPI, DestDB, DestFILE, TotalDest } = objec;
-
-        //             const seriesData = [];
-
-        //             // Fix y values to two decimal places
-        //             seriesData.push({
-        //                 name: 'SourceFILE',
-        //                 y: parseFloat(((SourceFILE / TotalSource) * 100).toFixed(2))
-        //             });
-        //             seriesData.push({
-        //                 name: 'SourceAPI',
-        //                 y: parseFloat(((SourceAPI / TotalSource) * 100).toFixed(2))
-        //             });
-        //             seriesData.push({
-        //                 name: 'SourceDB',
-        //                 y: parseFloat(((SourceDB / TotalSource) * 100).toFixed(2))
-        //             });
-
-        //             return {
-        //                 series: [
-        //                     { name: 'Overview', data: seriesData }
-        //                 ],
-        //             };
-        //         } catch (error) {
-        //             showSettlementChartHideLoader()
-        //             console.log('Error fetching data:' + error);
-        //         }
-        //     }
-        //     async function SettlementOverAllSourceCount(containerId, chartType, matchType, roleName) {
-        //         const data = await fetchSettlementChartDataOverAllSource(matchType, roleName);
-        //         if (!data || !data.series || data.series.length === 0) {
-        //             return;
-        //         }
-        //         else {
-        //             //$("." + containerId).show();
-        //         }
-
-        //         var chartOptions = {
-        //             colors: ['var(--colors_materialmenu_selecteditembackground)', '#434348', '#90ed7d', '#f7a35c'],
-        //             chart: {
-        //                 renderTo: containerId,
-        //                 type: chartType,
-        //                 backgroundColor: 'rgba(255, 255, 255, 0.1)',
-        //                 events: {
-        //                     drilldown: function (e) {
-        //                         //alert('Drilled down to ' + e.point.name);
-        //                     }
-        //                 }
-        //             },
-        //             title: {
-        //                 text: 'Overall Source Count',
-        //                 style: {
-        //                     color: 'var(--colors_materialmenu_selecteditembackground)',
-        //                     fontSize: '20px'
-        //                 }
-        //             },
-        //             xAxis: {
-        //                 type: 'category',
-        //                 labels: {
-        //                     style: {
-        //                         color: '#4CAF50'
-        //                     }
-        //                 }
-        //             },
-        //             yAxis: {
-        //                 title: {
-        //                     text: 'Values',
-        //                     style: {
-        //                         color: 'var(--colors_materialmenu_selecteditembackground)',
-        //                         fontSize: '16px'
-        //                     }
-        //                 },
-        //                 labels: {
-        //                     style: {
-        //                         color: '#4CAF50'
-        //                     }
-        //                 }
-        //             },
-        //             legend: {
-        //                 enabled: true,
-        //                 itemStyle: {
-        //                     color: '#4CAF50'
-        //                 }
-        //             },
-        //             plotOptions: {
-        //                 series: {
-        //                     borderWidth: 0,
-        //                     dataLabels: {
-        //                         enabled: true,
-        //                         format: '{point.name}: {point.y:.1f}%',
-        //                         style: {
-        //                             color: '#000000'
-        //                         }
-        //                     }
-        //                 },
-        //                 pie: {
-        //                     showInLegend: true
-        //                 }
-        //             },
-        //             series: [{
-        //                 name: 'Source',
-        //                 colorByPoint: true,
-        //                 data: data.series[0].data
-        //             }],
-
-        //         };
-
-        //         var chart = new Highcharts.Chart(chartOptions);
-
-        //         document.getElementById('chartType').addEventListener('change', function () {
-        //             var newType = this.value.toFixed(2);
-        //             chart.update({
-        //                 chart: {
-        //                     type: newType
-        //                 }
-        //             });
-        //         });
-        //     }
-        //     SettlementOverAllSourceCount("SettlementOverAllSourceCount", "line", 0, "Admin");
-
-        //     //----------------------------
-        //     //---- Over All Chart Destination------
-        //     //----------------------------
-        //     async function fetchSettlementChartDataOverAllDest() {
-        //         try {
-        //             let obj = {
-        //                 "dateTime": formattedDate,
-        //                 "ApiType": "Settlement"
-        //             };
-        //             const response = await fetch('rest/prDataStatisticeAPI', {
-        //                 method: 'POST',
-        //                 headers: { "Content-type": "application/json; charset=UTF-8", 'Authorization': token },
-        //                 body: JSON.stringify(obj)
-        //             });
-
-        //             if (!response.ok) {
-        //                 throw new Error(`HTTP error! status: ${response.status}`);
-        //             }
-
-        //             const apiResponse = await response.json();
-        //             const { Data, Level1, Level2, Level3, Settlement } = apiResponse.SDT_ChartData;
-        //             const [objec] = Settlement;
-        //             const { TotalSource, SourceAPI, SourceDB, SourceFILE, DestAPI, DestDB, DestFILE, TotalDest } = objec;
-
-        //             const seriesData = [];
-
-        //             seriesData.push({
-        //                 name: 'DestFILE',
-        //                 y: (DestFILE / TotalDest) * 100
-        //             });
-        //             seriesData.push({
-        //                 name: 'DestAPI',
-        //                 y: (DestAPI / TotalDest) * 100
-        //             });
-        //             seriesData.push({
-        //                 name: 'DestDB',
-        //                 y: (DestDB / TotalDest) * 100
-        //             });
-
-        //             return {
-        //                 series: [
-        //                     { name: 'Overview', data: seriesData }
-        //                 ],
-        //             };
-        //         } catch (error) {
-        //             showSettlementChartHideLoader()
-        //             console.log('Error fetching data:' + error);
-        //         }
-        //     }
-        //     async function SettlementOverAllDestCount(containerId, chartType, matchType, roleName) {
-        //         const data = await fetchSettlementChartDataOverAllDest(matchType, roleName);
-        //         if (!data || !data.series || data.series.length === 0) {
-        //             return;
-        //         }
-        //         else {
-        //             //$("." + containerId).show();
-        //         }
-
-        //         var chartOptions = {
-        //             colors: ['var(--colors_materialmenu_selecteditembackground)', '#434348', '#90ed7d', '#f7a35c'],
-        //             chart: {
-        //                 renderTo: containerId,
-        //                 type: chartType,
-        //                 backgroundColor: 'rgba(255, 255, 255, 0.1)',
-        //                 events: {
-        //                     drilldown: function (e) {
-        //                         //alert('Drilled down to ' + e.point.name);
-        //                     }
-        //                 }
-        //             },
-        //             title: {
-        //                 text: 'Overall Destination Count',
-        //                 style: {
-        //                     color: 'var(--colors_materialmenu_selecteditembackground)',
-        //                     fontSize: '20px'
-        //                 }
-        //             },
-        //             xAxis: {
-        //                 type: 'category',
-        //                 labels: {
-        //                     style: {
-        //                         color: '#4CAF50'
-        //                     }
-        //                 }
-        //             },
-        //             yAxis: {
-        //                 title: {
-        //                     text: 'Values',
-        //                     style: {
-        //                         color: 'var(--colors_materialmenu_selecteditembackground)',
-        //                         fontSize: '16px'
-        //                     }
-        //                 },
-        //                 labels: {
-        //                     style: {
-        //                         color: '#4CAF50'
-        //                     }
-        //                 }
-        //             },
-        //             legend: {
-        //                 enabled: true,
-        //                 itemStyle: {
-        //                     color: '#4CAF50'
-        //                 }
-        //             },
-        //             plotOptions: {
-        //                 series: {
-        //                     borderWidth: 0,
-        //                     dataLabels: {
-        //                         enabled: true,
-        //                         format: '{point.name}: {point.y:.1f}%',
-        //                         style: {
-        //                             color: '#000000'
-        //                         }
-        //                     }
-        //                 },
-        //                 pie: {
-        //                     showInLegend: true
-        //                 }
-        //             },
-        //             series: [{
-        //                 name: 'Destination',
-        //                 colorByPoint: true,
-        //                 data: data.series[0].data
-        //             }],
-
-        //         };
-
-        //         var chart = new Highcharts.Chart(chartOptions);
-
-        //         document.getElementById('chartType').addEventListener('change', function () {
-        //             var newType = this.value;
-        //             chart.update({
-        //                 chart: {
-        //                     type: newType
-        //                 }
-        //             });
-        //         });
-        //     }
-        //     SettlementOverAllDestCount("SettlementOverAllDestCount", "pie", 0, "Admin");
-
-
-        // }
-        // Settlementchart();
     }
 
 
@@ -6824,7 +6730,7 @@ function LoadAlert() {
         const lastWeekDate = new Date(currentDate);
         lastWeekDate.setDate(currentDate.getDate() - 7);
         const formattedDateLastWeek = lastWeekDate.toISOString().split('T')[0];
-        
+
 
         //________________________________________________________
         //______________________ Cards ___________________________
@@ -7016,7 +6922,7 @@ function LoadAlert() {
             }
             LoadHeaderCardUIDispute()
             async function SetDisputeCardsData() {
-                
+
 
                 try {
                     let obj = {
@@ -7026,9 +6932,9 @@ function LoadAlert() {
 
                     const response = await fetch('rest/prDataStatisticeAPI', {
                         method: 'POST',
-                        headers: { 
-                            "Content-type": "application/json; charset=UTF-8", 
-                            'Authorization': token 
+                        headers: {
+                            "Content-type": "application/json; charset=UTF-8",
+                            'Authorization': token
                         },
                         body: JSON.stringify(obj)
                     });
@@ -7045,9 +6951,9 @@ function LoadAlert() {
                     // Extract necessary data from the response
                     const { Data, Level1, Level2, Level3, SettlementStatistics } = apiResponse.SDT_ChartData;
                     const [objec] = SettlementStatistics;
-                    console.log('Settlement',  apiResponse.SDT_ChartData)
+                    console.log('Settlement', apiResponse.SDT_ChartData)
                     //_______ Total and Amount _____
-                    const { SettlementChartId, SettlementStatisticsProcess, SettlementStatisticsPreTotalVoucher, SettlementStatisticsPreTotalAmount,  SettlementStatisticsTotalVoucher, SettlementStatisticsTotalAmount} = objec;
+                    const { SettlementChartId, SettlementStatisticsProcess, SettlementStatisticsPreTotalVoucher, SettlementStatisticsPreTotalAmount, SettlementStatisticsTotalVoucher, SettlementStatisticsTotalAmount } = objec;
                     if (SettlementStatistics.length > 0) {
                         $("#totalProcess").text(SettlementStatisticsProcess);
                         $("#totalPreVoucher").text(SettlementStatisticsPreTotalVoucher);
@@ -7055,7 +6961,7 @@ function LoadAlert() {
                         $("#totalVoucher").text(SettlementStatisticsTotalVoucher);
                         $("#totalVoucherAmt").text(SettlementStatisticsTotalAmount);
 
-                       
+
                         $("#fileTxtSource").text(DestDB);
 
                         // $("#totalVoucher").text(SettlementStatisticsTotalVoucher);
@@ -7087,12 +6993,10 @@ function LoadAlert() {
     }
 
 
-
-
     //________________________________________
     //___________ Refresh Chart ______________
     //________________________________________
-    function RefreshModule(moduleType) {
+    function RefreshModule(moduleType,isRefresh) {
         const currentDate = new Date();
         const formattedDate = currentDate.toISOString().split('T')[0];
         fetchChartDataOverAll(moduleType)
@@ -7113,7 +7017,9 @@ function LoadAlert() {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
                 // Debugging - check if response was successful
-                location.reload();
+                if(isRefresh){
+                    location.reload();
+                }
 
             } catch (error) {
                 showDigitalChartHideLoader();
