@@ -321,12 +321,12 @@
                         <label for="sum-C">Sum of CR :</label>
                         <label id="sum-C">0</label>
                     </div>
-                   
+
                     <div class="col-md-2" style="padding-top:8px">
                         <label for="sum-D">Sum of DR:</label>
                         <label id="sum-D">0</label>
                     </div>
-                    
+
                     <div class="col-md-2" style="padding-top:8px">
                         <label for="difference-CD">Difference:</label>
                         <label id="difference-CD">0</label>
@@ -468,8 +468,8 @@
             if (fnGetPageName() == 'wpinvestigationcase') {
                 // $('#sumAmtdiv').hide();
                 $('#sum-C').hide();
-                 $('#sum-D').hide();
-                 $('#difference-CD').hide();
+                $('#sum-D').hide();
+                $('#difference-CD').hide();
             }
             var columnSearchValues = [];
             var chkOrder;
@@ -816,12 +816,12 @@
                                     let rows = $('#dataTable tbody tr');
                                     if (invFilterVal == '') {
                                         if (settleCategoryIdVal == '') {
-                                            if(event.key === 'ArrowDown'){
-                                                if (selectedColumnId.length == 0){
+                                            if (event.key === 'ArrowDown') {
+                                                if (selectedColumnId.length == 0) {
                                                     currentSelectedIndex++;
                                                     lastSelectedIndex = currentSelectedIndex;
                                                     rows.eq(currentSelectedIndex).addClass('selected'); // Select new row                                            
-                                               }
+                                                }
                                             }
                                             if (event.shiftKey) {
                                                 const allLcSame = selectedColumnId.every(item => item.AccLifeCycleId === selectedColumnId[0].AccLifeCycleId);
@@ -839,7 +839,7 @@
                                                             }
 
                                                         }
-                                                        else{
+                                                        else {
                                                             alert('No records selected. Please select at least one record to proceed with this action');
                                                         }
                                                         break;
@@ -852,7 +852,7 @@
                                                                 alert('Please select one Life Cycle transactions for force unmatch');
                                                             }
                                                         }
-                                                        else{
+                                                        else {
                                                             alert('No records selected. Please select at least one record to proceed with this action');
                                                         }
                                                         break;
@@ -874,7 +874,7 @@
                                                                 }
                                                             }
                                                         }
-                                                        else{
+                                                        else {
                                                             alert('No records selected. Please select at least one record to proceed with this action');
                                                         }
                                                         break;
@@ -882,7 +882,7 @@
                                                         if (selectedColumnId.length > 0) {
                                                             viewHistory(selectedColumnId[0].DataId, selectedColumnId[0].AccLifeCycleId);
                                                         }
-                                                        else{
+                                                        else {
                                                             alert('No records selected. Please select at least one record to proceed with this action');
                                                         }
                                                         break;
@@ -1121,20 +1121,64 @@
                                 showFloatingContainerStartInvestigation();
                             }
                         } else if (key == 'ForceMatch') {
+
                             debugger;
-                            const isOnlyOpen = selectedColumnId.every(item => item.CTranProcMatchStat === 'Open');
-                            if (allLcSame && masterExist && isOnlyOpen) {
-                                acceptForceMatch = true;
-                                fnGetAuthLevel(selectedColumnId[0].AccLifeCycleId, true, true);
-                            } else {
-                                if (!allLcSame) {
-                                    alert('Please select one Life Cycle transactions for force match');
+
+                            const isOnlyOpen = selectedColumnId.every(item => item.CTranProcMatchStat === 'Open'  || item.CTranProcMatchStat === 'ForceOpen');
+
+                            var ourToOurTransactionIsExsist = selectedColumnId.some(function (item) {
+                                return item.CGrpAccType === 'OurToOur';
+                            });
+
+
+                            if (allLcSame && masterExist && isOnlyOpen && ourToOurTransactionIsExsist) {
+
+                                const areAllTransactionsOurToOur = selectedColumnId.every(item => item.CGrpAccType === 'OurToOur');
+
+                                if (areAllTransactionsOurToOur) {
+                                    acceptForceMatch = true;
+                                    fnGetAuthLevel(selectedColumnId[0].AccLifeCycleId, true, true);
+                                } else {
+
+                                    if (areAllTransactionsOurToOur) {
+                                        alert('Please ensure all selected transactions have the same account type.');
+                                    }
+                                    if (!allLcSame) {
+                                        alert('Please select one Life Cycle transactions for force match');
+                                    }
+                                    if (!masterExist) {
+                                        alert('Please select one master transaction for force match');
+                                    }
+                                    if (!isOnlyOpen) {
+                                        alert('Please select only open transactions for force match');
+                                    }
                                 }
-                                if (!masterExist) {
-                                    alert('Please select one master transaction for force match');
-                                }
-                                if (!isOnlyOpen) {
-                                    alert('Please select only open transactions for force match');
+                            }
+
+                            var ourToTheirTransactionIsExsist = selectedColumnId.some(function (item) {
+                                return item.CGrpAccType === 'OurToTheir';
+                            });
+
+                            if (allLcSame && masterExist && isOnlyOpen && ourToTheirTransactionIsExsist) {
+
+                                const areAllTransactionsOurToTheir = selectedColumnId.every(item => item.CGrpAccType === 'OurToTheir');
+                                if (areAllTransactionsOurToTheir) {
+                                    acceptForceMatch = true;
+                                    fnGetAuthLevel(selectedColumnId[0].AccLifeCycleId, true, true);
+                                } else {
+
+                                    if (areAllTransactionsOurToTheir) {
+                                        alert('Please ensure all selected transactions have the same account type.');
+                                    }
+                                    if (!allLcSame) {
+                                        alert('Please select one Life Cycle transactions for force match');
+                                    }
+                                    if (!masterExist) {
+                                        alert('Please select one master transaction for force match');
+                                    }
+                                    if (!isOnlyOpen) {
+                                        alert('Please select only open transactions for force match');
+                                    }
                                 }
                             }
                         }
@@ -1211,7 +1255,7 @@
                 var selectedRows = table.rows('.selected').data();
                 selectedColumnId = [];
                 selectedRows.each(function (row, index) {
-                    selectedColumnId.push({ DataId: row.CTranProcId, AccLifeCycleId: row.CGrpAccId, CAccountId: row.CPAccId, GroupId: row.CGrpId == undefined ? 0 : row.CGrpId, InvStatus: row.InvStatus, CPAccCategory: row.CPAccCategory, CTranProcMatchStat: row.CTranProcMatchStat, Amount: row.CTranProcTrnAmount, Sign: row.CTranProcSign });
+                    selectedColumnId.push({ DataId: row.CTranProcId, CGrpAccType: row.CGrpAccType, AccLifeCycleId: row.CGrpAccId, CAccountId: row.CPAccId, GroupId: row.CGrpId == undefined ? 0 : row.CGrpId, InvStatus: row.InvStatus, CPAccCategory: row.CPAccCategory, CTranProcMatchStat: row.CTranProcMatchStat, Amount: row.CTranProcTrnAmount, Sign: row.CTranProcSign });
                 });
                 var sumC = 0;
                 var sumD = 0;

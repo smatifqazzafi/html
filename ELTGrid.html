@@ -612,6 +612,7 @@
                                     'Authorization': pFilter.token
                                 },
                                 data: function (d) {
+                                    $('#dataTable_filter').hide();
                                     var searchData = {};
                                     $('.columnSearch').each(function () {
                                         var column = $(this).data('column');
@@ -708,6 +709,7 @@
                             ],
                             "columnDefs": columnDefs,
                             initComplete: function () {
+                                
                                 var api = this.api();
                                 // Handle row selection
                                 // $('#dataTable tbody').on('click', 'tr:not(.dtrg-group)', function () {

@@ -366,6 +366,10 @@
 
 		fnLoadOrignalGrid();
 
+		$(document).on('click', '#btnFetch', function () {
+			fnGetDataAndLoadTable();
+		});
+
 	});
 
 
@@ -389,9 +393,7 @@
 		fnApplyAllFunctions();
 	});
 
-	$(document).on('click', '#btnFetch', function () {
-		fnGetDataAndLoadTable();
-	});
+	
 
 	$(document).on('click', '.update-btn-fun', function () {
 		// Get the form data
@@ -892,8 +894,6 @@
 
 	}
 
-
-
 	let filteredItems = {};
 
 	function updateContextMenuBody() {
@@ -1046,7 +1046,7 @@
 			},
 			success: function (response) {
 				alert(response.errormessage);
-				$('#btnFetch').attr('style', 'display: none !important');
+				$('#btnFetch').remove();
 				fnLoadOrignalGrid();
 			},
 			error: function (error) {

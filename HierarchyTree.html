@@ -64,10 +64,13 @@
         background: transparent;
         text-align: right;
     }
-     select option {
-    background-color: white; /* Background color of the options */
-    color: black; /* Text color of the options */
-  }
+
+    select option {
+        background-color: white;
+        /* Background color of the options */
+        color: black;
+        /* Text color of the options */
+    }
 
     .TableFloat {
         position: fixed;
@@ -87,7 +90,7 @@
         font-weight: bold;
         font-size: 12px;
         display: flow-root;
-        color: darkslategray!Important;
+        color: darkslategray !Important;
         /* border: 1px gray solid; */
     }
 
@@ -111,7 +114,7 @@
         font-size: 12px;
         /* border: 3px solid var(--colors_gray08);
             border-color: var(--colors_basecolor); */
-            box-shadow: -1px 1px 10px -1px rgb(15 15 15 / 21%) ! Important;
+        box-shadow: -1px 1px 10px -1px rgb(15 15 15 / 21%) ! Important;
         color: var(--colors_baseforecolor) !Important;
     }
 
@@ -158,13 +161,13 @@
     }
 
     .subLevelHierarchy {
-        background-color:  var(--colors_basecolor);
+        background-color: var(--colors_basecolor);
 
         padding: 4px;
         border-bottom-color: var(--colors_basecolor);
         border-bottom: 3px solid var(--colors_gray08);
-        margin: -10px!Important;
-        margin-bottom: 10px!Important;
+        margin: -10px !Important;
+        margin-bottom: 10px !Important;
     }
 </style>
 <script>
@@ -173,11 +176,11 @@
     var SDT_LifeCycle = [];
     var auxLevel = '';
     var auxUserId = '';
- //Filter Variables
- var pFilter = {};
-//  $(document).ready(function () {
-//     alert(pFilter.token);
-//  })
+    //Filter Variables
+    var pFilter = {};
+    //  $(document).ready(function () {
+    //     alert(pFilter.token);
+    //  })
     async function createNewUser() {
         var data = {
             HierarchyLevelName: auxLevel
@@ -185,7 +188,7 @@
 
         fetch('rest/wsSetLevelAddUser', {
             method: "POST",
-           //mode: "no-cors",
+            //mode: "no-cors",
             body: JSON.stringify(data),
             headers: { "Content-type": "application/json; charset=UTF-8", 'Authorization': pFilter.token }
         })
@@ -248,7 +251,7 @@
         };
         fetch('rest/wsAddSubUser', {
             method: "POST",
-           //mode: "no-cors",
+            //mode: "no-cors",
             body: JSON.stringify(data),
             headers: { "Content-type": "application/json; charset=UTF-8", 'Authorization': pFilter.token }
         })
@@ -271,7 +274,7 @@
         };
         fetch('rest/wsRemoveSubUser', {
             method: "POST",
-           //mode: "no-cors",
+            //mode: "no-cors",
             body: JSON.stringify(data),
             headers: { "Content-type": "application/json; charset=UTF-8", 'Authorization': pFilter.token }
         })
@@ -302,7 +305,7 @@
 
         fetch('rest/wsAddSublevel', {
             method: "POST",
-           //mode: "no-cors",
+            //mode: "no-cors",
             body: JSON.stringify(data),
             headers: { "Content-type": "application/json; charset=UTF-8", 'Authorization': pFilter.token }
         })
@@ -331,7 +334,7 @@
 
         fetch('rest/wsDeleteSublevel', {
             method: "POST",
-           //mode: "no-cors",
+            //mode: "no-cors",
             body: JSON.stringify(data),
             headers: { "Content-type": "application/json; charset=UTF-8", 'Authorization': pFilter.token }
         })
@@ -348,13 +351,13 @@
     }
 
     async function getReconUsers() {
-        
+
         var data = {
         };
 
         fetch('rest/wsGetReconUserList', {
             method: "POST",
-           //mode: "no-cors",
+            //mode: "no-cors",
             body: JSON.stringify(data),
             headers: { "Content-type": "application/json; charset=UTF-8", 'Authorization': pFilter.token }
         })
@@ -375,7 +378,7 @@
 
         fetch('rest/wsGetTrLifeCycleNames', {
             method: "POST",
-           //mode: "no-cors",
+            //mode: "no-cors",
             body: JSON.stringify(data),
             headers: { "Content-type": "application/json; charset=UTF-8", 'Authorization': pFilter.token }
         })
@@ -405,7 +408,7 @@
         return auxHTML;
     }
 
-    function getMakerCheckerCombo(userId, authLevel,HierarchyLevel) {
+    function getMakerCheckerCombo(userId, authLevel, HierarchyLevel) {
         let auxAuthLevels = ['Viewer', 'Initiator', 'Authorizer', 'Approver'];
         let auxHTML = `<select UserId='${userId}' HierarchyLevel='${HierarchyLevel}' onchange='changeUserAuthLevel(this);'>`
 
@@ -421,9 +424,9 @@
 
     function getLifeCycleCombo(sdt, currentLifeCycle) {
         debugger;
-        
+
         let levelName = sdt.HierarchyLevelName;
-        let levelType = sdt.HierarchyLevelType; 
+        let levelType = sdt.HierarchyLevelType;
 
         let auxHTML = `<select class='subtleCombo' LevelName='${levelName}' LevelType='${levelType}' onchange='changeLifeCycle(this);'>`;
         //<option value=' '></option>`;
@@ -445,30 +448,31 @@
         // DANIYAL CODE 
 
         SDT_LifeCycle.forEach(x => {
-    let auxSelected = '';
-    //if(currentLifeCycle == x.TrLifeCycleName) auxSelected = 'selected';
+            let auxSelected = '';
+            //if(currentLifeCycle == x.TrLifeCycleName) auxSelected = 'selected';
             ////console.log(currentLifeCycle.filter(y => y.LifeCycleName == x.TrLifeCycleName));
             //console.log(x.AccLifeCycleName.trim());
             //console.log(currentLifeCycle);
-    // Check if the current lifecycle exists in the currentLifeCycle list
-    if (currentLifeCycle.filter(y => y.LifeCycleName.trim() == x.AccLifeCycleName.trim()).length > 0) {
-        auxSelected = "✓";
-    }
+            // Check if the current lifecycle exists in the currentLifeCycle list
+            if (currentLifeCycle.filter(y => y.LifeCycleName.trim() == x.AccLifeCycleName.trim()).length > 0) {
+                auxSelected = "✓";
+            }
 
-    // Add conditions for various modules
-    //console.log(x.Module+""+ levelType);
-    if (
-        (x.Module == 'Digital' && levelType == 'Digital Admin') || 
-        (x.Module == 'Cash' && levelType == 'Cash Admin') || 
-        (x.Module == 'NonFinalcial' && levelType == 'Non Financial Admin') || 
-        (x.Module == 'UD' && levelType == 'UD Admin') || levelType == 'Administrator'
-    ) {
-        auxHTML += `<option value='${x.AccLifeCycleId}'>${auxSelected} ${x.AccLifeCycleName}</option>`;
-    }
-});
+            // Add conditions for various modules
+            //console.log(x.Module+""+ levelType);
+            if (
+                (x.Module == 'Digital' && levelType == 'Digital Admin') ||
+                (x.Module == 'Cash' && levelType == 'Cash Admin') ||
+                (x.Module == 'NonFinalcial' && levelType == 'Non Financial Admin') ||
+                (x.Module == 'UD' && levelType == 'UD Admin') ||
+                (x.Module == 'Settlement' && levelType == 'Settlement Admin') || levelType == 'Administrator'
+            ) {
+                auxHTML += `<option value='${x.AccLifeCycleId}'>${auxSelected} ${x.AccLifeCycleName}</option>`;
+            }
+        });
 
 
-    // DANIYAL CODE 
+        // DANIYAL CODE 
 
         auxHTML = auxHTML + `</select>`;
 
@@ -481,20 +485,20 @@
         let auxLevelName = t.getAttribute('LevelName');
         let auxLevelType = t.getAttribute('LevelType');
         let auxValue = t.value;
-        let auxValueName =  $(t).find("option:selected").text();
+        let auxValueName = $(t).find("option:selected").text();
         //if(t.value.trim() != '')
         //{
         var data = {
             HierarchyLevelName: auxLevelName,
             TrLifeCycleName: auxValueName,
-            AccLifeCycleId:auxValue,
-            Module:auxLevelType
+            AccLifeCycleId: auxValue,
+            Module: auxLevelType
 
         };
-        
+
         fetch('rest/wsSetLevelLifeCycle', {
             method: "POST",
-           //mode: "no-cors",
+            //mode: "no-cors",
             body: JSON.stringify(data),
             headers: { "Content-type": "application/json; charset=UTF-8", 'Authorization': pFilter.token }
         })
@@ -512,8 +516,8 @@
     }
 
     async function changeUserAuthLevel(t) {
-        let auxUserId = t.getAttribute('UserId'); 
-        let HierarchyLevel = t.getAttribute('HierarchyLevel'); 
+        let auxUserId = t.getAttribute('UserId');
+        let HierarchyLevel = t.getAttribute('HierarchyLevel');
         let auxValue = t.value;
         if (t.value.trim() != '') {
             var data = {
@@ -524,7 +528,7 @@
             //console.log(data);
             fetch('rest/wsSetReconUserAuthLevel', {
                 method: "POST",
-               //mode: "no-cors",
+                //mode: "no-cors",
                 body: JSON.stringify(data),
                 headers: { "Content-type": "application/json; charset=UTF-8", 'Authorization': pFilter.token }
             })
@@ -544,7 +548,7 @@
         if (sdt === undefined) return '';
 
         if (sdt.LifeCycles) {
-        //console.log(sdt.LifeCycles);
+            //console.log(sdt.LifeCycles);
             currentLifeCycle = sdt.LifeCycles // sdt.LifeCycles[0].TrLifeCycleName;
         }
         else {
@@ -565,7 +569,7 @@
                                 <span style='float:right'>
                                     ${comboLifeCycle}
                                     <span onclick='addUserTo("${sdt.HierarchyLevelName}", "");' style='margin-right: 5px;'><i class='fa fa-user-plus'></i></span> `
-                                    // <span onclick='addSublevelTo("${sdt.HierarchyLevelName}");' style='margin-right: 8px;'><i class='fa fa-plus-circle'></i></span> 
+        // <span onclick='addSublevelTo("${sdt.HierarchyLevelName}");' style='margin-right: 8px;'><i class='fa fa-plus-circle'></i></span> 
 
         if (sdt.HierarchyLevelParentName.trim() != '') {
             auxHTML = auxHTML + `<span onclick='deleteSublevel("${sdt.HierarchyLevelName}");' ><i class='fa fa-trash'></i></span>`;
@@ -573,12 +577,12 @@
 
         auxHTML = auxHTML + `</span>
                             </div>`;
-        
+
         if (sdt.ReconUsers) {
             let i = 0;
 
             sdt.ReconUsers.forEach(x => {
-                let combo = getMakerCheckerCombo(x.ReconUserId, x.ReconUserAuthLevel,sdt.HierarchyLevelName);
+                let combo = getMakerCheckerCombo(x.ReconUserId, x.ReconUserAuthLevel, sdt.HierarchyLevelName);
                 let rowDarker = '';
                 i++;
                 if (i % 2 == 1) rowDarker = '';
@@ -596,10 +600,13 @@
         auxHTML = auxHTML + `</div>`;
 
         if (sdt.HierarchySubLevels) {
+
+            sdt.HierarchySubLevels = sdt.HierarchySubLevels.sort((a, b) => a.HierarchyLevelOrder - b.HierarchyLevelOrder);
             sdt.HierarchySubLevels.forEach(x => {
-                countId += 1;
-                auxHTML = auxHTML + getHTMLFromBranch(x);
-            });
+                    countId += 1;
+                    auxHTML = auxHTML + getHTMLFromBranch(x);
+                });
+
         }
 
         auxHTML = auxHTML + `</div>
@@ -623,14 +630,14 @@
 
         fetch('rest/wsGetHierarchyTree', {
             method: "POST",
-           //mode: "no-cors",
+            //mode: "no-cors",
             body: JSON.stringify(data),
             headers: { "Content-type": "application/json; charset=UTF-8", 'Authorization': pFilter.token }
         })
             .then(response => response.json())
             .then(res => {
                 debugger;
-                if(res.errorDescription != ''){
+                if (res.errorDescription != '') {
                     alert(res.errorDescription);
                 }
                 SDT_HierarchyLevels = res.SDT_HierarchyLevels;
@@ -644,7 +651,7 @@
 
     function toggleVisibility(id) {
         debugger;
-        document.querySelectorAll('.txtsl'+id).forEach(function(element) {
+        document.querySelectorAll('.txtsl' + id).forEach(function (element) {
             if (element.style.display === 'none') {
                 element.style.display = 'block';
             } else {
