@@ -1,121 +1,134 @@
 <head>
+  <link href="MyAssets/Scripts/css/select2.min.css" rel="stylesheet" />
+  <script src="MyAssets/Scripts/select2.min.js"></script>
+  <link rel="stylesheet" href="MyAssets/Scripts/css/toastr.min.css" />
 
-	<link href="MyAssets/Scripts/css/select2.min.css" rel="stylesheet" />
-	<script src="MyAssets/Scripts/select2.min.js"></script>
-	<link rel="stylesheet" href="MyAssets/Scripts/css/toastr.min.css">
+  <link
+    rel="stylesheet"
+    href="MyAssets/Scripts/css/jquery.dataTables.min.css"
+  />
+  <link
+    rel="stylesheet"
+    href="MyAssets/Scripts/css/buttons.dataTables.min.css"
+  />
+  <link
+    rel="stylesheet"
+    href="MyAssets/Scripts/css/jquery.contextMenu.min.css"
+  />
+  <link rel="stylesheet" href="MyAssets/Scripts/css/MyCommonCss.css" />
+  <link
+    rel="stylesheet"
+    href="MyAssets/Scripts/css/bootstrap-multiselect.css"
+  />
+  <script src="MyAssets/Elt/EltJS.js"></script>
+  <script src="MyAssets/Scripts/toastr.min.js"></script>
+  <style>
+    body {
+      margin: 0;
+      font-family: var(--fonts_primary-regular);
+      font-size: 12px;
+      line-height: 1.42857143;
+      height: 100%;
+    }
 
+    .select2-container--default .select2-selection--single {
+      /* width: 55%; */
+      background-color: #fff;
+      border: 1px solid #aaa;
+      border-radius: 4px;
+    }
 
-	<link rel="stylesheet" href="MyAssets/Scripts/css/jquery.dataTables.min.css">
-	<link rel="stylesheet" href="MyAssets/Scripts/css/buttons.dataTables.min.css">
-	<link rel="stylesheet" href="MyAssets/Scripts/css/jquery.contextMenu.min.css">
-	<link rel="stylesheet" href="MyAssets/Scripts/css/MyCommonCss.css">
-	<link rel="stylesheet" href="MyAssets/Scripts/css/bootstrap-multiselect.css">
-	<script src="MyAssets/Elt/EltJS.js"></script>
-	<script src="MyAssets/Scripts/toastr.min.js"></script>
-	<style>
-		body {
-			margin: 0;
-			font-family: var(--fonts_primary-regular);
-			font-size: 12px;
-			line-height: 1.42857143;
-			height: 100%;
-		}
-
-		.select2-container--default .select2-selection--single {
-			/* width: 55%; */
-			background-color: #fff;
-			border: 1px solid #aaa;
-			border-radius: 4px;
-		}
-
-		/* span.select2-dropdown.select2-dropdown--below {
+    /* span.select2-dropdown.select2-dropdown--below {
 			 width: 221.79px !important; 
 		} */
 
-		.context-menu-list {
-			width: 213px !important;
-		}
+    .context-menu-list {
+      width: 213px !important;
+    }
 
-		#dataTable tbody tr.dtrg-group.dtrg-start.dtrg-level-0 {
-			background-color: var(--colors_backgroundcolor) !Important;
-		}
+    #dataTable tbody tr.dtrg-group.dtrg-start.dtrg-level-0 {
+      background-color: var(--colors_backgroundcolor) !important;
+    }
 
+    #mdltext1,
+    input#mdltext1ml,
+    input#mdltext2ml,
+    input#seperator,
+    input#mdltext2mls {
+      height: 29px !important;
+      font-size: 12px !important;
+      display: block;
+      width: 100%;
+      height: 34px;
+      padding: 6px 12px;
+      font-size: 14px;
+      line-height: 1.42857143;
+      color: #555;
+      background-color: #fff;
+      background-image: none;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+      box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+      -webkit-transition: border-color ease-in-out 0.15s,
+        box-shadow ease-in-out 0.15s;
+      -o-transition: border-color ease-in-out 0.15s,
+        box-shadow ease-in-out 0.15s;
+      -webkit-transition: border-color ease-in-out 0.15s,
+        -webkit-box-shadow ease-in-out 0.15s;
+      transition: border-color ease-in-out 0.15s,
+        -webkit-box-shadow ease-in-out 0.15s;
+      transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+      transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s,
+        -webkit-box-shadow ease-in-out 0.15s;
+    }
 
+    /* Popup Modal Styling */
+    .popup {
+      display: none;
+      /* Hidden by default */
+      position: fixed;
+      /* Stay in place */
+      z-index: 1;
+      /* Sit on top */
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      /* Black background with opacity */
+    }
 
-		#mdltext1,
-		input#mdltext1ml,
-		input#mdltext2ml,
-		input#seperator,
-		input#mdltext2mls {
-			height: 29px !important;
-			font-size: 12px !important;
-			display: block;
-			width: 100%;
-			height: 34px;
-			padding: 6px 12px;
-			font-size: 14px;
-			line-height: 1.42857143;
-			color: #555;
-			background-color: #fff;
-			background-image: none;
-			border: 1px solid #ccc;
-			border-radius: 4px;
-			-webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
-			box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
-			-webkit-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
-			-o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
-			-webkit-transition: border-color ease-in-out .15s, -webkit-box-shadow ease-in-out .15s;
-			transition: border-color ease-in-out .15s, -webkit-box-shadow ease-in-out .15s;
-			transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
-			transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s, -webkit-box-shadow ease-in-out .15s;
-		}
+    .popup-content {
+      background-color: #fff;
+      margin: 15% auto;
+      padding: 8px 20px;
+      border: 1px solid #888;
+      width: 30%;
+      text-align: center;
+    }
 
-		/* Popup Modal Styling */
-		.popup {
-			display: none;
-			/* Hidden by default */
-			position: fixed;
-			/* Stay in place */
-			z-index: 1;
-			/* Sit on top */
-			left: 0;
-			top: 0;
-			width: 100%;
-			height: 100%;
-			background-color: rgba(0, 0, 0, 0.5);
-			/* Black background with opacity */
-		}
+    .close {
+      float: right;
+      font-size: 24px;
+      cursor: pointer;
+    }
 
-		.popup-content {
-			background-color: #fff;
-			margin: 15% auto;
-			padding: 8px 20px;
-			border: 1px solid #888;
-			width: 30%;
-			text-align: center;
-		}
+    .arrow-button {
+      font-size: 14px;
+      /* padding: 10px 20px; */
+      cursor: pointer;
+      background-color: #f0f0f0;
+      border: none;
+      margin: 5px;
+      padding: 0.2em 0.5em !important;
+    }
 
-		.close {
-			float: right;
-			font-size: 24px;
-			cursor: pointer;
-		}
+    .arrow-button:hover {
+      background-color: #ddd;
+    }
 
-		.arrow-button {
-			font-size: 14px;
-			/* padding: 10px 20px; */
-			cursor: pointer;
-			background-color: #f0f0f0;
-			border: none;
-			margin: 5px;
-			padding: 0.2em 0.5em !Important;
-		}
-
-		.arrow-button:hover {
-			background-color: #ddd;
-		}
-
-		/* input#mdltext1ml {
+    /* input#mdltext1ml {
 
 			display: inline-flex;
 			width: 68%;
@@ -140,7 +153,7 @@
 			margin-top: 52px;
 		} */
 
-		/* input#mdltext2ml {
+    /* input#mdltext2ml {
 			display: inline-flex;
 			width: 68%;
 			height: 34px;
@@ -164,7 +177,7 @@
 			margin-left: -3px;
 		} */
 
-		/* label {
+    /* label {
 			display: inline-block;
 			max-width: 100%;
 			margin-bottom: 18px;
@@ -172,91 +185,127 @@
 			margin-right: 16px;
 		} */
 
-		.h2 {
-			margin-top: 20px;
-			margin-bottom: 10px;
-			color: #000;
-			font-weight: bold;
-		}
+    .h2 {
+      margin-top: 20px;
+      margin-bottom: 10px;
+      color: #000;
+      font-weight: bold;
+    }
 
-		#htmlData label {
-			text-align: right !important;
-		}
+    #htmlData label {
+      text-align: right !important;
+    }
 
-		#htmlData .form-control {
-			height: 29px !important;
-			font-size: 12px !important;
-		}
+    #htmlData .form-control {
+      height: 29px !important;
+      font-size: 12px !important;
+    }
 
-		#funhtmlData .form-control {
-			height: 29px !important;
-			font-size: 12px !important;
-		}
+    #funhtmlData .form-control {
+      height: 29px !important;
+      font-size: 12px !important;
+    }
 
-		#funhtmlData label {
-			text-align: right !important;
-		}
+    #funhtmlData label {
+      text-align: right !important;
+    }
 
-		#funhtmlData .form-group {
-			margin-bottom: 0px !important;
-		}
-	</style>
+    #funhtmlData .form-group {
+      margin-bottom: 0px !important;
+    }
+  </style>
 </head>
 <div class="row">
-	<div class="panel panel-default">
-		<!--	<div class="panel-heading">Loaded Data</div>
+  <div class="panel panel-default">
+    <!--	<div class="panel-heading">Loaded Data</div>
 		<div class="panel-body"> -->
-		<button id="backward" type="button" class="dt-button buttons-collection buttons-colvis arrow-button">&#8592;
-		</button>
-		<button id="forward" type="button" class="dt-button buttons-collection buttons-colvis arrow-button">&#8594;
-		</button>
-		<button id="btnApplyFunction" type="button"
-			class="dt-button buttons-collection buttons-colvis arrow-button">Apply Function</button>
+    <button
+      id="backward"
+      type="button"
+      class="dt-button buttons-collection buttons-colvis arrow-button"
+    >
+      &#8592;
+    </button>
+    <button
+      id="forward"
+      type="button"
+      class="dt-button buttons-collection buttons-colvis arrow-button"
+    >
+      &#8594;
+    </button>
+    <button
+      id="btnApplyFunction"
+      type="button"
+      class="dt-button buttons-collection buttons-colvis arrow-button"
+    >
+      Apply Function
+    </button>
 
-		<button id="btnAllFunction" type="button" class="dt-button buttons-collection buttons-colvis arrow-button">View
-			Functions</button>
+    <button
+      id="btnAllFunction"
+      type="button"
+      class="dt-button buttons-collection buttons-colvis arrow-button"
+    >
+      View Functions
+    </button>
 
-		<button id="btnFetch" style="display:none !important;" type="button"
-			class="dt-button buttons-collection buttons-colvis arrow-button">Fetch</button>
+    <button
+      id="btnFetch"
+      style="display: none !important"
+      type="button"
+      class="dt-button buttons-collection buttons-colvis arrow-button"
+    >
+      Fetch
+    </button>
 
-		<div id="LoadedDataTableRes" class="table-responsive">
-			<table id="LoadedDataTable"
-				class="display table table-bordered gx-tab-spacing-fix-2 GridWithPaginationBar GridWithBorderColor WorkWith table-responsive">
-				<thead id="LoadedDataTabletableHeader">
-					<!-- <tr style="height: 22px!Important;" id="LoadedDataTabletableHeader"></tr> -->
-				</thead>
-				<tbody id="LoadedDataTabletableBody"></tbody>
-			</table>
-			<!-- </div>-->
-		</div>
-	</div>
-	<style>
-		#editModal .modal-dialog {
-			width: 383px;
-		}
-	</style>
-	<!-- Modal for Editing Data -->
-	<div id="editModal" class="modal fade" tabindex="-1" role="dialog">
-		<div class="modal-dialog" role="document">
-			<div class="modal-content" style="padding: 17px;">
-
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-					<span aria-hidden="true">&times;</span>
-				</button>
-				<h4 class="modal-title">Edit Function</h4>
-				<!-- <div class="modal-header">
+    <div id="LoadedDataTableRes" class="table-responsive">
+      <table
+        id="LoadedDataTable"
+        class="display table table-bordered gx-tab-spacing-fix-2 GridWithPaginationBar GridWithBorderColor WorkWith table-responsive"
+      >
+        <thead id="LoadedDataTabletableHeader">
+          <!-- <tr style="height: 22px!Important;" id="LoadedDataTabletableHeader"></tr> -->
+        </thead>
+        <tbody id="LoadedDataTabletableBody"></tbody>
+      </table>
+      <!-- </div>-->
+    </div>
+  </div>
+  <style>
+    #editModal .modal-dialog {
+      width: 383px;
+    }
+  </style>
+  <!-- Modal for Editing Data -->
+  <div id="editModal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content" style="padding: 17px">
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title">Edit Function</h4>
+        <!-- <div class="modal-header">
 					<h3 class="modal-title">Edit Function</h3>
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 						<span aria-hidden="true">&times;</span>
 					</button>
 				</div> -->
-				<div class="modal-body" style="padding: 21px 0px 0px 0px !important;">
-					<form id="editForm">
-						<div class="form-group row">
-							<input type="hidden" id="editColFunId" name="ColFunId" />
-							<input type="hidden" id="editSrcProfileColId" name="SrcProfileColId" />
-						</div>
-						<!-- <div class="form-group">
+        <div class="modal-body" style="padding: 21px 0px 0px 0px !important">
+          <form id="editForm">
+            <div class="form-group row">
+              <input type="hidden" id="editColFunId" name="ColFunId" />
+              <input
+                type="hidden"
+                id="editSrcProfileColId"
+                name="SrcProfileColId"
+              />
+            </div>
+            <!-- <div class="form-group">
 							<label for="ColFunName">Function Name :</label>
 
 							<br />
@@ -264,1753 +313,1791 @@
 								style="width:100%;">
 							</select><br />
 						</div> -->
-						<div class="form-group row">
-							<div class="col-md-4">
-								<label for="ColFunP1">Parameter 1 :</label>
-							</div>
+            <div class="form-group row">
+              <div class="col-md-4">
+                <label for="ColFunP1">Parameter 1 :</label>
+              </div>
 
-							<div class="col-md-8">
-								<input type="text" class="form-control" id="editColFunP1" name="ColFunP1">
-							</div>
-						</div>
+              <div class="col-md-8">
+                <input
+                  type="text"
+                  class="form-control"
+                  id="editColFunP1"
+                  name="ColFunP1"
+                />
+              </div>
+            </div>
 
-						<div class="form-group row">
-							<div class="col-md-4">
-								<label for="ColFunP2">Parameter 2 :</label>
-							</div>
+            <div class="form-group row">
+              <div class="col-md-4">
+                <label for="ColFunP2">Parameter 2 :</label>
+              </div>
 
-							<div class="col-md-8">
-								<input type="text" class="form-control" id="editColFunP2" name="ColFunP2">
-							</div>
-						</div>
+              <div class="col-md-8">
+                <input
+                  type="text"
+                  class="form-control"
+                  id="editColFunP2"
+                  name="ColFunP2"
+                />
+              </div>
+            </div>
 
-						<div class="form-group row" style="text-align: right;">
-							<div class="col-md-12">
-								<button type="button" class="update-btn-fun Button btn btn-default">Save
-									changes</button>
-							</div>
-						</div>
+            <div class="form-group row" style="text-align: right">
+              <div class="col-md-12">
+                <button
+                  type="button"
+                  class="update-btn-fun Button btn btn-default"
+                >
+                  Save changes
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
 
-					</form>
-				</div>
-			</div>
-		</div>
-	</div>
-
-	<div id="popupModal" class="popup">
-
-		<div class="popup-content">
-
-			<div><span id="closePopup" class="close">&times;</span></div>
-			<div id="htmlData"></div>
-			<!-- <label id="mdllabel1"></label>
+  <div id="popupModal" class="popup">
+    <div class="popup-content">
+      <div><span id="closePopup" class="close">&times;</span></div>
+      <div id="htmlData"></div>
+      <!-- <label id="mdllabel1"></label>
 			<input type="text" class="form-Control" id="mdltext1" /> -->
+    </div>
+  </div>
+  <div id="funpopupModal" class="popup">
+    <div class="popup-content">
+      <span id="funclosePopup" class="close">&times;</span>
 
-
-		</div>
-	</div>
-	<div id="funpopupModal" class="popup">
-		<div class="popup-content">
-			<span id="funclosePopup" class="close">&times;</span>
-
-			<div id="funhtmlData"></div>
-		</div>
-	</div>
-	<div id="AllFunctionPopup" class="popup">
-		<div class="popup-content" style="width: 50%!Important;">
-			<span id="AllFunctionclosePopup" class="close">&times;</span>
-			<div id="AllFunctionhtmlData">
-				<table id="AllFunctiondataTable"
-					class="display table table-bordered gx-tab-spacing-fix-2 GridWithPaginationBar GridWithBorderColor WorkWith table-responsive">
-					<thead>
-						<tr>
-							<th>Column Name</th>
-							<th>Function Id</th>
-							<th>Function Name</th>
-							<th>Parameter 1</th>
-							<th>Parameter 2</th>
-							<!-- <th>Parameter 3</th> -->
-							<th>Actions</th>
-						</tr>
-					</thead>
-					<tbody>
-					</tbody>
-				</table>
-			</div>
-		</div>
-	</div>
+      <div id="funhtmlData"></div>
+    </div>
+  </div>
+  <div id="AllFunctionPopup" class="popup">
+    <div class="popup-content" style="width: 50% !important">
+      <span id="AllFunctionclosePopup" class="close">&times;</span>
+      <div id="AllFunctionhtmlData">
+        <table
+          id="AllFunctiondataTable"
+          class="display table table-bordered gx-tab-spacing-fix-2 GridWithPaginationBar GridWithBorderColor WorkWith table-responsive"
+        >
+          <thead>
+            <tr>
+              <th>Column Name</th>
+              <th>Function Id</th>
+              <th>Function Name</th>
+              <th>Parameter 1</th>
+              <th>Parameter 2</th>
+              <!-- <th>Parameter 3</th> -->
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
 </div>
 
 <script>
-
-
-	profile = {};
-	var token = '';
-
-	function populateeditColFunNameDropdown() {
-
-		$('#editColFunName').select2();
-
-		var dropdown = $('#editColFunName');
-
-		dropdown.empty();
-
-		dropdown.append('<option value="">--Select an Option--</option>');
-
-		functionData.forEach(function (item) {
-			dropdown.append('<option value="' + item.FunctionName + '">' + item.FunctionName + '</option>');
-		});
-	}
-
-	$(document).ready(function () {
-
-		fnLoadOrignalGrid();
-
-		$(document).on('click', '#btnFetch', function () {
-			fnGetDataAndLoadTable();
-		});
-
-	});
-
-
-	$(document).on('click', '#AllFunctionclosePopup', function () {
-		$('#AllFunctionPopup').fadeOut();  // Hide popup with fade-out effect
-	});
-
-	$(document).on('click', '#backward', function () {
-		if (profile.OffSetRecord > 1) {
-			profile.OffSetRecord -= 1;
-			fnChangeColValues();
-		}
-	});
-
-	$(document).on('click', '#forward', function () {
-		profile.OffSetRecord += 1;
-		fnChangeColValues();
-	});
-
-	$(document).on('click', '#btnApplyFunction', function () {
-		fnApplyAllFunctions();
-	});
-
-	
-
-	$(document).on('click', '.update-btn-fun', function () {
-		// Get the form data
-		var formData = {
-			ColFunId: $('#editColFunId').val(),
-			SrcProfileColId: $('#editSrcProfileColId').val(),
-			ColFunP1: $('#editColFunP1').val(),
-			ColFunP2: $('#editColFunP2').val()
-			// Add additional fields if needed
-		};
-
-
-		$.ajax({
-			url: "rest/wsUpdateProfileColumnFuntion", // Replace with your API endpoint
-			method: "GET",
-			headers: {'Authorization': token},
-			data: formData,
-			success: function (response) {
-
-				fnLoadTable(response);
-				fnAllFunctionPopup();
-				fnApplyAllFunctions();
-				$('#editModal').modal('hide');
-
-			},
-			error: function (error) {
-				console.log('Error:', error);
-			}
-		});
-
-	});
-
-	$(document).on('click', '#btnAllFunction', function () {
-		fnAllFunctionPopup();
-		$('#AllFunctionPopup').fadeIn();
-	});
-
-	function generateDynamicFunctionModal(colName, colId, colIndex, functionConfig) {
-
-		fnInitializeFunction(); // Initialize the function as before
-
-
-		var htmlData = `
-    <h4 class="mb-4" style="text-align: left; margin-bottom: 32px;">${functionConfig.FunctionName}</h4>
-    <form>`;
-
-		if (functionConfig.FirstFieldShow) {
-			htmlData += `<div class="form-group row">
-                    <label id="mdllabel1" class="col-sm-4 col-form-label">${functionConfig.FirstLabel} :</label>
-                    <div class="col-sm-8">
-                        <input type="text" class="form-Control" id="mdltext1ml" 
-                               ${functionConfig.FirstFieldIsRequired ? 'required' : ''} />
-                    </div>
-                 </div><br/>`;
-		}
-
-		if (functionConfig.SecondFieldShow) {
-			htmlData += `<div class="form-group row">
-                    <label id="mdllabel2" class="col-sm-4 col-form-label">${functionConfig.SecondLabel} :</label>
-                    <div class="col-sm-8">
-                        <input type="text" class="form-Control" id="mdltext2ml" 
-                               ${functionConfig.SecondFieldIsRequired ? 'required' : ''} />
-                    </div>
-                 </div><br/>`;
-		}
-
-		htmlData += `
-        <div class="form-group row">
-            <div class="col-sm-12 text-right">
-                <button type="button" class="Button btn btn-default" id="submitSubString">Submit</button>
-            </div>
-        </div>
-    </form>
-`;
-
-		$('#funhtmlData').html(htmlData);
-		$('#funpopupModal').fadeIn();
-
-		// Handle the submit button click event
-		$('#submitSubString').on('click', function () {
-			var isValidate = true;
-			var startIndex = $('#mdltext1ml').val();
-			var endIndex = $('#mdltext2ml').val();
-
-			// Validate fields based on whether they are required
-			if (functionConfig.FirstFieldShow && startIndex == '' && functionConfig.FirstFieldIsRequired) {
-				alert('Please enter a value for ' + functionConfig.FirstLabel);
-				isValidate = false;
-			}
-
-			if (functionConfig.SecondFieldShow && endIndex == '' && functionConfig.SecondFieldIsRequired) {
-				alert('Please enter a value for ' + functionConfig.SecondLabel);
-				isValidate = false;
-			}
-
-			// If validation passes, submit the form
-			if (isValidate) {
-				var data = {
-					FunctionName: functionConfig.FunctionName,
-					Parameter1: startIndex,
-					Parameter2: endIndex,
-					Parameter3: '',
-					SrcProfileColumn: colName,
-					SrcProfileColId: colId,
-					SrcProfileIndex: colIndex
-				};
-
-				$.ajax({
-					url: 'rest/wsSrcProfileApplyFunction',
-					type: 'GET',
-					data: data,
-					headers: { "Content-type": "application/json; charset=UTF-8", 'Authorization': token },
-					success: function (responseData) {
-						console.log(responseData);
-						fnLoadTable(responseData);
-						fnFunctionCloseModal();
-					},
-					error: function (xhr, status, error) {
-						console.error('Error:', error);
-					}
-				});
-			}
-
-
-		});
-	}
-
-	function fnFilter(colName, colId, colIndex) {
-
-		fnInitializeFunction();
-
-		var htmlData = `
-    <h4 class="mb-4" style="text-align: left; margin-bottom: 32px;">Filter</h4>
-    <form>`;
-
-		htmlData += `<div class="form-group row">
-                    <label id="mdllabel1" class="col-sm-4 col-form-label">Condition :</label>
-                    <div class="col-sm-8">
-                         <select class="form-control" id="fnFiltertxt1">
-                             <option value="Equal">Equal</option>
-                             <option value="NotEqual">Not Equal</option>
-                         </select><br/>
-                    </div>
-                 </div><br/>`;
-
-		htmlData += `<div class="form-group row">
-                    <label id="mdllabel2" class="col-sm-4 col-form-label">Value :</label>
-                    <div class="col-sm-8">
-                        <input type="text" class="form-Control" id="mdltext2mls"  />
-                    </div>
-                 </div><br/>`;
-
-		htmlData += `
-        <div class="form-group row">
-            <div class="col-sm-12 text-right">
-                <button type="button" class="Button btn btn-default" id="submitfnFilter">Submit</button>
-            </div>
-        </div>
-    </form>
-`;
-		$('#funhtmlData').html(htmlData);
-		$('#funpopupModal').fadeIn();
-
-		$('#submitfnFilter').on('click', function () {
-			var isValidate = true;
-			var startIndex = $('#fnFiltertxt1').val();
-			var endIndex = $('#mdltext2mls').val();
-
-			if (startIndex == '') {
-				alert('Please enter a value for ' + functionConfig.FirstLabel);
-				isValidate = false;
-			}
-
-			if (endIndex == '') {
-				alert('Please enter a value for ' + functionConfig.SecondLabel);
-				isValidate = false;
-			}
-
-			if (isValidate) {
-				var data = {
-					FunctionName: 'Filter',
-					Parameter1: startIndex,
-					Parameter2: endIndex,
-					Parameter3: '',
-					SrcProfileColumn: colName,
-					SrcProfileColId: colId,
-					SrcProfileIndex: colIndex
-				};
-
-				$.ajax({
-					url: 'rest/wsSrcProfileApplyFunction',
-					type: 'GET',
-					data: data,
-					headers: { "Content-type": "application/json; charset=UTF-8", 'Authorization': token },
-					success: function (responseData) {
-						console.log(responseData);
-						fnLoadTable(responseData);
-						fnFunctionCloseModal();
-					},
-					error: function (xhr, status, error) {
-						console.error('Error:', error);
-					}
-				});
-			}
-
-
-		});
-
-	}
-
-	function fnMultiply(colName, colId, colIndex) {
-
-		fnInitializeFunction();
-
-
-		var htmlData = `
-    <h4 class="mb-4" style=" text-align: left; margin-bottom: 32px;">Multiply</h4>
-    <form>
-    <div class="form-group row">
-        <label id="mdllabel3" for="mdltext1" class="col-sm-4 col-form-label">Multiply Column :</label>
-        <div class="col-sm-8">
-					 <select id="multiplyColumn" multiple="multiple" style="width:100%;">
-    
-                      </select>
-	<br/>
-        </div>
-    </div>
-  
-  <br />
-    <div class="form-group row">
-        <div class="col-sm-12 text-right">
-            <button type="button" class="Button btn btn-default" id="submitBtnMultiply">Submit</button>
-        </div>
-    </div>
-    </form>
-    `;
-
-		populateMultiplyDropdown('multiplyColumn')
-
-		setTimeout(function () {
-			$('#multiplyColumn').select2();
-		}, 100);
-
-		$('#funhtmlData').html(htmlData);
-
-		$('#funpopupModal').fadeIn();
-
-		$('#submitBtnMultiply').on('click', function () {
-
-			var isValidate = true;
-			var commaSeparatedString = ''
-			var selectedValues = $('#multiplyColumn').val();
-			if (selectedValues && selectedValues.length > 0) {
-				commaSeparatedString = selectedValues.join(',');
-			} else {
-				alert('Please select at least one option from the list.');
-				isValidate = false;
-			}
-
-			if (isValidate) {
-				var data = {
-					FunctionName: 'Multiply',
-					Parameter1: '',
-					Parameter2: commaSeparatedString,
-					Parameter3: '',
-					SrcProfileColumn: colName,
-					SrcProfileColId: colId,
-					SrcProfileIndex: colIndex
-				};
-
-				$.ajax({
-					url: 'rest/wsSrcProfileApplyFunction',
-					type: 'GET',
-					data: data,
-					headers: { "Content-type": "application/json; charset=UTF-8", 'Authorization': token },
-					success: function (responseData) {
-						console.log(responseData);
-						fnLoadTable(responseData);
-						fnFunctionCloseModal();
-					},
-					error: function (xhr, status, error) {
-						console.error('Error:', error);
-					}
-				});
-			}
-
-
-		});
-	}
-
-	function fnAddition(colName, colId, colIndex) {
-
-		fnInitializeFunction();
-
-		var htmlData = `
-                          <h4 class="mb-4" style=" text-align: left; margin-bottom: 32px;">Addition</h4>
+  profile = {};
+  var token = "";
+
+  function populateeditColFunNameDropdown() {
+    $("#editColFunName").select2();
+
+    var dropdown = $("#editColFunName");
+
+    dropdown.empty();
+
+    dropdown.append('<option value="">--Select an Option--</option>');
+
+    functionData.forEach(function (item) {
+      dropdown.append(
+        '<option value="' +
+          item.FunctionName +
+          '">' +
+          item.FunctionName +
+          "</option>"
+      );
+    });
+  }
+
+  var fetchIsRun = false;
+
+  $(document).ready(function () {
+    fnLoadOrignalGrid();
+
+    $(document).on("click", "#btnFetch", function () {
+      fnGetDataAndLoadTable();
+    });
+  });
+
+  $(document).on("click", "#AllFunctionclosePopup", function () {
+    $("#AllFunctionPopup").fadeOut(); // Hide popup with fade-out effect
+  });
+
+  $(document).on("click", "#backward", function () {
+    if (profile.OffSetRecord > 1) {
+      profile.OffSetRecord -= 1;
+      fnChangeColValues();
+    }
+  });
+
+  $(document).on("click", "#forward", function () {
+    profile.OffSetRecord += 1;
+    fnChangeColValues();
+  });
+
+  $(document).on("click", "#btnApplyFunction", function () {
+    fnApplyAllFunctions();
+  });
+
+  $(document).on("click", ".update-btn-fun", function () {
+    // Get the form data
+    var formData = {
+      ColFunId: $("#editColFunId").val(),
+      SrcProfileColId: $("#editSrcProfileColId").val(),
+      ColFunP1: $("#editColFunP1").val(),
+      ColFunP2: $("#editColFunP2").val(),
+      // Add additional fields if needed
+    };
+
+    $.ajax({
+      url: "rest/wsUpdateProfileColumnFuntion", // Replace with your API endpoint
+      method: "GET",
+      headers: { Authorization: token },
+      data: formData,
+      success: function (response) {
+        fnLoadTable(response);
+        fnAllFunctionPopup();
+        fnApplyAllFunctions();
+        $("#editModal").modal("hide");
+      },
+      error: function (error) {
+        console.log("Error:", error);
+      },
+    });
+  });
+
+  $(document).on("click", "#btnAllFunction", function () {
+    fnAllFunctionPopup();
+    $("#AllFunctionPopup").fadeIn();
+  });
+
+  function generateDynamicFunctionModal(
+    colName,
+    colId,
+    colIndex,
+    functionConfig
+  ) {
+    fnInitializeFunction(); // Initialize the function as before
+
+    var htmlData = `
+      <h4 class="mb-4" style="text-align: left; margin-bottom: 32px;">${functionConfig.FunctionName}</h4>
+      <form>`;
+
+    if (functionConfig.FirstFieldShow) {
+      htmlData += `<div class="form-group row">
+                      <label id="mdllabel1" class="col-sm-4 col-form-label">${
+                        functionConfig.FirstLabel
+                      } :</label>
+                      <div class="col-sm-8">
+                          <input type="text" class="form-Control" id="mdltext1ml"
+                                 ${
+                                   functionConfig.FirstFieldIsRequired
+                                     ? "required"
+                                     : ""
+                                 } />
+                      </div>
+                   </div><br/>`;
+    }
+
+    if (functionConfig.SecondFieldShow) {
+      htmlData += `<div class="form-group row">
+                      <label id="mdllabel2" class="col-sm-4 col-form-label">${
+                        functionConfig.SecondLabel
+                      } :</label>
+                      <div class="col-sm-8">
+                          <input type="text" class="form-Control" id="mdltext2ml"
+                                 ${
+                                   functionConfig.SecondFieldIsRequired
+                                     ? "required"
+                                     : ""
+                                 } />
+                      </div>
+                   </div><br/>`;
+    }
+
+    htmlData += `
+          <div class="form-group row">
+              <div class="col-sm-12 text-right">
+                  <button type="button" class="Button btn btn-default" id="submitSubString">Submit</button>
+              </div>
+          </div>
+      </form>
+  `;
+
+    $("#funhtmlData").html(htmlData);
+    $("#funpopupModal").fadeIn();
+
+    // Handle the submit button click event
+    $("#submitSubString").on("click", function () {
+      var isValidate = true;
+      var startIndex = $("#mdltext1ml").val();
+      var endIndex = $("#mdltext2ml").val();
+
+      // Validate fields based on whether they are required
+      if (
+        functionConfig.FirstFieldShow &&
+        startIndex == "" &&
+        functionConfig.FirstFieldIsRequired
+      ) {
+        alert("Please enter a value for " + functionConfig.FirstLabel);
+        isValidate = false;
+      }
+
+      if (
+        functionConfig.SecondFieldShow &&
+        endIndex == "" &&
+        functionConfig.SecondFieldIsRequired
+      ) {
+        alert("Please enter a value for " + functionConfig.SecondLabel);
+        isValidate = false;
+      }
+
+      // If validation passes, submit the form
+      if (isValidate) {
+        var data = {
+          FunctionName: functionConfig.FunctionName,
+          Parameter1: startIndex,
+          Parameter2: endIndex,
+          Parameter3: "",
+          SrcProfileColumn: colName,
+          SrcProfileColId: colId,
+          SrcProfileIndex: colIndex,
+        };
+
+        $.ajax({
+          url: "rest/wsSrcProfileApplyFunction",
+          type: "GET",
+          data: data,
+          headers: {
+            "Content-type": "application/json; charset=UTF-8",
+            Authorization: token,
+          },
+          success: function (responseData) {
+            console.log(responseData);
+            fnLoadTable(responseData);
+            fnFunctionCloseModal();
+          },
+          error: function (xhr, status, error) {
+            console.error("Error:", error);
+          },
+        });
+      }
+    });
+  }
+
+  function fnFilter(colName, colId, colIndex) {
+    fnInitializeFunction();
+
+    var htmlData = `
+      <h4 class="mb-4" style="text-align: left; margin-bottom: 32px;">Filter</h4>
+      <form>`;
+
+    htmlData += `<div class="form-group row">
+                      <label id="mdllabel1" class="col-sm-4 col-form-label">Condition :</label>
+                      <div class="col-sm-8">
+                           <select class="form-control" id="fnFiltertxt1">
+                               <option value="Equal">Equal</option>
+                               <option value="NotEqual">Not Equal</option>
+                           </select><br/>
+                      </div>
+                   </div><br/>`;
+
+    htmlData += `<div class="form-group row">
+                      <label id="mdllabel2" class="col-sm-4 col-form-label">Value :</label>
+                      <div class="col-sm-8">
+                          <input type="text" class="form-Control" id="mdltext2mls"  />
+                      </div>
+                   </div><br/>`;
+
+    htmlData += `
+          <div class="form-group row">
+              <div class="col-sm-12 text-right">
+                  <button type="button" class="Button btn btn-default" id="submitfnFilter">Submit</button>
+              </div>
+          </div>
+      </form>
+  `;
+    $("#funhtmlData").html(htmlData);
+    $("#funpopupModal").fadeIn();
+
+    $("#submitfnFilter").on("click", function () {
+      var isValidate = true;
+      var startIndex = $("#fnFiltertxt1").val();
+      var endIndex = $("#mdltext2mls").val();
+
+      if (startIndex == "") {
+        alert("Please enter a value for " + functionConfig.FirstLabel);
+        isValidate = false;
+      }
+
+      if (endIndex == "") {
+        alert("Please enter a value for " + functionConfig.SecondLabel);
+        isValidate = false;
+      }
+
+      if (isValidate) {
+        var data = {
+          FunctionName: "Filter",
+          Parameter1: startIndex,
+          Parameter2: endIndex,
+          Parameter3: "",
+          SrcProfileColumn: colName,
+          SrcProfileColId: colId,
+          SrcProfileIndex: colIndex,
+        };
+
+        $.ajax({
+          url: "rest/wsSrcProfileApplyFunction",
+          type: "GET",
+          data: data,
+          headers: {
+            "Content-type": "application/json; charset=UTF-8",
+            Authorization: token,
+          },
+          success: function (responseData) {
+            console.log(responseData);
+            fnLoadTable(responseData);
+            fnFunctionCloseModal();
+          },
+          error: function (xhr, status, error) {
+            console.error("Error:", error);
+          },
+        });
+      }
+    });
+  }
+
+  function fnMultiply(colName, colId, colIndex) {
+    fnInitializeFunction();
+
+    var htmlData = `
+      <h4 class="mb-4" style=" text-align: left; margin-bottom: 32px;">Multiply</h4>
+      <form>
+      <div class="form-group row">
+          <label id="mdllabel3" for="mdltext1" class="col-sm-4 col-form-label">Multiply Column :</label>
+          <div class="col-sm-8">
+  					 <select id="multiplyColumn" multiple="multiple" style="width:100%;">
+
+                        </select>
+  	<br/>
+          </div>
+      </div>
+
+    <br />
+      <div class="form-group row">
+          <div class="col-sm-12 text-right">
+              <button type="button" class="Button btn btn-default" id="submitBtnMultiply">Submit</button>
+          </div>
+      </div>
+      </form>
+      `;
+
+    populateMultiplyDropdown("multiplyColumn");
+
+    setTimeout(function () {
+      $("#multiplyColumn").select2();
+    }, 100);
+
+    $("#funhtmlData").html(htmlData);
+
+    $("#funpopupModal").fadeIn();
+
+    $("#submitBtnMultiply").on("click", function () {
+      var isValidate = true;
+      var commaSeparatedString = "";
+      var selectedValues = $("#multiplyColumn").val();
+      if (selectedValues && selectedValues.length > 0) {
+        commaSeparatedString = selectedValues.join(",");
+      } else {
+        alert("Please select at least one option from the list.");
+        isValidate = false;
+      }
+
+      if (isValidate) {
+        var data = {
+          FunctionName: "Multiply",
+          Parameter1: "",
+          Parameter2: commaSeparatedString,
+          Parameter3: "",
+          SrcProfileColumn: colName,
+          SrcProfileColId: colId,
+          SrcProfileIndex: colIndex,
+        };
+
+        $.ajax({
+          url: "rest/wsSrcProfileApplyFunction",
+          type: "GET",
+          data: data,
+          headers: {
+            "Content-type": "application/json; charset=UTF-8",
+            Authorization: token,
+          },
+          success: function (responseData) {
+            console.log(responseData);
+            fnLoadTable(responseData);
+            fnFunctionCloseModal();
+          },
+          error: function (xhr, status, error) {
+            console.error("Error:", error);
+          },
+        });
+      }
+    });
+  }
+
+  function fnAddition(colName, colId, colIndex) {
+    fnInitializeFunction();
+
+    var htmlData = `
+                            <h4 class="mb-4" style=" text-align: left; margin-bottom: 32px;">Addition</h4>
+                         <form>
+                             <div class="form-group row">
+                                 <label id="mdllabel3" for="mdltext1" class="col-sm-4 col-form-label">Addition Column :</label>
+                                 <div class="col-sm-8">
+                                     <select id="AdditionColumn" multiple="multiple" style="width:100%;">
+
+                                     </select>
+                                     <br />
+                                 </div>
+                             </div>
+
+                          <br />
+                             <div class="form-group row">
+                                 <div class="col-sm-12 text-right">
+                                     <button type="button" class="Button btn btn-default" id="submitBtnAddition">Submit</button>
+                                 </div>
+                             </div>
+                         </form>
+      `;
+
+    populateMultiplyDropdown("AdditionColumn");
+
+    setTimeout(function () {
+      $("#AdditionColumn").select2();
+    }, 100);
+
+    $("#funhtmlData").html(htmlData);
+
+    $("#funpopupModal").fadeIn();
+
+    $("#submitBtnAddition").on("click", function () {
+      var isValidate = true;
+      var commaSeparatedString = "";
+      var selectedValues = $("#AdditionColumn").val();
+      if (selectedValues && selectedValues.length > 0) {
+        commaSeparatedString = selectedValues.join(",");
+      } else {
+        alert("Please select at least one option from the list.");
+        isValidate = false;
+      }
+
+      if (isValidate) {
+        var data = {
+          FunctionName: "Addition",
+          Parameter1: "",
+          Parameter2: commaSeparatedString,
+          Parameter3: commaSeparatedString,
+          SrcProfileColumn: colName,
+          SrcProfileColId: colId,
+          SrcProfileIndex: colIndex,
+        };
+
+        $.ajax({
+          url: "rest/wsSrcProfileApplyFunction",
+          type: "GET",
+          data: data,
+          headers: {
+            "Content-type": "application/json; charset=UTF-8",
+            Authorization: token,
+          },
+          success: function (responseData) {
+            console.log(responseData);
+            fnLoadTable(responseData);
+            fnFunctionCloseModal();
+          },
+          error: function (xhr, status, error) {
+            console.error("Error:", error);
+          },
+        });
+      }
+    });
+  }
+
+  function fnConcat(colName, colId, colIndex) {
+    fnInitializeFunction();
+
+    var htmlData = `
+                           <h4 class="mb-4" style=" text-align: left; margin-bottom: 32px;">Concat</h4>
                        <form>
                            <div class="form-group row">
-                               <label id="mdllabel3" for="mdltext1" class="col-sm-4 col-form-label">Addition Column :</label>
+                               <label id="mdllabel1" class="col-sm-4 col-form-label">Seperator :</label>
                                <div class="col-sm-8">
-                                   <select id="AdditionColumn" multiple="multiple" style="width:100%;">
-                       
+                                   <input type="text" class="form-Control" id="seperator" />
+                               </div>
+                           </div>
+  						   <br />
+                           <div class="form-group row">
+                               <label id="mdllabel3" for="mdltext1" class="col-sm-4 col-form-label">Multiply Column :</label>
+                               <div class="col-sm-8">
+                                   <select id="concatColumn" multiple="multiple" style="width:100%;">
+
                                    </select>
                                    <br />
                                </div>
                            </div>
-                       
+
                         <br />
                            <div class="form-group row">
                                <div class="col-sm-12 text-right">
-                                   <button type="button" class="Button btn btn-default" id="submitBtnAddition">Submit</button>
+                                   <button type="button" class="Button btn btn-default" id="submitBtnConcat">Submit</button>
                                </div>
                            </div>
                        </form>
-    `;
-
-		populateMultiplyDropdown('AdditionColumn')
-
-		setTimeout(function () {
-			$('#AdditionColumn').select2();
-		}, 100);
-
-		$('#funhtmlData').html(htmlData);
-
-		$('#funpopupModal').fadeIn();
-
-		$('#submitBtnAddition').on('click', function () {
-
-			var isValidate = true;
-			var commaSeparatedString = ''
-			var selectedValues = $('#AdditionColumn').val();
-			if (selectedValues && selectedValues.length > 0) {
-				commaSeparatedString = selectedValues.join(',');
-			} else {
-				alert('Please select at least one option from the list.');
-				isValidate = false;
-			}
-
-			if (isValidate) {
-				var data = {
-					FunctionName: 'Addition',
-					Parameter1: '',
-					Parameter2: commaSeparatedString,
-					Parameter3: commaSeparatedString,
-					SrcProfileColumn: colName,
-					SrcProfileColId: colId,
-					SrcProfileIndex: colIndex
-				};
-
-				$.ajax({
-					url: 'rest/wsSrcProfileApplyFunction',
-					type: 'GET',
-					data: data,
-					headers: { "Content-type": "application/json; charset=UTF-8", 'Authorization': token },
-					success: function (responseData) {
-						console.log(responseData);
-						fnLoadTable(responseData);
-						fnFunctionCloseModal();
-					},
-					error: function (xhr, status, error) {
-						console.error('Error:', error);
-					}
-				});
-			}
-
-
-		});
-	}
-
-	function fnConcat(colName, colId, colIndex) {
-
-		fnInitializeFunction();
-
-		var htmlData = `
-                         <h4 class="mb-4" style=" text-align: left; margin-bottom: 32px;">Concat</h4>
-                     <form>
-                         <div class="form-group row">
-                             <label id="mdllabel1" class="col-sm-4 col-form-label">Seperator :</label>
-                             <div class="col-sm-8">
-                                 <input type="text" class="form-Control" id="seperator" />
-                             </div>
-                         </div>
-						   <br />
-                         <div class="form-group row">
-                             <label id="mdllabel3" for="mdltext1" class="col-sm-4 col-form-label">Multiply Column :</label>
-                             <div class="col-sm-8">
-                                 <select id="concatColumn" multiple="multiple" style="width:100%;">
-                     
-                                 </select>
-                                 <br />
-                             </div>
-                         </div>
-                     
-                      <br />
-                         <div class="form-group row">
-                             <div class="col-sm-12 text-right">
-                                 <button type="button" class="Button btn btn-default" id="submitBtnConcat">Submit</button>
-                             </div>
-                         </div>
-                     </form>
-    `;
-
-		populateMultiplyDropdown('concatColumn')
-
-		setTimeout(function () {
-			$('#concatColumn').select2();
-		}, 100);
-
-		$('#funhtmlData').html(htmlData);
-
-		$('#funpopupModal').fadeIn();
-
-		$('#submitBtnConcat').on('click', function () {
-
-			var isValidate = true;
-			var commaSeparatedString = ''
-			var selectedValues = $('#concatColumn').val();
-			if (selectedValues && selectedValues.length > 0) {
-				commaSeparatedString = selectedValues.join(',');
-			} else {
-				alert('Please select at least one option from the list.');
-				isValidate = false;
-			}
-
-			if (isValidate) {
-				var data = {
-					FunctionName: 'Concat',
-					Parameter1: $('#seperator').val(),
-					Parameter2: commaSeparatedString,
-					SrcProfileColumn: colName,
-					SrcProfileColId: colId,
-					SrcProfileIndex: colIndex
-				};
-
-				$.ajax({
-					url: 'rest/wsSrcProfileApplyFunction',
-					type: 'GET',
-					data: data,
-					headers: { "Content-type": "application/json; charset=UTF-8", 'Authorization': token },
-					success: function (responseData) {
-						console.log(responseData);
-						fnLoadTable(responseData);
-						fnFunctionCloseModal();
-					},
-					error: function (xhr, status, error) {
-						console.error('Error:', error);
-					}
-				});
-			}
-
-
-		});
-	}
-
-	function getFunctionConfigByName(functionName) {
-		return functionData.find(f => f.FunctionName === functionName);
-	}
-
-	function updateContextMenu() {
-		
-		$.contextMenu('destroy', '#LoadedDataTable tbody tr');
-		$.contextMenu('destroy', '#LoadedDataTable thead th');
-		contextMenuItems = {};
-
-		contextMenuItems["UpdateHeader"] = { name: "Update Header", icon: "fa-edit" };
-		contextMenuItems["UpdateDataType"] = { name: "Update DataType", icon: "fa-edit" };
-		contextMenuItems["AddColumn"] = { name: "Add Column", icon: "fa-plus" };
-		contextMenuItems["RemoveColumn"] = { name: "Remove Column", icon: "fa-trash"};
-		contextMenuItems["DestinationColumn"] = { name: "Destination Column", icon: "fa-plane"};
-
-		$.contextMenu({
-			selector: '#LoadedDataTable thead th',
-			callback: function (key, options) {
-				
-				var columnIdx = options.$trigger.index(); 
-				var columnHeader = table.column(columnIdx).header(); 
-				var headerText = $(columnHeader).text();  
-				var ProfileColumnId = $(columnHeader).attr('data-srcprofilecolid');
-
-				if (key == 'UpdateHeader') {
-					fnColNameChangeModal(ProfileColumnId, columnIdx);
-				}
-				else if (key == 'AddColumn') {
-					fnAddColumn();
-				} else if (key == 'UpdateDataType') {
-					fnChangeDataType(ProfileColumnId, columnIdx);
-				}
-				else if (key == 'DestinationColumn') {
-					fnChangeDestinationColumn(ProfileColumnId, columnIdx)
-				}
-				else if (key == 'RemoveColumn') {
-					fnRemoveColumn(ProfileColumnId, columnIdx)
-				}
-				
-			},
-			items: contextMenuItems  
-		});
-
-	}
-
-	let filteredItems = {};
-
-	function updateContextMenuBody() {
-
-		$.contextMenu('destroy', '#LoadedDataTable tbody tr');
-
-		$('#LoadedDataTable tbody td').off('contextmenu');
-
-		contextMenuItems = {};
-
-		functionData.forEach(function (item) {
-
-
-			if (datatype == 'Date') {
-				if (item.FunctionName === 'Filter' || item.FunctionName === 'IsDate' || item.FunctionName === 'Format' || item.FunctionName === 'CheckYear') {
-
-				}
-				else
-					return;
-			}
-
-			if (datatype == 'Number') {
-				if (item.FunctionName === 'Multiply' || item.FunctionName === 'Addition' || item.FunctionName === 'Concat' || item.FunctionName === 'Sign' || item.FunctionName === 'Filter' || item.FunctionName === 'Eliminate' || item.FunctionName === 'Plus' || item.FunctionName === 'SubTotal') {
-
-				}
-				else
-					return;
-			}
-
-
-
-			if (datatype == 'Text') {
-				if (item.FunctionName === 'Addition' || item.FunctionName === 'Multiply' || item.FunctionName === 'Sign' || item.FunctionName === 'IsDate' || item.FunctionName === 'Format' || item.FunctionName === 'Plus' || item.FunctionName === 'SubTotal' || item.FunctionName === 'CheckYear') {
-					return;  // Skip to the next iteration
-				}
-			}
-
-			contextMenuItems[`${item.FunctionName}`] = {
-				name: item.FunctionName, // Add spaces before uppercase letters
-				icon: item.Icon  // Example icon, you can change this
-			};
-
-
-		});
-
-		// Initialize the context 	
-		$.contextMenu({
-			selector: '#LoadedDataTable tbody tr', // Apply to all rows
-			callback: function (key, options) {
-				debugger;
-				var rowIdx = table.row(options.$trigger).index();
-				var rowData = table.row(rowIdx).data();
-
-				// Use the globally captured cell from the previous event
-				var targetCell = window.clickedCell;
-				var columnIdx = targetCell.index();
-				var columnHeader = table.column(columnIdx).header();
-				var headerText = $(columnHeader).text();
-				var ProfileColumnId = $(columnHeader).attr('data-srcprofilecolid');
-				var columnData = table.column(columnIdx).data();
-
-
-
-				if (datatype === 'Date') {
-
-					Object.keys(contextMenuItems).forEach(function (itemKey) {
-						if (itemKey === 'IsDate' || itemKey === 'Format') {
-							filteredItems[itemKey] = contextMenuItems[itemKey];
-						}
-					});
-
-				} else if (datatype === 'Text') {
-					// Filter out 'Makelen' and 'Format'
-					Object.keys(contextMenuItems).forEach(function (itemKey) {
-						if (itemKey !== 'Makelen' && itemKey !== 'Format') {
-							filteredItems[itemKey] = contextMenuItems[itemKey];
-						}
-					});
-
-				} else if (datatype === 'Number') {
-
-					Object.keys(contextMenuItems).forEach(function (itemKey) {
-						if (itemKey === 'SubTotal' || itemKey === 'Plus') {
-							filteredItems[itemKey] = contextMenuItems[itemKey];
-						}
-					});
-
-				}
-				else { filteredItems = contextMenuItems };
-
-				contextMenuItems = filteredItems;
-				debugger;
-
-				if (key == 'Filter') {
-					fnFilter(headerText, ProfileColumnId, columnIdx);
-				}
-				else if (key == 'Multiply') {
-					fnMultiply(headerText, ProfileColumnId, columnIdx);
-				}
-				else if (key == 'Addition') {
-					fnAddition(headerText, ProfileColumnId, columnIdx);
-				}
-				else if (key == 'Concat') {
-					fnConcat(headerText, ProfileColumnId, columnIdx);
-				}
-				else {
-					let functionConfig = getFunctionConfigByName(key);
-					generateDynamicFunctionModal(headerText, ProfileColumnId, columnIdx, functionConfig);
-				}
-			},
-			items: contextMenuItems
-		});
-	}
-
-	var tableHeader;
-	var table;
-
-	function fnLoadOrignalGrid() {
-		$.ajax({
-			url: "rest/wsGetEltTransDataBySourceId", // Replace with your API endpoint
-			method: "GET",
-			headers: {'Authorization': token},
-			data: {
-				SourceId: profile.SourceId,
-				SrcProfileId: profile.SrcProfileId
-			},
-			success: function (response) {
-
-				if (response.FetchButtonVisible) {
-					$('#btnFetch').css('display', 'block');
-				}
-
-
-				fnLoadTable(response);
-
-			},
-			error: function (error) {
-				console.log('Error:', error);
-			}
-		});
-	}
-
-	function fnGetDataAndLoadTable() {
-		$.ajax({
-			url: "rest/wsGetDataAndLoadTable", // Replace with your API endpoint
-			method: "GET",
-			headers: {'Authorization': token},
-			data: {
-				SourceId: profile.SourceId,
-			},
-			success: function (response) {
-				alert(response.errormessage);
-				$('#btnFetch').remove();
-				fnLoadOrignalGrid();
-			},
-			error: function (error) {
-				console.log('Error:', error);
-			}
-		});
-	}
-
-	function fnAllFunctionPopup() {
-
-		if ($.fn.DataTable.isDataTable('#AllFunctiondataTable')) {
-			$('#AllFunctiondataTable').DataTable().destroy();
-		}
-
-		$('#AllFunctiondataTable tbody').empty();
-
-		$('#AllFunctiondataTable').DataTable({
-			"ajax": {
-				"url": "rest/wsGetAppliedFunction",  // Replace with your server URL
-				"type": "GET",
-				"headers": {'Authorization': token},
-				dataSrc: function (response) {
-					return response;
-				},
-
-			},
-			dom: 'frtip',
-			"columns": [
-				{ "data": "SrcProfileColName" },
-				{ "data": "ColFunId" },
-				{ "data": "ColFunName" },
-				{ "data": "ColFunP1" },
-				{ "data": "ColFunP2" },
-				// { "data": "ColFunP3" },
-				{
-					"data": null,
-					"render": function (data, type, row) {
-						return `<button type="button" class="edit-btn dt-button buttons-collection buttons-colvis arrow-button" data-colfunpone="${row.ColFunP1}" data-colfunptwo="${row.ColFunP2}"  data-id="${row.ColFunId}"  data-colId="${row.SrcProfileColId}"><i class="fa fa-pencil-square" aria-hidden="true"></i></button>
-                                    <button type="button" class="delete-btn dt-button buttons-collection buttons-colvis arrow-button" data-id="${row.ColFunId}"  data-colId="${row.SrcProfileColId}"><i class="fa fa-trash" aria-hidden="true"></i></button>`;
-					}
-				}
-			]
-		});
-
-	}
-
-	$('#AllFunctiondataTable').on('click', '.edit-btn', function () {
-
-		populateeditColFunNameDropdown();
-
-		debugger;
-		// Extract row data attributes from the button
-		var ColFunId = $(this).data('id');
-		var SrcProfileColId = $(this).data('colid');
-		var ColFunName = $(this).data('colfunname');
-		var ColFunP1 = $(this).data('colfunpone');
-		var ColFunP2 = $(this).data('colfunptwo');
-
-
-		// Populate modal fields with the current row data
-		$('#editColFunId').val(ColFunId);
-		$('#editSrcProfileColId').val(SrcProfileColId);
-		$('#editColFunName').val(ColFunName);
-		$('#editColFunP1').val(ColFunP1);
-		$('#editColFunP2').val(ColFunP2);
-
-		$('#editModal').modal('show');
-	});
-
-	$('#AllFunctiondataTable').on('click', '.delete-btn', function () {
-		debugger;
-		var id = $(this).data('id');
-		var ColId = $(this).data('colid');
-		// Call your delete functionality here
-		if (confirm("Are you sure you want to delete ID: " + id + "?")) {
-			debugger;
-			// Make an AJAX request to delete the record
-			$.ajax({
-				url: "rest/wsRemoveSrcProfileColumnFunction", // Replace with your API endpoint
-				method: "GET",
-				headers: {'Authorization': token},
-				data: {
-					ColFunId: id,
-					SrcProfileColId: ColId
-				},
-				success: function (response) {
-
-					fnLoadTable(response);
-					fnAllFunctionPopup();
-					fnApplyAllFunctions();
-
-				},
-				error: function (error) {
-					console.log('Error:', error);
-				}
-			});
-		}
-	});
-
-	function fnLoadTable(response) {
-		//console.log(response.SrcColumnList);
-		if ($.fn.DataTable.isDataTable('#LoadedDataTable')) {
-			$('#LoadedDataTable').DataTable().destroy();
-		}
-		// Clear existing table data
-		$('#LoadedDataTable tbody').empty();
-		//console.log(response.SrcColumnList);
-		var headerRow = '';
-		var tableHeaders = response.SrcColumnList;
-		var tableDataRow = response.SrcColumnList;
-		$('#LoadedDataTabletableBody').empty();
-		headerRow = '<tr style="height: 22px!Important;"><th><b>Source Header</b></th>'
-		tableHeaders.forEach(function (currentVal, index) {
-			//console.log(currentVal)
-			headerRow += '<th data-SrcProfileColId=' + currentVal.SrcProfileColId + '>' + currentVal.SrcProfileSourceHeader + '</th>';
-		});
-		headerRow += "</tr>"
-		$('#LoadedDataTabletableHeader').html(headerRow);
-
-		//Profile Header
-		var PHRowDataArr = [];
-		// Populate the object with the structure you want
-		for (var i = 0; i < 1; i++) {  // Loop twice for 0 and 1
-			var PHrowData = {};  // Create an object for each index (row)
-
-			response.SrcColumnList.forEach(function (row, index) {
-				//var colName = row.SrcProfileColName;  // Get the value of SrcProfileColName
-				PHrowData[index] = row.SrcProfileColHeader;  // Set the property and value as the same (EltC1: 'EltC1', etc.)
-			});
-
-			PHRowDataArr.push(PHrowData);  // Push the object into the array
-		}
-		//console.log(PHRowDataArr);
-		var rowHtmlPH = '<tr>';
-		rowHtmlPH += '<td><b>Profile Header</b></td>'
-		// Loop over the object keys (e.g., EltC1, EltC2, etc.)
-		Object.keys(PHRowDataArr[0]).forEach(function (key) {
-			rowHtmlPH += '<td><b>' + PHRowDataArr[0][key] + '</b></td>'; // Access the value for each key
-		});
-		rowHtmlPH += '</tr>';
-		$('#LoadedDataTabletableBody').append(rowHtmlPH);
-		//ENd PH
-
-
-		var firstRowData = [];
-		// Populate the object with the structure you want
-		for (var i = 0; i < 1; i++) {  // Loop twice for 0 and 1
-			var rowData = {};  // Create an object for each index (row)
-
-			response.SrcColumnList.forEach(function (row, index) {
-				//var colName = row.SrcProfileColName;  // Get the value of SrcProfileColName
-				rowData[index] = row.SrcProfileColValue;  // Set the property and value as the same (EltC1: 'EltC1', etc.)
-			});
-
-			firstRowData.push(rowData);  // Push the object into the array
-		}
-		var rowHtml = '<tr>';
-		rowHtml += '<td><b>Sample Value</b></td>'
-		// Loop over the object keys (e.g., EltC1, EltC2, etc.)
-		Object.keys(firstRowData[0]).forEach(function (key) {
-			rowHtml += '<td>' + firstRowData[0][key] + '</td>'; // Access the value for each key
-		});
-		rowHtml += '</tr>';
-		$('#LoadedDataTabletableBody').append(rowHtml);
-		// Show Data Type
-		var RowDataType = [];
-		// Populate the object with the structure you want
-		for (var i = 0; i < 1; i++) {  // Loop twice for 0 and 1
-			var rowData = {};  // Create an object for each index (row)
-
-			response.SrcColumnList.forEach(function (row, index) {
-				//var colName = row.SrcProfileColName;  // Get the value of SrcProfileColName
-				rowData[index] = row.SrcProfileColDataType;  // Set the property and value as the same (EltC1: 'EltC1', etc.)
-			});
-
-			RowDataType.push(rowData);  // Push the object into the array
-		}
-		rowHtml = '<tr>';
-		rowHtml += '<td><b>Data Type</b></td>'
-		// Loop over the object keys (e.g., EltC1, EltC2, etc.)
-		Object.keys(RowDataType[0]).forEach(function (key) {
-			rowHtml += '<td>' + RowDataType[0][key] + '</td>'; // Access the value for each key
-		});
-		rowHtml += '</tr>';
-		$('#LoadedDataTabletableBody').append(rowHtml);
-
-
-		var DestinationRows = [];
-		// Populate the object with the structure you want
-		for (var i = 0; i < 1; i++) {  // Loop twice for 0 and 1
-			var rowData = {};  // Create an object for each index (row)
-
-			response.SrcColumnList.forEach(function (row, index) {
-				//var colName = row.SrcProfileColName;  // Get the value of SrcProfileColName
-				rowData[index] = row.DestProfileColHeader;  // Set the property and value as the same (EltC1: 'EltC1', etc.)
-			});
-
-			DestinationRows.push(rowData);  // Push the object into the array
-		}
-		rowHtml = '<tr>';
-		rowHtml += '<td><b>Destination Column</b></td>'
-		// Loop over the object keys (e.g., EltC1, EltC2, etc.)
-		Object.keys(DestinationRows[0]).forEach(function (key) {
-			rowHtml += '<td>' + DestinationRows[0][key] + '</td>'; // Access the value for each key
-		});
-		rowHtml += '</tr>';
-		$('#LoadedDataTabletableBody').append(rowHtml);
-
-		//Result Value
-		var ResultRows = [];
-		// Populate the object with the structure you want
-		for (var i = 0; i < 1; i++) {  // Loop twice for 0 and 1
-			var rowData = {};  // Create an object for each index (row)
-
-			response.SrcColumnList.forEach(function (row, index) {
-				//var colName = row.SrcProfileColName;  // Get the value of SrcProfileColName
-				rowData[index] = row.SrcProfileFunResult;  // Set the property and value as the same (EltC1: 'EltC1', etc.)
-			});
-
-			ResultRows.push(rowData);  // Push the object into the array
-		}
-		rowHtml = '<tr>';
-		rowHtml += '<td><b>Function Result</b></td>'
-		// Loop over the object keys (e.g., EltC1, EltC2, etc.)
-		Object.keys(ResultRows[0]).forEach(function (key) {
-			funResultValue = ResultRows[0][key];
-			if (funResultValue.includes('(Error)')) {
-				rowHtml += '<td style="color: white;background: indianred;">' + funResultValue + '</td>'; // Access the value for each key
-			} else {
-				rowHtml += '<td>' + funResultValue + '</td>'; // Access the value for each key
-			}
-		});
-		rowHtml += '</tr>';
-		$('#LoadedDataTabletableBody').append(rowHtml);
-		//End Result
-		table = $('#LoadedDataTable').DataTable({
-			ordering: false,
-			paging: false,
-			dom: 't',
-			responsive: true,
-			autoWidth: false,
-			//scrollY: '300px', // Set the vertical scroll limit
-			//scrollX: true,
-			scrollCollapse: true,
-			fixedColumns: {
-				leftColumns: 1      // Fix the first column
-			}
-		});
-
-		updateContextMenu();
-		updateContextMenuBody();
-
-		$('#LoadedDataTable tbody').on('contextmenu', 'td', function (e) {
-
-			window.clickedCell = $(this);
-			var columnIndex = window.clickedCell.index(); // Get the index of the clicked cell
-			debugger;
-			if (columnIndex == 0) {
-				return false; // Prevent default behavior and stop execution
-			}
-
-			var columnData = [];
-
-			$('#LoadedDataTable tbody tr').each(function () {
-				// Get the cell data from the corresponding column index
-				var cellValue = $(this).find('td').eq(columnIndex).text();
-				columnData.push(cellValue); // Add the cell value to the array
-			});
-
-
-			datatype = columnData[2];
-			updateContextMenuBody();
-		});
-	}
-
-	var datatype = 'none';
-
-	function fnInitializeFunction() {
-		$('#closePopup').on('click', function () {
-			$('#popupModal').fadeOut();  // Hide popup with fade-out effect
-		});
-		$('#funclosePopup').on('click', function () {
-			$('#funpopupModal').fadeOut();  // Hide popup with fade-out effect
-		});
-	}
-
-	function fnGenerateOutput() {
-		$.ajax({
-			url: "rest/wsEltGenerateOutput", // Replace with your API endpoint
-			method: "GET",
-			headers: {'Authorization': token},
-			data: {
-				SrcProfileId: profile.SrcProfileId
-			},
-			success: function (response) {
-				if (response.ReturnMessage) {
-					showToaster(response.ReturnMessage, true);
-				} else {
-					showToaster("Something went wrong. Please verify your data; it could not be loaded successfully.", false);
-				}
-			},
-			error: function (error) {
-				console.log('Error:', error);
-			}
-		});
-	}
-
-	var functionData = [
-		{
-			"FunctionId": 1,
-			"FunctionName": "Makelen",
-			"FirstFieldShow": true,
-			"SecondFieldShow": true,
-			"FirstLabel": "Length",
-			"SecondLabel": "CharToPut",
-			"FirstFieldIsRequired": false,
-			"SecondFieldIsRequired": false,
-			"SelectionType": "single-select",
-			"Icon": "fa-arrows-h"
-		},
-		{
-			"FunctionId": 42,
-			"FunctionName": "Substring",
-			"FirstFieldShow": true,
-			"SecondFieldShow": true,
-			"FirstLabel": "Attribute",
-			"SecondLabel": "Length",
-			"FirstFieldIsRequired": true,
-			"SecondFieldIsRequired": true,
-			"SelectionType": "single-select",
-			"Icon": "fa-arrows-h"
-		},
-		{
-			"FunctionId": 43,
-			"FunctionName": "FixLengthSubstring",
-			"FirstFieldShow": true,
-			"SecondFieldShow": true,
-			"FirstLabel": "Start Index",
-			"SecondLabel": "Length",
-			"FirstFieldIsRequired": true,
-			"SecondFieldIsRequired": true,
-			"SelectionType": "single-select",
-			"Icon": "fa-arrows-h"
-		},
-		{
-			"FunctionId": 44,
-			"FunctionName": "Filter",
-			"FirstFieldShow": true,
-			"SecondFieldShow": true,
-			"FirstLabel": "Condition",
-			"SecondLabel": "Value",
-			"FirstFieldIsRequired": true,
-			"SecondFieldIsRequired": true,
-			"SelectionType": "single-select",
-			"Icon": "fa-filter"
-		},
-
-		// {
-		// 	"FunctionId": 2,
-		// 	"FunctionName": "Replicate",
-		// 	"FirstFieldShow": false,
-		// 	"SecondFieldShow": true,
-		// 	"FirstLabel": "Number Of Times",
-		// 	"SecondLabel": "Char To Put",
-		// 	"FirstFieldIsRequired": false,
-		// 	"SecondFieldIsRequired": false,
-		// 	"SelectionType": "single-select",
-		// 	"Icon": "fa-copy"
-		// },
-
-		// {
-		// 	"FunctionId": 3,
-		// 	"FunctionName": "Plus",
-		// 	"FirstFieldShow": true,
-		// 	"SecondFieldShow": true,
-		// 	"FirstLabel": "First Value",
-		// 	"SecondLabel": "Second Value",
-		// 	"FirstFieldIsRequired": false,
-		// 	"SecondFieldIsRequired": false,
-		// 	"SelectionType": "single-select",
-		// 	"Icon": "fa-plus"
-		// },
-		// {
-		// 	"FunctionId": 4,
-		// 	"FunctionName": "Mappend",
-		// 	"FirstFieldShow": true,
-		// 	"SecondFieldShow": true,
-		// 	"FirstLabel": "Find Index",
-		// 	"SecondLabel": "Value To Append",
-		// 	"FirstFieldIsRequired": false,
-		// 	"SecondFieldIsRequired": false,
-		// 	"SelectionType": "single-select",
-		// 	"Icon": "fa-link"
-		// }
-		// ,
-		// {
-		// 	"FunctionId": 5,
-		// 	"FunctionName": "MTrim",
-		// 	"FirstFieldShow": true,
-		// 	"SecondFieldShow": true,
-		// 	"FirstLabel": "First Value",
-		// 	"SecondLabel": "Second Value",
-		// 	"FirstFieldIsRequired": false,
-		// 	"SecondFieldIsRequired": false,
-		// 	"SelectionType": "single-select",
-		// 	"Icon": "fa-cut"
-		// }
-		// ,
-		{
-		 	"FunctionId": 4,
-		 	"FunctionName": "Mappend",
-		 	"FirstFieldShow": true,
-		 	"SecondFieldShow": true,
-		 	"FirstLabel": "Find Index",
-		 	"SecondLabel": "Value To Append",
-		 	"FirstFieldIsRequired": false,
-		 	"SecondFieldIsRequired": false,
-		 	"SelectionType": "single-select",
-		 	"Icon": "fa-link"
-		 },
-		{
-			"FunctionId": 6,
-			"FunctionName": "Change",
-			"FirstFieldShow": true,
-			"SecondFieldShow": true,
-			"FirstLabel": "Old Value",
-			"SecondLabel": "New Value",
-			"FirstFieldIsRequired": false,
-			"SecondFieldIsRequired": false,
-			"SelectionType": "single-select",
-			"Icon": "fa-exchange-alt"
-		}
-		,
-		{
-			"FunctionId": 7,
-			"FunctionName": "Format",
-			"FirstFieldShow": true,
-			"SecondFieldShow": true,
-			"FirstLabel": "Current Format",
-			"SecondLabel": "To Format",
-			"FirstFieldIsRequired": false,
-			"SecondFieldIsRequired": false,
-			"SelectionType": "single-select",
-			"Icon": "fa-text-width"
-		}
-		,
-		// {
-		// 	"FunctionId": 8,
-		// 	"FunctionName": "IsDate",
-		// 	"FirstFieldShow": true,
-		// 	"SecondFieldShow": false,
-		// 	"FirstLabel": "Value",
-		// 	"SecondLabel": "",
-		// 	"FirstFieldIsRequired": false,
-		// 	"SecondFieldIsRequired": false,
-		// 	"SelectionType": "multi-select",
-		// 	"Icon": "fa-calendar-alt"
-		// }
-		// ,
-
-		{
-			"FunctionId": 10,
-			"FunctionName": "Midd",
-			"FirstFieldShow": true,
-			"SecondFieldShow": true,
-			"FirstLabel": "Starting Index",
-			"SecondLabel": "Count",
-			"FirstFieldIsRequired": false,
-			"SecondFieldIsRequired": false,
-			"SelectionType": "single-select",
-			"Icon": "fa-exchange-alt"
-		},
-		// ,
-		// {
-		// 	"FunctionId": 11,
-		// 	"FunctionName": "Before",
-		// 	"FirstFieldShow": true,
-		// 	"SecondFieldShow": true,
-		// 	"FirstLabel": "Search Char",
-		// 	"SecondLabel": "Count Before",
-		// 	"FirstFieldIsRequired": false,
-		// 	"SecondFieldIsRequired": false,
-		// 	"SelectionType": "single-select",
-		// 	"Icon": "fa-arrow-left"
-		// }
-		// ,
-		// {
-		// 	"FunctionId": 12,
-		// 	"FunctionName": "After",
-		// 	"FirstFieldShow": true,
-		// 	"SecondFieldShow": true,
-		// 	"FirstLabel": "Starting From",
-		// 	"SecondLabel": "Count",
-		// 	"FirstFieldIsRequired": false,
-		// 	"SecondFieldIsRequired": false,
-		// 	"SelectionType": "single-select",
-		// 	"Icon": "fa-arrow-right"
-		// }
-		// ,
-		// {
-		// 	"FunctionId": 13,
-		// 	"FunctionName": "BreakFunction",
-		// 	"FirstFieldShow": true,
-		// 	"SecondFieldShow": true,
-		// 	"FirstLabel": "Split Char",
-		// 	"SecondLabel": "Value Index",
-		// 	"FirstFieldIsRequired": false,
-		// 	"SecondFieldIsRequired": false,
-		// 	"SelectionType": "single-select",
-		// 	"Icon": "fa-cut"
-		// }
-		// ,
-		// {
-		// 	"FunctionId": 14,
-		// 	"FunctionName": "Keep",
-		// 	"FirstFieldShow": true,
-		// 	"SecondFieldShow": false,
-		// 	"FirstLabel": "Value",
-		// 	"SecondLabel": "",
-		// 	"FirstFieldIsRequired": false,
-		// 	"SecondFieldIsRequired": false,
-		// 	"SelectionType": "single-select",
-		// 	"Icon": "fa-lock"
-		// }
-		// ,
-		// {
-		// 	"FunctionId": 15,
-		// 	"FunctionName": "Find",
-		// 	"FirstFieldShow": true,
-		// 	"SecondFieldShow": false,
-		// 	"FirstLabel": "Value",
-		// 	"SecondLabel": "",
-		// 	"FirstFieldIsRequired": false,
-		// 	"SecondFieldIsRequired": false,
-		// 	"SelectionType": "single-select",
-		// 	"Icon": "fa-search"  // Icon for finding or searching
-		// },
-		{
-			"FunctionId": 16,
-			"FunctionName": "Len",
-			"FirstFieldShow": true,
-			"SecondFieldShow": false,
-			"FirstLabel": "Value",
-			"SecondLabel": "",
-			"FirstFieldIsRequired": false,
-			"SecondFieldIsRequired": false,
-			"SelectionType": "single-select",
-			"Icon": "fa-text-width"
-		},
-		{
-			"FunctionId": 17,
-			"FunctionName": "Left",
-			"FirstFieldShow": true,
-			"SecondFieldShow": false,
-			"FirstLabel": "Length",
-			"SecondLabel": "",
-			"FirstFieldIsRequired": false,
-			"SecondFieldIsRequired": false,
-			"SelectionType": "single-select",
-			"Icon": "fa-align-left"
-		},
-		{
-			"FunctionId": 18,
-			"FunctionName": "Right",
-			"FirstFieldShow": true,
-			"SecondFieldShow": false,
-			"FirstLabel": "Value",
-			"SecondLabel": "",
-			"FirstFieldIsRequired": false,
-			"SecondFieldIsRequired": false,
-			"SelectionType": "single-select",
-			"Icon": "fa-align-right"
-		},
-		{
-			"FunctionId": 19,
-			"FunctionName": "Eliminate",
-			"FirstFieldShow": true,
-			"SecondFieldShow": false,
-			"FirstLabel": "Value To Eliminate",
-			"SecondLabel": "",
-			"FirstFieldIsRequired": false,
-			"SecondFieldIsRequired": false,
-			"SelectionType": "single-select",
-			"Icon": "fa-trash"  // Icon representing deletion or elimination
-		},
-		// {
-		// 	"FunctionId": 20,
-		// 	"FunctionName": "LTrim",
-		// 	"FirstFieldShow": true,
-		// 	"SecondFieldShow": false,
-		// 	"FirstLabel": "Starting Index",
-		// 	"SecondLabel": "",
-		// 	"FirstFieldIsRequired": false,
-		// 	"SecondFieldIsRequired": false,
-		// 	"SelectionType": "single-select",
-		// 	"Icon": "fa-cut"  // Icon representing trimming
-		// },
-		{
-			"FunctionId": 21,
-			"FunctionName": "Lappend",
-			"FirstFieldShow": true,
-			"SecondFieldShow": false,
-			"FirstLabel": "Value",
-			"SecondLabel": "",
-			"FirstFieldIsRequired": false,
-			"SecondFieldIsRequired": false,
-			"SelectionType": "single-select",
-			"Icon": "fa-plus"  // Icon representing appending
-		},
-		{
-			"FunctionId": 22,
-			"FunctionName": "Rappend",
-			"FirstFieldShow": true,
-			"SecondFieldShow": false,
-			"FirstLabel": "Value",
-			"SecondLabel": "",
-			"FirstFieldIsRequired": false,
-			"SecondFieldIsRequired": false,
-			"SelectionType": "single-select",
-			"Icon": "fa-plus"  // Icon representing appending
-		},
-		// {
-		// 	"FunctionId": 23,
-		// 	"FunctionName": "Constant",
-		// 	"FirstFieldShow": true,
-		// 	"SecondFieldShow": false,
-		// 	"FirstLabel": "Value",
-		// 	"SecondLabel": "",
-		// 	"FirstFieldIsRequired": false,
-		// 	"SecondFieldIsRequired": false,
-		// 	"SelectionType": "single-select",
-		// 	"Icon": "fa-cog"  // Icon representing constant or setting
-		// },
-		// {
-		// 	"FunctionId": 24,
-		// 	"FunctionName": "CheckYear",
-		// 	"FirstFieldShow": true,
-		// 	"SecondFieldShow": true,
-		// 	"FirstLabel": "Current Format",
-		// 	"SecondLabel": "Desired Format",
-		// 	"FirstFieldIsRequired": false,
-		// 	"SecondFieldIsRequired": false,
-		// 	"SelectionType": "single-select",
-		// 	"Icon": "fa-calendar"  // Icon for checking or formatting the year
-		// }
-		// ,
-		// {
-		// 	"FunctionId": 26,
-		// 	"FunctionName": "Multiplication",
-		// 	"FirstFieldShow": true,
-		// 	"SecondFieldShow": false,
-		// 	"FirstLabel": "Separator",
-		// 	"SecondLabel": "",
-		// 	"FirstFieldIsRequired": false,
-		// 	"SecondFieldIsRequired": false,
-		// 	"SelectionType": "multi-select",
-		// 	"Icon": "fa-calendar" 
-		// }
-		// ,
-		// {
-		// 	"FunctionId": 25,
-		// 	"FunctionName": "Concat",
-		// 	"FirstFieldShow": true,
-		// 	"SecondFieldShow": false,
-		// 	"FirstLabel": "Separator",
-		// 	"SecondLabel": "",
-		// 	"FirstFieldIsRequired": false,
-		// 	"SecondFieldIsRequired": false,
-		// 	"SelectionType": "multi-select"
-		// }
-
-		// ,
-		// {
-		// 	"FunctionId": 27,
-		// 	"FunctionName": "Addition",
-		// 	"FirstFieldShow": false,
-		// 	"SecondFieldShow": false,
-		// 	"FirstLabel": "",
-		// 	"SecondLabel": "",
-		// 	"FirstFieldIsRequired": false,
-		// 	"SecondFieldIsRequired": false,
-		// 	"SelectionType": "multi-select"
-		// }
-		// ,
-		// {
-		// 	"FunctionId": 28,
-		// 	"FunctionName": "ClosingBalance",
-		// 	"FirstFieldShow": false,
-		// 	"SecondFieldShow": false,
-		// 	"FirstLabel": "",
-		// 	"SecondLabel": "",
-		// 	"FirstFieldIsRequired": false,
-		// 	"SecondFieldIsRequired": false,
-		// 	"SelectionType": "single-select",
-		// 	"Icon": "fa-money-bill-wave"  // Icon representing money or balance
-		// },
-		// {
-		// 	"FunctionId": 29,
-		// 	"FunctionName": "OpeningBalance",
-		// 	"FirstFieldShow": false,
-		// 	"SecondFieldShow": false,
-		// 	"FirstLabel": "",
-		// 	"SecondLabel": "",
-		// 	"FirstFieldIsRequired": false,
-		// 	"SecondFieldIsRequired": false,
-		// 	"SelectionType": "single-select",
-		// 	"Icon": "fa-money-bill-wave"  // Icon representing money or balance
-		// },
-		// {
-		// 	"FunctionId": 30,
-		// 	"FunctionName": "SubTotal",
-		// 	"FirstFieldShow": false,
-		// 	"SecondFieldShow": false,
-		// 	"FirstLabel": "",
-		// 	"SecondLabel": "",
-		// 	"FirstFieldIsRequired": false,
-		// 	"SecondFieldIsRequired": false,
-		// 	"SelectionType": "single-select",
-		// 	"Icon": "fa-calculator"  // Icon representing calculation or subtotal
-		// },
-		// {
-		// 	"FunctionId": 31,
-		// 	"FunctionName": "Empty",
-		// 	"FirstFieldShow": true,
-		// 	"SecondFieldShow": false,
-		// 	"FirstLabel": "Value if NULL",
-		// 	"SecondLabel": "",
-		// 	"FirstFieldIsRequired": false,
-		// 	"SecondFieldIsRequired": false,
-		// 	"SelectionType": "single-select",
-		// 	"Icon": "fa-ellipsis-h"  // Icon representing a placeholder or undefined value
-		// },
-		// {
-		// 	"FunctionId": 32,
-		// 	"FunctionName": "Subtraction",
-		// 	"FirstFieldShow": false,
-		// 	"SecondFieldShow": false,
-		// 	"FirstLabel": "",
-		// 	"SecondLabel": "",
-		// 	"FirstFieldIsRequired": false,
-		// 	"SecondFieldIsRequired": false,
-		// 	"SelectionType": "multi-select"
-		// }
-		// ,
-		// {
-		// 	"FunctionId": 33,
-		// 	"FunctionName": "Encryptionsha256",
-		// 	"FirstFieldShow": false,
-		// 	"SecondFieldShow": false,
-		// 	"FirstLabel": "",
-		// 	"SecondLabel": "",
-		// 	"FirstFieldIsRequired": false,
-		// 	"SecondFieldIsRequired": false,
-		// 	"SelectionType": "single-select",
-		// 	"Icon": "fa-lock"  // Icon representing encryption
-		// },
-		// {
-		// 	"FunctionId": 34,
-		// 	"FunctionName": "AmountPadding",
-		// 	"FirstFieldShow": true,
-		// 	"SecondFieldShow": true,
-		// 	"FirstLabel": "Length",
-		// 	"SecondLabel": "CharToPut",
-		// 	"FirstFieldIsRequired": false,
-		// 	"SecondFieldIsRequired": false,
-		// 	"SelectionType": "single-select",
-		// 	"Icon": "fa-text-height"  // Icon representing text or padding
-		// },
-		// {
-		// 	"FunctionId": 35,
-		// 	"FunctionName": "Fetch",
-		// 	"FirstFieldShow": true,
-		// 	"SecondFieldShow": true,
-		// 	"FirstLabel": "FilePath",
-		// 	"SecondLabel": "Column Index",
-		// 	"FirstFieldIsRequired": true,
-		// 	"SecondFieldIsRequired": true,
-		// 	"SelectionType": "single-select",
-		// 	"Icon": "fa-file-alt"  // Icon representing file fetching
-		// },
-
-		{
-			"FunctionId": 33,
-			"FunctionName": "Encryptionsha256",
-			"FirstFieldShow": false,
-			"SecondFieldShow": false,
-			"FirstLabel": "",
-			"SecondLabel": "",
-			"FirstFieldIsRequired": false,
-			"SecondFieldIsRequired": false,
-			"SelectionType": "single-select",
-			"Icon": "fa-lock"  // Icon representing encryption
-		},
-
-		{
-			"FunctionId": 27,
-			"FunctionName": "Addition",
-			"FirstFieldShow": false,
-			"SecondFieldShow": false,
-			"FirstLabel": "",
-			"SecondLabel": "",
-			"FirstFieldIsRequired": false,
-			"SecondFieldIsRequired": false,
-			"SelectionType": "multi-select",
-			"Icon": "fa-plus"
-		}
-		,
-		{
-			"FunctionId": 25,
-			"FunctionName": "Concat",
-			"FirstFieldShow": true,
-			"SecondFieldShow": false,
-			"FirstLabel": "Separator",
-			"SecondLabel": "",
-			"FirstFieldIsRequired": false,
-			"SecondFieldIsRequired": false,
-			"SelectionType": "multi-select",
-			"Icon": "fa-link"
-		},
-		{
-			"FunctionId": 26,
-			"FunctionName": "Multiply",
-			"FirstFieldShow": true,
-			"SecondFieldShow": false,
-			"FirstLabel": "Separator",
-			"SecondLabel": "",
-			"FirstFieldIsRequired": false,
-			"SecondFieldIsRequired": false,
-			"SelectionType": "multi-select",
-			"Icon": "fa-times"
-		}
-		,
-		{
-			"FunctionId": 36,
-			"FunctionName": "Sign",
-			"FirstFieldShow": false,
-			"SecondFieldShow": false,
-			"FirstLabel": "Sign Value",
-			"SecondLabel": "Sign Value 1",
-			"FirstFieldIsRequired": false,
-			"SecondFieldIsRequired": false,
-			"SelectionType": "single-select",
-			"Icon": "fa-pencil-alt"  // Icon representing signing or writing
-		},
-		{
-			"FunctionId": 37,
-			"FunctionName": "RemoveSpaces",
-			"FirstFieldShow": false,
-			"SecondFieldShow": false,
-			"FirstLabel": "Value",
-			"SecondLabel": "Value 1",
-			"FirstFieldIsRequired": false,
-			"SecondFieldIsRequired": false,
-			"SelectionType": "single-select",
-			"Icon": "fa-scissors"  // Icon representing trimming spaces
-		},
-		{
-			"FunctionId": 38,
-			"FunctionName": "Trim",
-			"FirstFieldShow": false,
-			"SecondFieldShow": false,
-			"FirstLabel": "Sign Value",
-			"SecondLabel": "Sign Value 1",
-			"FirstFieldIsRequired": false,
-			"SecondFieldIsRequired": false,
-			"SelectionType": "single-select",
-			"Icon": "fa-scissors"  // Icon representing trimming
-		},
-		{
-			"FunctionId": 40,
-			"FunctionName": "Split",
-			"FirstFieldShow": true,
-			"SecondFieldShow": true,
-			"FirstLabel": "Separator",
-			"SecondLabel": "Fields Count and Name",
-			"FirstFieldIsRequired": true,
-			"SecondFieldIsRequired": true,
-			"SelectionType": "single-select",
-			"Icon": "fa-share-alt" // Icon representing splitting data
-		}
-		// {
-		// 	"FunctionId": 39,
-		// 	"FunctionName": "RTrim",
-		// 	"FirstFieldShow": true,
-		// 	"SecondFieldShow": true,
-		// 	"FirstLabel": "First Value",
-		// 	"SecondLabel": "Second Value",
-		// 	"FirstFieldIsRequired": false,
-		// 	"SecondFieldIsRequired": false,
-		// 	"SelectionType": "single-select",
-		// 	"Icon": "fa-scissors"  
-		// },
-		// {
-		// 	"FunctionId": 40,
-		// 	"FunctionName": "Split",
-		// 	"FirstFieldShow": true,
-		// 	"SecondFieldShow": true,
-		// 	"FirstLabel": "Separator",
-		// 	"SecondLabel": "Fields Count and Name",
-		// 	"FirstFieldIsRequired": true,
-		// 	"SecondFieldIsRequired": true,
-		// 	"SelectionType": "single-select",
-		// 	"Icon": "fa-share-alt" // Icon representing splitting data
-		// },
-		// {
-		// 	"FunctionId": 41,
-		// 	"FunctionName": "Stan",
-		// 	"FirstFieldShow": false,
-		// 	"SecondFieldShow": false,
-		// 	"FirstLabel": "Separator",
-		// 	"SecondLabel": "Fields Count and Name",
-		// 	"FirstFieldIsRequired": false,
-		// 	"SecondFieldIsRequired": false,
-		// 	"SelectionType": "single-select",
-		// 	"Icon": "fa-share-alt" // Icon representing splitting or separating
-		// }
-	]
-
-
-	function showToaster(inputText, isInfo) {
-		let progressBarInterval;
-		let progress = 0;
-
-		toastr.options = {
-			"closeButton": true,
-			"progressBar": true,
-			"positionClass": "toast-top-right",
-			"timeOut": "13000",
-			"extendedTimeOut": "2000",
-			"showEasing": "swing",
-			"hideEasing": "linear",
-			"showMethod": "fadeIn",
-			"hideMethod": "fadeOut",
-			onShown: function () {
-				// Start a custom loading bar timer
-				progressBarInterval = setInterval(() => {
-					progress += 1;
-					$(".toast-progress").css("width", progress + "%");
-					if (progress >= 100) clearInterval(progressBarInterval);
-				}, 50);
-			},
-			onHidden: function () {
-				clearInterval(progressBarInterval);  // Clear the interval on hide
-			}
-		};
-
-		// Show Toastr alert with loading bar
-		if (isInfo) {
-			let $toast = toastr.info(inputText);
-		} else {
-			let $toast = toastr.error(inputText);
-		}
-
-		// Hover to pause
-		$($toast).hover(
-			function () { clearInterval(progressBarInterval); }, // Pause on hover
-			function () {
-				// Resume on leave
-				progressBarInterval = setInterval(() => {
-					progress += 1;
-					$(".toast-progress").css("width", progress + "%");
-					if (progress >= 100) clearInterval(progressBarInterval);
-				}, 50);
-			}
-		);
-	}
+      `;
+
+    populateMultiplyDropdown("concatColumn");
+
+    setTimeout(function () {
+      $("#concatColumn").select2();
+    }, 100);
+
+    $("#funhtmlData").html(htmlData);
+
+    $("#funpopupModal").fadeIn();
+
+    $("#submitBtnConcat").on("click", function () {
+      var isValidate = true;
+      var commaSeparatedString = "";
+      var selectedValues = $("#concatColumn").val();
+      if (selectedValues && selectedValues.length > 0) {
+        commaSeparatedString = selectedValues.join(",");
+      } else {
+        alert("Please select at least one option from the list.");
+        isValidate = false;
+      }
+
+      if (isValidate) {
+        var data = {
+          FunctionName: "Concat",
+          Parameter1: $("#seperator").val(),
+          Parameter2: commaSeparatedString,
+          SrcProfileColumn: colName,
+          SrcProfileColId: colId,
+          SrcProfileIndex: colIndex,
+        };
+
+        $.ajax({
+          url: "rest/wsSrcProfileApplyFunction",
+          type: "GET",
+          data: data,
+          headers: {
+            "Content-type": "application/json; charset=UTF-8",
+            Authorization: token,
+          },
+          success: function (responseData) {
+            console.log(responseData);
+            fnLoadTable(responseData);
+            fnFunctionCloseModal();
+          },
+          error: function (xhr, status, error) {
+            console.error("Error:", error);
+          },
+        });
+      }
+    });
+  }
+
+  function getFunctionConfigByName(functionName) {
+    return functionData.find((f) => f.FunctionName === functionName);
+  }
+
+  function updateContextMenu() {
+    $.contextMenu("destroy", "#LoadedDataTable tbody tr");
+    $.contextMenu("destroy", "#LoadedDataTable thead th");
+    contextMenuItems = {};
+
+    contextMenuItems["UpdateHeader"] = {
+      name: "Update Header",
+      icon: "fa-edit",
+    };
+    contextMenuItems["UpdateDataType"] = {
+      name: "Update DataType",
+      icon: "fa-edit",
+    };
+    contextMenuItems["AddColumn"] = { name: "Add Column", icon: "fa-plus" };
+    contextMenuItems["RemoveColumn"] = {
+      name: "Remove Column",
+      icon: "fa-trash",
+    };
+    contextMenuItems["DestinationColumn"] = {
+      name: "Destination Column",
+      icon: "fa-plane",
+    };
+
+    $.contextMenu({
+      selector: "#LoadedDataTable thead th",
+      callback: function (key, options) {
+        var columnIdx = options.$trigger.index();
+        var columnHeader = table.column(columnIdx).header();
+        var headerText = $(columnHeader).text();
+        var ProfileColumnId = $(columnHeader).attr("data-srcprofilecolid");
+
+        if (key == "UpdateHeader") {
+          fnColNameChangeModal(ProfileColumnId, columnIdx);
+        } else if (key == "AddColumn") {
+          fnAddColumn();
+        } else if (key == "UpdateDataType") {
+          fnChangeDataType(ProfileColumnId, columnIdx);
+        } else if (key == "DestinationColumn") {
+          fnChangeDestinationColumn(ProfileColumnId, columnIdx);
+        } else if (key == "RemoveColumn") {
+          fnRemoveColumn(ProfileColumnId, columnIdx);
+        }
+      },
+      items: contextMenuItems,
+    });
+  }
+
+  let filteredItems = {};
+
+  function updateContextMenuBody() {
+    $.contextMenu("destroy", "#LoadedDataTable tbody tr");
+
+    $("#LoadedDataTable tbody td").off("contextmenu");
+
+    contextMenuItems = {};
+
+    functionData.forEach(function (item) {
+      if (datatype == "Date") {
+        if (
+          item.FunctionName === "Filter" ||
+          item.FunctionName === "IsDate" ||
+          item.FunctionName === "Format" ||
+          item.FunctionName === "CheckYear"
+        ) {
+        } else return;
+      }
+
+      if (datatype == "Number") {
+        if (
+          item.FunctionName === "Multiply" ||
+          item.FunctionName === "Addition" ||
+          item.FunctionName === "Concat" ||
+          item.FunctionName === "Sign" ||
+          item.FunctionName === "Filter" ||
+          item.FunctionName === "Eliminate" ||
+          item.FunctionName === "Plus" ||
+          item.FunctionName === "SubTotal"
+        ) {
+        } else return;
+      }
+
+      if (datatype == "Text") {
+        if (
+          item.FunctionName === "Addition" ||
+          item.FunctionName === "Multiply" ||
+          item.FunctionName === "Sign" ||
+          item.FunctionName === "IsDate" ||
+          item.FunctionName === "Format" ||
+          item.FunctionName === "Plus" ||
+          item.FunctionName === "SubTotal" ||
+          item.FunctionName === "CheckYear"
+        ) {
+          return; // Skip to the next iteration
+        }
+      }
+
+      contextMenuItems[`${item.FunctionName}`] = {
+        name: item.FunctionName, // Add spaces before uppercase letters
+        icon: item.Icon, // Example icon, you can change this
+      };
+    });
+
+    // Initialize the context
+    $.contextMenu({
+      selector: "#LoadedDataTable tbody tr", // Apply to all rows
+      callback: function (key, options) {
+        debugger;
+        var rowIdx = table.row(options.$trigger).index();
+        var rowData = table.row(rowIdx).data();
+
+        // Use the globally captured cell from the previous event
+        var targetCell = window.clickedCell;
+        var columnIdx = targetCell.index();
+        var columnHeader = table.column(columnIdx).header();
+        var headerText = $(columnHeader).text();
+        var ProfileColumnId = $(columnHeader).attr("data-srcprofilecolid");
+        var columnData = table.column(columnIdx).data();
+
+        if (datatype === "Date") {
+          Object.keys(contextMenuItems).forEach(function (itemKey) {
+            if (itemKey === "IsDate" || itemKey === "Format") {
+              filteredItems[itemKey] = contextMenuItems[itemKey];
+            }
+          });
+        } else if (datatype === "Text") {
+          // Filter out 'Makelen' and 'Format'
+          Object.keys(contextMenuItems).forEach(function (itemKey) {
+            if (itemKey !== "Makelen" && itemKey !== "Format") {
+              filteredItems[itemKey] = contextMenuItems[itemKey];
+            }
+          });
+        } else if (datatype === "Number") {
+          Object.keys(contextMenuItems).forEach(function (itemKey) {
+            if (itemKey === "SubTotal" || itemKey === "Plus") {
+              filteredItems[itemKey] = contextMenuItems[itemKey];
+            }
+          });
+        } else {
+          filteredItems = contextMenuItems;
+        }
+
+        contextMenuItems = filteredItems;
+        debugger;
+
+        if (key == "Filter") {
+          fnFilter(headerText, ProfileColumnId, columnIdx);
+        } else if (key == "Multiply") {
+          fnMultiply(headerText, ProfileColumnId, columnIdx);
+        } else if (key == "Addition") {
+          fnAddition(headerText, ProfileColumnId, columnIdx);
+        } else if (key == "Concat") {
+          fnConcat(headerText, ProfileColumnId, columnIdx);
+        } else {
+          let functionConfig = getFunctionConfigByName(key);
+          generateDynamicFunctionModal(
+            headerText,
+            ProfileColumnId,
+            columnIdx,
+            functionConfig
+          );
+        }
+      },
+      items: contextMenuItems,
+    });
+  }
+
+  var tableHeader;
+  var table;
+
+  function fnLoadOrignalGrid() {
+    $.ajax({
+      url: "rest/wsGetEltTransDataBySourceId", // Replace with your API endpoint
+      method: "GET",
+      headers: { Authorization: token },
+      data: {
+        SourceId: profile.SourceId,
+        SrcProfileId: profile.SrcProfileId,
+      },
+      success: function (response) {
+        if (response.FetchButtonVisible) {
+          $("#btnFetch").css("display", "block");
+        }
+
+        fnLoadTable(response);
+      },
+      error: function (error) {
+        console.log("Error:", error);
+      },
+    });
+  }
+
+  function fnGetDataAndLoadTable() {
+    if (!fetchIsRun) {
+      $.ajax({
+        url: "rest/wsGetDataAndLoadTable", // Replace with your API endpoint
+        method: "GET",
+        headers: { Authorization: token },
+        data: {
+          SourceId: profile.SourceId,
+        },
+        success: function (response) {
+          fetchIsRun = true;
+          alert(response.errormessage);
+          $("#btnFetch").remove();
+          fnLoadOrignalGrid();
+        },
+        error: function (error) {
+          console.log("Error:", error);
+        },
+      });
+    }
+  }
+
+  function fnAllFunctionPopup() {
+    if ($.fn.DataTable.isDataTable("#AllFunctiondataTable")) {
+      $("#AllFunctiondataTable").DataTable().destroy();
+    }
+
+    $("#AllFunctiondataTable tbody").empty();
+
+    $("#AllFunctiondataTable").DataTable({
+      ajax: {
+        url: "rest/wsGetAppliedFunction", // Replace with your server URL
+        type: "GET",
+        headers: { Authorization: token },
+        dataSrc: function (response) {
+          return response;
+        },
+      },
+      dom: "frtip",
+      columns: [
+        { data: "SrcProfileColName" },
+        { data: "ColFunId" },
+        { data: "ColFunName" },
+        { data: "ColFunP1" },
+        { data: "ColFunP2" },
+        // { "data": "ColFunP3" },
+        {
+          data: null,
+          render: function (data, type, row) {
+            return `<button type="button" class="edit-btn dt-button buttons-collection buttons-colvis arrow-button" data-colfunpone="${row.ColFunP1}" data-colfunptwo="${row.ColFunP2}"  data-id="${row.ColFunId}"  data-colId="${row.SrcProfileColId}"><i class="fa fa-pencil-square" aria-hidden="true"></i></button>
+                                      <button type="button" class="delete-btn dt-button buttons-collection buttons-colvis arrow-button" data-id="${row.ColFunId}"  data-colId="${row.SrcProfileColId}"><i class="fa fa-trash" aria-hidden="true"></i></button>`;
+          },
+        },
+      ],
+    });
+  }
+
+  $("#AllFunctiondataTable").on("click", ".edit-btn", function () {
+    populateeditColFunNameDropdown();
+
+    debugger;
+    // Extract row data attributes from the button
+    var ColFunId = $(this).data("id");
+    var SrcProfileColId = $(this).data("colid");
+    var ColFunName = $(this).data("colfunname");
+    var ColFunP1 = $(this).data("colfunpone");
+    var ColFunP2 = $(this).data("colfunptwo");
+
+    // Populate modal fields with the current row data
+    $("#editColFunId").val(ColFunId);
+    $("#editSrcProfileColId").val(SrcProfileColId);
+    $("#editColFunName").val(ColFunName);
+    $("#editColFunP1").val(ColFunP1);
+    $("#editColFunP2").val(ColFunP2);
+
+    $("#editModal").modal("show");
+  });
+
+  $("#AllFunctiondataTable").on("click", ".delete-btn", function () {
+    debugger;
+    var id = $(this).data("id");
+    var ColId = $(this).data("colid");
+    // Call your delete functionality here
+    if (confirm("Are you sure you want to delete ID: " + id + "?")) {
+      debugger;
+      // Make an AJAX request to delete the record
+      $.ajax({
+        url: "rest/wsRemoveSrcProfileColumnFunction", // Replace with your API endpoint
+        method: "GET",
+        headers: { Authorization: token },
+        data: {
+          ColFunId: id,
+          SrcProfileColId: ColId,
+        },
+        success: function (response) {
+          fnLoadTable(response);
+          fnAllFunctionPopup();
+          fnApplyAllFunctions();
+        },
+        error: function (error) {
+          console.log("Error:", error);
+        },
+      });
+    }
+  });
+
+  function fnLoadTable(response) {
+    //console.log(response.SrcColumnList);
+    if ($.fn.DataTable.isDataTable("#LoadedDataTable")) {
+      $("#LoadedDataTable").DataTable().destroy();
+    }
+    // Clear existing table data
+    $("#LoadedDataTable tbody").empty();
+    //console.log(response.SrcColumnList);
+    var headerRow = "";
+    var tableHeaders = response.SrcColumnList;
+    var tableDataRow = response.SrcColumnList;
+    $("#LoadedDataTabletableBody").empty();
+    headerRow =
+      '<tr style="height: 22px!Important;"><th><b>Source Header</b></th>';
+    tableHeaders.forEach(function (currentVal, index) {
+      //console.log(currentVal)
+      headerRow +=
+        "<th data-SrcProfileColId=" +
+        currentVal.SrcProfileColId +
+        ">" +
+        currentVal.SrcProfileSourceHeader +
+        "</th>";
+    });
+    headerRow += "</tr>";
+    $("#LoadedDataTabletableHeader").html(headerRow);
+
+    //Profile Header
+    var PHRowDataArr = [];
+    // Populate the object with the structure you want
+    for (var i = 0; i < 1; i++) {
+      // Loop twice for 0 and 1
+      var PHrowData = {}; // Create an object for each index (row)
+
+      response.SrcColumnList.forEach(function (row, index) {
+        //var colName = row.SrcProfileColName;  // Get the value of SrcProfileColName
+        PHrowData[index] = row.SrcProfileColHeader; // Set the property and value as the same (EltC1: 'EltC1', etc.)
+      });
+
+      PHRowDataArr.push(PHrowData); // Push the object into the array
+    }
+    //console.log(PHRowDataArr);
+    var rowHtmlPH = "<tr>";
+    rowHtmlPH += "<td><b>Profile Header</b></td>";
+    // Loop over the object keys (e.g., EltC1, EltC2, etc.)
+    Object.keys(PHRowDataArr[0]).forEach(function (key) {
+      rowHtmlPH += "<td><b>" + PHRowDataArr[0][key] + "</b></td>"; // Access the value for each key
+    });
+    rowHtmlPH += "</tr>";
+    $("#LoadedDataTabletableBody").append(rowHtmlPH);
+    //ENd PH
+
+    var firstRowData = [];
+    // Populate the object with the structure you want
+    for (var i = 0; i < 1; i++) {
+      // Loop twice for 0 and 1
+      var rowData = {}; // Create an object for each index (row)
+
+      response.SrcColumnList.forEach(function (row, index) {
+        //var colName = row.SrcProfileColName;  // Get the value of SrcProfileColName
+        rowData[index] = row.SrcProfileColValue; // Set the property and value as the same (EltC1: 'EltC1', etc.)
+      });
+
+      firstRowData.push(rowData); // Push the object into the array
+    }
+    var rowHtml = "<tr>";
+    rowHtml += "<td><b>Sample Value</b></td>";
+    // Loop over the object keys (e.g., EltC1, EltC2, etc.)
+    Object.keys(firstRowData[0]).forEach(function (key) {
+      rowHtml += "<td>" + firstRowData[0][key] + "</td>"; // Access the value for each key
+    });
+    rowHtml += "</tr>";
+    $("#LoadedDataTabletableBody").append(rowHtml);
+    // Show Data Type
+    var RowDataType = [];
+    // Populate the object with the structure you want
+    for (var i = 0; i < 1; i++) {
+      // Loop twice for 0 and 1
+      var rowData = {}; // Create an object for each index (row)
+
+      response.SrcColumnList.forEach(function (row, index) {
+        //var colName = row.SrcProfileColName;  // Get the value of SrcProfileColName
+        rowData[index] = row.SrcProfileColDataType; // Set the property and value as the same (EltC1: 'EltC1', etc.)
+      });
+
+      RowDataType.push(rowData); // Push the object into the array
+    }
+    rowHtml = "<tr>";
+    rowHtml += "<td><b>Data Type</b></td>";
+    // Loop over the object keys (e.g., EltC1, EltC2, etc.)
+    Object.keys(RowDataType[0]).forEach(function (key) {
+      rowHtml += "<td>" + RowDataType[0][key] + "</td>"; // Access the value for each key
+    });
+    rowHtml += "</tr>";
+    $("#LoadedDataTabletableBody").append(rowHtml);
+
+    var DestinationRows = [];
+    // Populate the object with the structure you want
+    for (var i = 0; i < 1; i++) {
+      // Loop twice for 0 and 1
+      var rowData = {}; // Create an object for each index (row)
+
+      response.SrcColumnList.forEach(function (row, index) {
+        //var colName = row.SrcProfileColName;  // Get the value of SrcProfileColName
+        rowData[index] = row.DestProfileColHeader; // Set the property and value as the same (EltC1: 'EltC1', etc.)
+      });
+
+      DestinationRows.push(rowData); // Push the object into the array
+    }
+    rowHtml = "<tr>";
+    rowHtml += "<td><b>Destination Column</b></td>";
+    // Loop over the object keys (e.g., EltC1, EltC2, etc.)
+    Object.keys(DestinationRows[0]).forEach(function (key) {
+      rowHtml += "<td>" + DestinationRows[0][key] + "</td>"; // Access the value for each key
+    });
+    rowHtml += "</tr>";
+    $("#LoadedDataTabletableBody").append(rowHtml);
+
+    //Result Value
+    var ResultRows = [];
+    // Populate the object with the structure you want
+    for (var i = 0; i < 1; i++) {
+      // Loop twice for 0 and 1
+      var rowData = {}; // Create an object for each index (row)
+
+      response.SrcColumnList.forEach(function (row, index) {
+        //var colName = row.SrcProfileColName;  // Get the value of SrcProfileColName
+        rowData[index] = row.SrcProfileFunResult; // Set the property and value as the same (EltC1: 'EltC1', etc.)
+      });
+
+      ResultRows.push(rowData); // Push the object into the array
+    }
+    rowHtml = "<tr>";
+    rowHtml += "<td><b>Function Result</b></td>";
+    // Loop over the object keys (e.g., EltC1, EltC2, etc.)
+    Object.keys(ResultRows[0]).forEach(function (key) {
+      funResultValue = ResultRows[0][key];
+      if (funResultValue.includes("(Error)")) {
+        rowHtml +=
+          '<td style="color: white;background: indianred;">' +
+          funResultValue +
+          "</td>"; // Access the value for each key
+      } else {
+        rowHtml += "<td>" + funResultValue + "</td>"; // Access the value for each key
+      }
+    });
+    rowHtml += "</tr>";
+    $("#LoadedDataTabletableBody").append(rowHtml);
+    //End Result
+    table = $("#LoadedDataTable").DataTable({
+      ordering: false,
+      paging: false,
+      dom: "t",
+      responsive: true,
+      autoWidth: false,
+      //scrollY: '300px', // Set the vertical scroll limit
+      //scrollX: true,
+      scrollCollapse: true,
+      fixedColumns: {
+        leftColumns: 1, // Fix the first column
+      },
+    });
+
+    updateContextMenu();
+    updateContextMenuBody();
+
+    $("#LoadedDataTable tbody").on("contextmenu", "td", function (e) {
+      window.clickedCell = $(this);
+      var columnIndex = window.clickedCell.index(); // Get the index of the clicked cell
+      debugger;
+      if (columnIndex == 0) {
+        return false; // Prevent default behavior and stop execution
+      }
+
+      var columnData = [];
+
+      $("#LoadedDataTable tbody tr").each(function () {
+        // Get the cell data from the corresponding column index
+        var cellValue = $(this).find("td").eq(columnIndex).text();
+        columnData.push(cellValue); // Add the cell value to the array
+      });
+
+      datatype = columnData[2];
+      updateContextMenuBody();
+    });
+  }
+
+  var datatype = "none";
+
+  function fnInitializeFunction() {
+    $("#closePopup").on("click", function () {
+      $("#popupModal").fadeOut(); // Hide popup with fade-out effect
+    });
+    $("#funclosePopup").on("click", function () {
+      $("#funpopupModal").fadeOut(); // Hide popup with fade-out effect
+    });
+  }
+
+  function fnGenerateOutput() {
+    $.ajax({
+      url: "rest/wsEltGenerateOutput", // Replace with your API endpoint
+      method: "GET",
+      headers: { Authorization: token },
+      data: {
+        SrcProfileId: profile.SrcProfileId,
+      },
+      success: function (response) {
+        if (response.ReturnMessage) {
+          showToaster(response.ReturnMessage, true);
+        } else {
+          showToaster(
+            "Something went wrong. Please verify your data; it could not be loaded successfully.",
+            false
+          );
+        }
+      },
+      error: function (error) {
+        console.log("Error:", error);
+      },
+    });
+  }
+
+  var functionData = [
+    {
+      FunctionId: 1,
+      FunctionName: "Makelen",
+      FirstFieldShow: true,
+      SecondFieldShow: true,
+      FirstLabel: "Length",
+      SecondLabel: "CharToPut",
+      FirstFieldIsRequired: false,
+      SecondFieldIsRequired: false,
+      SelectionType: "single-select",
+      Icon: "fa-arrows-h",
+    },
+    {
+      FunctionId: 42,
+      FunctionName: "Substring",
+      FirstFieldShow: true,
+      SecondFieldShow: true,
+      FirstLabel: "Attribute",
+      SecondLabel: "Length",
+      FirstFieldIsRequired: true,
+      SecondFieldIsRequired: true,
+      SelectionType: "single-select",
+      Icon: "fa-arrows-h",
+    },
+    {
+      FunctionId: 43,
+      FunctionName: "FixLengthSubstring",
+      FirstFieldShow: true,
+      SecondFieldShow: true,
+      FirstLabel: "Start Index",
+      SecondLabel: "Length",
+      FirstFieldIsRequired: true,
+      SecondFieldIsRequired: true,
+      SelectionType: "single-select",
+      Icon: "fa-arrows-h",
+    },
+    {
+      FunctionId: 44,
+      FunctionName: "Filter",
+      FirstFieldShow: true,
+      SecondFieldShow: true,
+      FirstLabel: "Condition",
+      SecondLabel: "Value",
+      FirstFieldIsRequired: true,
+      SecondFieldIsRequired: true,
+      SelectionType: "single-select",
+      Icon: "fa-filter",
+    },
+
+    // {
+    // 	"FunctionId": 2,
+    // 	"FunctionName": "Replicate",
+    // 	"FirstFieldShow": false,
+    // 	"SecondFieldShow": true,
+    // 	"FirstLabel": "Number Of Times",
+    // 	"SecondLabel": "Char To Put",
+    // 	"FirstFieldIsRequired": false,
+    // 	"SecondFieldIsRequired": false,
+    // 	"SelectionType": "single-select",
+    // 	"Icon": "fa-copy"
+    // },
+
+    // {
+    // 	"FunctionId": 3,
+    // 	"FunctionName": "Plus",
+    // 	"FirstFieldShow": true,
+    // 	"SecondFieldShow": true,
+    // 	"FirstLabel": "First Value",
+    // 	"SecondLabel": "Second Value",
+    // 	"FirstFieldIsRequired": false,
+    // 	"SecondFieldIsRequired": false,
+    // 	"SelectionType": "single-select",
+    // 	"Icon": "fa-plus"
+    // },
+    // {
+    // 	"FunctionId": 4,
+    // 	"FunctionName": "Mappend",
+    // 	"FirstFieldShow": true,
+    // 	"SecondFieldShow": true,
+    // 	"FirstLabel": "Find Index",
+    // 	"SecondLabel": "Value To Append",
+    // 	"FirstFieldIsRequired": false,
+    // 	"SecondFieldIsRequired": false,
+    // 	"SelectionType": "single-select",
+    // 	"Icon": "fa-link"
+    // }
+    // ,
+    // {
+    // 	"FunctionId": 5,
+    // 	"FunctionName": "MTrim",
+    // 	"FirstFieldShow": true,
+    // 	"SecondFieldShow": true,
+    // 	"FirstLabel": "First Value",
+    // 	"SecondLabel": "Second Value",
+    // 	"FirstFieldIsRequired": false,
+    // 	"SecondFieldIsRequired": false,
+    // 	"SelectionType": "single-select",
+    // 	"Icon": "fa-cut"
+    // }
+    // ,
+    {
+      FunctionId: 4,
+      FunctionName: "Mappend",
+      FirstFieldShow: true,
+      SecondFieldShow: true,
+      FirstLabel: "Find Index",
+      SecondLabel: "Value To Append",
+      FirstFieldIsRequired: false,
+      SecondFieldIsRequired: false,
+      SelectionType: "single-select",
+      Icon: "fa-link",
+    },
+    {
+      FunctionId: 6,
+      FunctionName: "Change",
+      FirstFieldShow: true,
+      SecondFieldShow: true,
+      FirstLabel: "Old Value",
+      SecondLabel: "New Value",
+      FirstFieldIsRequired: false,
+      SecondFieldIsRequired: false,
+      SelectionType: "single-select",
+      Icon: "fa-exchange-alt",
+    },
+    {
+      FunctionId: 7,
+      FunctionName: "Format",
+      FirstFieldShow: true,
+      SecondFieldShow: true,
+      FirstLabel: "Current Format",
+      SecondLabel: "To Format",
+      FirstFieldIsRequired: false,
+      SecondFieldIsRequired: false,
+      SelectionType: "single-select",
+      Icon: "fa-text-width",
+    },
+    // {
+    // 	"FunctionId": 8,
+    // 	"FunctionName": "IsDate",
+    // 	"FirstFieldShow": true,
+    // 	"SecondFieldShow": false,
+    // 	"FirstLabel": "Value",
+    // 	"SecondLabel": "",
+    // 	"FirstFieldIsRequired": false,
+    // 	"SecondFieldIsRequired": false,
+    // 	"SelectionType": "multi-select",
+    // 	"Icon": "fa-calendar-alt"
+    // }
+    // ,
+
+    {
+      FunctionId: 10,
+      FunctionName: "Midd",
+      FirstFieldShow: true,
+      SecondFieldShow: true,
+      FirstLabel: "Starting Index",
+      SecondLabel: "Count",
+      FirstFieldIsRequired: false,
+      SecondFieldIsRequired: false,
+      SelectionType: "single-select",
+      Icon: "fa-exchange-alt",
+    },
+    // ,
+    // {
+    // 	"FunctionId": 11,
+    // 	"FunctionName": "Before",
+    // 	"FirstFieldShow": true,
+    // 	"SecondFieldShow": true,
+    // 	"FirstLabel": "Search Char",
+    // 	"SecondLabel": "Count Before",
+    // 	"FirstFieldIsRequired": false,
+    // 	"SecondFieldIsRequired": false,
+    // 	"SelectionType": "single-select",
+    // 	"Icon": "fa-arrow-left"
+    // }
+    // ,
+    // {
+    // 	"FunctionId": 12,
+    // 	"FunctionName": "After",
+    // 	"FirstFieldShow": true,
+    // 	"SecondFieldShow": true,
+    // 	"FirstLabel": "Starting From",
+    // 	"SecondLabel": "Count",
+    // 	"FirstFieldIsRequired": false,
+    // 	"SecondFieldIsRequired": false,
+    // 	"SelectionType": "single-select",
+    // 	"Icon": "fa-arrow-right"
+    // }
+    // ,
+    // {
+    // 	"FunctionId": 13,
+    // 	"FunctionName": "BreakFunction",
+    // 	"FirstFieldShow": true,
+    // 	"SecondFieldShow": true,
+    // 	"FirstLabel": "Split Char",
+    // 	"SecondLabel": "Value Index",
+    // 	"FirstFieldIsRequired": false,
+    // 	"SecondFieldIsRequired": false,
+    // 	"SelectionType": "single-select",
+    // 	"Icon": "fa-cut"
+    // }
+    // ,
+    // {
+    // 	"FunctionId": 14,
+    // 	"FunctionName": "Keep",
+    // 	"FirstFieldShow": true,
+    // 	"SecondFieldShow": false,
+    // 	"FirstLabel": "Value",
+    // 	"SecondLabel": "",
+    // 	"FirstFieldIsRequired": false,
+    // 	"SecondFieldIsRequired": false,
+    // 	"SelectionType": "single-select",
+    // 	"Icon": "fa-lock"
+    // }
+    // ,
+    // {
+    // 	"FunctionId": 15,
+    // 	"FunctionName": "Find",
+    // 	"FirstFieldShow": true,
+    // 	"SecondFieldShow": false,
+    // 	"FirstLabel": "Value",
+    // 	"SecondLabel": "",
+    // 	"FirstFieldIsRequired": false,
+    // 	"SecondFieldIsRequired": false,
+    // 	"SelectionType": "single-select",
+    // 	"Icon": "fa-search"  // Icon for finding or searching
+    // },
+    {
+      FunctionId: 16,
+      FunctionName: "Len",
+      FirstFieldShow: true,
+      SecondFieldShow: false,
+      FirstLabel: "Value",
+      SecondLabel: "",
+      FirstFieldIsRequired: false,
+      SecondFieldIsRequired: false,
+      SelectionType: "single-select",
+      Icon: "fa-text-width",
+    },
+    {
+      FunctionId: 17,
+      FunctionName: "Left",
+      FirstFieldShow: true,
+      SecondFieldShow: false,
+      FirstLabel: "Length",
+      SecondLabel: "",
+      FirstFieldIsRequired: false,
+      SecondFieldIsRequired: false,
+      SelectionType: "single-select",
+      Icon: "fa-align-left",
+    },
+    {
+      FunctionId: 18,
+      FunctionName: "Right",
+      FirstFieldShow: true,
+      SecondFieldShow: false,
+      FirstLabel: "Value",
+      SecondLabel: "",
+      FirstFieldIsRequired: false,
+      SecondFieldIsRequired: false,
+      SelectionType: "single-select",
+      Icon: "fa-align-right",
+    },
+    {
+      FunctionId: 19,
+      FunctionName: "Eliminate",
+      FirstFieldShow: true,
+      SecondFieldShow: false,
+      FirstLabel: "Value To Eliminate",
+      SecondLabel: "",
+      FirstFieldIsRequired: false,
+      SecondFieldIsRequired: false,
+      SelectionType: "single-select",
+      Icon: "fa-trash", // Icon representing deletion or elimination
+    },
+    // {
+    // 	"FunctionId": 20,
+    // 	"FunctionName": "LTrim",
+    // 	"FirstFieldShow": true,
+    // 	"SecondFieldShow": false,
+    // 	"FirstLabel": "Starting Index",
+    // 	"SecondLabel": "",
+    // 	"FirstFieldIsRequired": false,
+    // 	"SecondFieldIsRequired": false,
+    // 	"SelectionType": "single-select",
+    // 	"Icon": "fa-cut"  // Icon representing trimming
+    // },
+    {
+      FunctionId: 21,
+      FunctionName: "Lappend",
+      FirstFieldShow: true,
+      SecondFieldShow: false,
+      FirstLabel: "Value",
+      SecondLabel: "",
+      FirstFieldIsRequired: false,
+      SecondFieldIsRequired: false,
+      SelectionType: "single-select",
+      Icon: "fa-plus", // Icon representing appending
+    },
+    {
+      FunctionId: 22,
+      FunctionName: "Rappend",
+      FirstFieldShow: true,
+      SecondFieldShow: false,
+      FirstLabel: "Value",
+      SecondLabel: "",
+      FirstFieldIsRequired: false,
+      SecondFieldIsRequired: false,
+      SelectionType: "single-select",
+      Icon: "fa-plus", // Icon representing appending
+    },
+    // {
+    // 	"FunctionId": 23,
+    // 	"FunctionName": "Constant",
+    // 	"FirstFieldShow": true,
+    // 	"SecondFieldShow": false,
+    // 	"FirstLabel": "Value",
+    // 	"SecondLabel": "",
+    // 	"FirstFieldIsRequired": false,
+    // 	"SecondFieldIsRequired": false,
+    // 	"SelectionType": "single-select",
+    // 	"Icon": "fa-cog"  // Icon representing constant or setting
+    // },
+    // {
+    // 	"FunctionId": 24,
+    // 	"FunctionName": "CheckYear",
+    // 	"FirstFieldShow": true,
+    // 	"SecondFieldShow": true,
+    // 	"FirstLabel": "Current Format",
+    // 	"SecondLabel": "Desired Format",
+    // 	"FirstFieldIsRequired": false,
+    // 	"SecondFieldIsRequired": false,
+    // 	"SelectionType": "single-select",
+    // 	"Icon": "fa-calendar"  // Icon for checking or formatting the year
+    // }
+    // ,
+    // {
+    // 	"FunctionId": 26,
+    // 	"FunctionName": "Multiplication",
+    // 	"FirstFieldShow": true,
+    // 	"SecondFieldShow": false,
+    // 	"FirstLabel": "Separator",
+    // 	"SecondLabel": "",
+    // 	"FirstFieldIsRequired": false,
+    // 	"SecondFieldIsRequired": false,
+    // 	"SelectionType": "multi-select",
+    // 	"Icon": "fa-calendar"
+    // }
+    // ,
+    // {
+    // 	"FunctionId": 25,
+    // 	"FunctionName": "Concat",
+    // 	"FirstFieldShow": true,
+    // 	"SecondFieldShow": false,
+    // 	"FirstLabel": "Separator",
+    // 	"SecondLabel": "",
+    // 	"FirstFieldIsRequired": false,
+    // 	"SecondFieldIsRequired": false,
+    // 	"SelectionType": "multi-select"
+    // }
+
+    // ,
+    // {
+    // 	"FunctionId": 27,
+    // 	"FunctionName": "Addition",
+    // 	"FirstFieldShow": false,
+    // 	"SecondFieldShow": false,
+    // 	"FirstLabel": "",
+    // 	"SecondLabel": "",
+    // 	"FirstFieldIsRequired": false,
+    // 	"SecondFieldIsRequired": false,
+    // 	"SelectionType": "multi-select"
+    // }
+    // ,
+    // {
+    // 	"FunctionId": 28,
+    // 	"FunctionName": "ClosingBalance",
+    // 	"FirstFieldShow": false,
+    // 	"SecondFieldShow": false,
+    // 	"FirstLabel": "",
+    // 	"SecondLabel": "",
+    // 	"FirstFieldIsRequired": false,
+    // 	"SecondFieldIsRequired": false,
+    // 	"SelectionType": "single-select",
+    // 	"Icon": "fa-money-bill-wave"  // Icon representing money or balance
+    // },
+    // {
+    // 	"FunctionId": 29,
+    // 	"FunctionName": "OpeningBalance",
+    // 	"FirstFieldShow": false,
+    // 	"SecondFieldShow": false,
+    // 	"FirstLabel": "",
+    // 	"SecondLabel": "",
+    // 	"FirstFieldIsRequired": false,
+    // 	"SecondFieldIsRequired": false,
+    // 	"SelectionType": "single-select",
+    // 	"Icon": "fa-money-bill-wave"  // Icon representing money or balance
+    // },
+    // {
+    // 	"FunctionId": 30,
+    // 	"FunctionName": "SubTotal",
+    // 	"FirstFieldShow": false,
+    // 	"SecondFieldShow": false,
+    // 	"FirstLabel": "",
+    // 	"SecondLabel": "",
+    // 	"FirstFieldIsRequired": false,
+    // 	"SecondFieldIsRequired": false,
+    // 	"SelectionType": "single-select",
+    // 	"Icon": "fa-calculator"  // Icon representing calculation or subtotal
+    // },
+    // {
+    // 	"FunctionId": 31,
+    // 	"FunctionName": "Empty",
+    // 	"FirstFieldShow": true,
+    // 	"SecondFieldShow": false,
+    // 	"FirstLabel": "Value if NULL",
+    // 	"SecondLabel": "",
+    // 	"FirstFieldIsRequired": false,
+    // 	"SecondFieldIsRequired": false,
+    // 	"SelectionType": "single-select",
+    // 	"Icon": "fa-ellipsis-h"  // Icon representing a placeholder or undefined value
+    // },
+    // {
+    // 	"FunctionId": 32,
+    // 	"FunctionName": "Subtraction",
+    // 	"FirstFieldShow": false,
+    // 	"SecondFieldShow": false,
+    // 	"FirstLabel": "",
+    // 	"SecondLabel": "",
+    // 	"FirstFieldIsRequired": false,
+    // 	"SecondFieldIsRequired": false,
+    // 	"SelectionType": "multi-select"
+    // }
+    // ,
+    // {
+    // 	"FunctionId": 33,
+    // 	"FunctionName": "Encryptionsha256",
+    // 	"FirstFieldShow": false,
+    // 	"SecondFieldShow": false,
+    // 	"FirstLabel": "",
+    // 	"SecondLabel": "",
+    // 	"FirstFieldIsRequired": false,
+    // 	"SecondFieldIsRequired": false,
+    // 	"SelectionType": "single-select",
+    // 	"Icon": "fa-lock"  // Icon representing encryption
+    // },
+    // {
+    // 	"FunctionId": 34,
+    // 	"FunctionName": "AmountPadding",
+    // 	"FirstFieldShow": true,
+    // 	"SecondFieldShow": true,
+    // 	"FirstLabel": "Length",
+    // 	"SecondLabel": "CharToPut",
+    // 	"FirstFieldIsRequired": false,
+    // 	"SecondFieldIsRequired": false,
+    // 	"SelectionType": "single-select",
+    // 	"Icon": "fa-text-height"  // Icon representing text or padding
+    // },
+    // {
+    // 	"FunctionId": 35,
+    // 	"FunctionName": "Fetch",
+    // 	"FirstFieldShow": true,
+    // 	"SecondFieldShow": true,
+    // 	"FirstLabel": "FilePath",
+    // 	"SecondLabel": "Column Index",
+    // 	"FirstFieldIsRequired": true,
+    // 	"SecondFieldIsRequired": true,
+    // 	"SelectionType": "single-select",
+    // 	"Icon": "fa-file-alt"  // Icon representing file fetching
+    // },
+
+    {
+      FunctionId: 33,
+      FunctionName: "Encryptionsha256",
+      FirstFieldShow: false,
+      SecondFieldShow: false,
+      FirstLabel: "",
+      SecondLabel: "",
+      FirstFieldIsRequired: false,
+      SecondFieldIsRequired: false,
+      SelectionType: "single-select",
+      Icon: "fa-lock", // Icon representing encryption
+    },
+
+    {
+      FunctionId: 27,
+      FunctionName: "Addition",
+      FirstFieldShow: false,
+      SecondFieldShow: false,
+      FirstLabel: "",
+      SecondLabel: "",
+      FirstFieldIsRequired: false,
+      SecondFieldIsRequired: false,
+      SelectionType: "multi-select",
+      Icon: "fa-plus",
+    },
+    {
+      FunctionId: 25,
+      FunctionName: "Concat",
+      FirstFieldShow: true,
+      SecondFieldShow: false,
+      FirstLabel: "Separator",
+      SecondLabel: "",
+      FirstFieldIsRequired: false,
+      SecondFieldIsRequired: false,
+      SelectionType: "multi-select",
+      Icon: "fa-link",
+    },
+    {
+      FunctionId: 26,
+      FunctionName: "Multiply",
+      FirstFieldShow: true,
+      SecondFieldShow: false,
+      FirstLabel: "Separator",
+      SecondLabel: "",
+      FirstFieldIsRequired: false,
+      SecondFieldIsRequired: false,
+      SelectionType: "multi-select",
+      Icon: "fa-times",
+    },
+    {
+      FunctionId: 36,
+      FunctionName: "Sign",
+      FirstFieldShow: false,
+      SecondFieldShow: false,
+      FirstLabel: "Sign Value",
+      SecondLabel: "Sign Value 1",
+      FirstFieldIsRequired: false,
+      SecondFieldIsRequired: false,
+      SelectionType: "single-select",
+      Icon: "fa-pencil-alt", // Icon representing signing or writing
+    },
+    {
+      FunctionId: 37,
+      FunctionName: "RemoveSpaces",
+      FirstFieldShow: false,
+      SecondFieldShow: false,
+      FirstLabel: "Value",
+      SecondLabel: "Value 1",
+      FirstFieldIsRequired: false,
+      SecondFieldIsRequired: false,
+      SelectionType: "single-select",
+      Icon: "fa-scissors", // Icon representing trimming spaces
+    },
+    {
+      FunctionId: 38,
+      FunctionName: "Trim",
+      FirstFieldShow: false,
+      SecondFieldShow: false,
+      FirstLabel: "Sign Value",
+      SecondLabel: "Sign Value 1",
+      FirstFieldIsRequired: false,
+      SecondFieldIsRequired: false,
+      SelectionType: "single-select",
+      Icon: "fa-scissors", // Icon representing trimming
+    },
+    {
+      FunctionId: 40,
+      FunctionName: "Split",
+      FirstFieldShow: true,
+      SecondFieldShow: true,
+      FirstLabel: "Separator",
+      SecondLabel: "Fields Count and Name",
+      FirstFieldIsRequired: true,
+      SecondFieldIsRequired: true,
+      SelectionType: "single-select",
+      Icon: "fa-share-alt", // Icon representing splitting data
+    },
+    // {
+    // 	"FunctionId": 39,
+    // 	"FunctionName": "RTrim",
+    // 	"FirstFieldShow": true,
+    // 	"SecondFieldShow": true,
+    // 	"FirstLabel": "First Value",
+    // 	"SecondLabel": "Second Value",
+    // 	"FirstFieldIsRequired": false,
+    // 	"SecondFieldIsRequired": false,
+    // 	"SelectionType": "single-select",
+    // 	"Icon": "fa-scissors"
+    // },
+    // {
+    // 	"FunctionId": 40,
+    // 	"FunctionName": "Split",
+    // 	"FirstFieldShow": true,
+    // 	"SecondFieldShow": true,
+    // 	"FirstLabel": "Separator",
+    // 	"SecondLabel": "Fields Count and Name",
+    // 	"FirstFieldIsRequired": true,
+    // 	"SecondFieldIsRequired": true,
+    // 	"SelectionType": "single-select",
+    // 	"Icon": "fa-share-alt" // Icon representing splitting data
+    // },
+    // {
+    // 	"FunctionId": 41,
+    // 	"FunctionName": "Stan",
+    // 	"FirstFieldShow": false,
+    // 	"SecondFieldShow": false,
+    // 	"FirstLabel": "Separator",
+    // 	"SecondLabel": "Fields Count and Name",
+    // 	"FirstFieldIsRequired": false,
+    // 	"SecondFieldIsRequired": false,
+    // 	"SelectionType": "single-select",
+    // 	"Icon": "fa-share-alt" // Icon representing splitting or separating
+    // }
+  ];
+
+  function showToaster(inputText, isInfo) {
+    let progressBarInterval;
+    let progress = 0;
+
+    toastr.options = {
+      closeButton: true,
+      progressBar: true,
+      positionClass: "toast-top-right",
+      timeOut: "13000",
+      extendedTimeOut: "2000",
+      showEasing: "swing",
+      hideEasing: "linear",
+      showMethod: "fadeIn",
+      hideMethod: "fadeOut",
+      onShown: function () {
+        // Start a custom loading bar timer
+        progressBarInterval = setInterval(() => {
+          progress += 1;
+          $(".toast-progress").css("width", progress + "%");
+          if (progress >= 100) clearInterval(progressBarInterval);
+        }, 50);
+      },
+      onHidden: function () {
+        clearInterval(progressBarInterval); // Clear the interval on hide
+      },
+    };
+
+    // Show Toastr alert with loading bar
+    if (isInfo) {
+      let $toast = toastr.info(inputText);
+    } else {
+      let $toast = toastr.error(inputText);
+    }
+
+    // Hover to pause
+    $($toast).hover(
+      function () {
+        clearInterval(progressBarInterval);
+      }, // Pause on hover
+      function () {
+        // Resume on leave
+        progressBarInterval = setInterval(() => {
+          progress += 1;
+          $(".toast-progress").css("width", progress + "%");
+          if (progress >= 100) clearInterval(progressBarInterval);
+        }, 50);
+      }
+    );
+  }
 </script>
