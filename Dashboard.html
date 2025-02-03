@@ -1,7 +1,7 @@
 ﻿<script src="MyAssets/Scripts/chart_chartLibraray.js"></script>
 <script src="MyAssets/Scripts/chart_chartDrildown.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
 <script src="MyAssets/Scripts/chart_chartAccessibility.js"></script>
+<script src="MyAssets/Scripts/cookie.min.js"></script>
 
 <style>
     body {
@@ -1319,16 +1319,16 @@
         if (username) {
             if (currentHour >= 5 && currentHour < 12) {
                 greeting = "Good Morning";
-                imageUrl = "https://i.pinimg.com/736x/a4/34/e0/a434e03d5429430c60255a6a303fc96f.jpg";
+                imageUrl = ""; //"https://i.pinimg.com/736x/a4/34/e0/a434e03d5429430c60255a6a303fc96f.jpg";
             } else if (currentHour >= 12 && currentHour < 17) {
                 greeting = "Good Afternoon";
-                imageUrl = "https://st.depositphotos.com/1007168/1249/i/950/depositphotos_12492703-stock-photo-summer-hot-sun.jpg";
+                imageUrl = "Resources/GoodAfternon.jpg";//"https://st.depositphotos.com/1007168/1249/i/950/depositphotos_12492703-stock-photo-summer-hot-sun.jpg";
             } else if (currentHour >= 17 && currentHour < 21) {
                 greeting = "Good Evening";
-                imageUrl = "https://t3.ftcdn.net/jpg/06/36/89/50/360_F_636895063_o15toUhpNHEUa3t7DIilgpOpRWKr1iOt.jpg";
+                imageUrl = "Resources/GoodEvening.jpg";//"https://t3.ftcdn.net/jpg/06/36/89/50/360_F_636895063_o15toUhpNHEUa3t7DIilgpOpRWKr1iOt.jpg";
             } else {
                 greeting = "Good Night";
-                imageUrl = "https://png.pngtree.com/png-clipart/20230228/ourmid/pngtree-elegant-new-moon-and-stars-png-image_6623337.png";
+                imageUrl = "Resources/GoodNight.png";//"https://png.pngtree.com/png-clipart/20230228/ourmid/pngtree-elegant-new-moon-and-stars-png-image_6623337.png";
             }
 
             const titleElement = document.querySelector(".popupBox__titleTwo");
@@ -1495,6 +1495,7 @@
 
         //============= UI =============
         function cashUI(toggle) { //hidde
+            toggle = toggle == 'show' ? 'collapse in' : 'collapse'
             let DigitalHtml = `
             <!--=======================================-->
 <!--============== Cash ===================-->
@@ -1509,7 +1510,7 @@
             </div>
         </h5>
     </div>
-    <div id="collapseTwo" class="collapse ${toggle}" aria-labelledby="headingTwo" data-parent="#Dashboard" style="overflow:hidden">
+    <div id="collapseTwo" class="${toggle}" aria-labelledby="headingTwo" data-parent="#Dashboard" style="overflow:hidden">
         <!-- __________ Dashboard Card ______________ -->
         <div class="row" style="margin-top:5px;" id="CashTransactionCards">
         </div>
@@ -1657,6 +1658,7 @@
         }
 
         function digitalUI(toggle) {
+            toggle = toggle == 'show' ? 'collapse in' : 'collapse'
             let CashHtml = `
             <!--=======================================-->
 <!--============= Digital =================-->
@@ -1671,7 +1673,7 @@
             </div>
         </h5>
     </div>
-    <div id="collapseOne" class="collapse ${toggle}" aria-labelledby="headingOne" data-parent="#Dashboard" style="overflow:hidden">
+    <div id="collapseOne" class="${toggle}" aria-labelledby="headingOne" data-parent="#Dashboard" style="overflow:hidden">
         <!-- __________ Dashboard Card ______________ -->
         <div class="row" style="margin-top:5px;" id="DigitalTransactionCards">
         </div>
@@ -1817,6 +1819,7 @@
         }
 
         function TransformerUI(toggle) { //hidde
+            toggle = toggle == 'show' ? 'collapse in' : 'collapse'
             let TransformerHtml = `
             <!--=======================================-->
 <!--============== Transformer ===================-->
@@ -1831,7 +1834,7 @@
             </div>
         </h5>
     </div>
-    <div id="collapseTransformer" class="collapse ${toggle}" aria-labelledby="headingTwo" data-parent="#Dashboard" style="overflow:hidden">
+    <div id="collapseTransformer" class="${toggle}" aria-labelledby="headingTwo" data-parent="#Dashboard" style="overflow:hidden">
         <!-- __________ Dashboard Card ______________ -->
         <div class="row" style="margin-top:5px;" id="TransformerTransactionCards">
         </div>
@@ -1930,6 +1933,7 @@
         }
 
         function SettlementUI(toggle) { //hidde
+            toggle = toggle == 'show' ? 'collapse in' : 'collapse'
             let SettlementHtml = `
             <!--=======================================-->
 <!--============== Settlement ===================-->
@@ -1944,7 +1948,7 @@
             </div>
         </h5>
     </div>
-    <div id="collapseSettlement" class="collapse ${toggle}" aria-labelledby="headingTwo" data-parent="#Dashboard" style="overflow:hidden">
+    <div id="collapseSettlement" class="${toggle}" aria-labelledby="headingTwo" data-parent="#Dashboard" style="overflow:hidden">
         <!-- __________ Dashboard Card ______________ -->
         <div class="row" style="margin-top:5px;" id="SettlementTransactionCards">
         </div>
@@ -2043,6 +2047,7 @@
         }
 
         function DisputeUI(toggle) { //hidde
+            toggle = toggle == 'show' ? 'collapse in' : 'collapse'
             let DisputeHtml = `
             <!--=======================================-->
 <!--============== Dispute ===================-->
@@ -2057,7 +2062,7 @@
             </div>
         </h5>
     </div>
-    <div id="collapseDispute" class="collapse ${toggle}" aria-labelledby="headingTwo" data-parent="#Dashboard" style="overflow:hidden">
+    <div id="collapseDispute" class="${toggle}" aria-labelledby="headingTwo" data-parent="#Dashboard" style="overflow:hidden">
         <!-- __________ Dashboard Card ______________ -->
         <div class="row" style="margin-top:5px;" id="DisputeTransactionCards">
         </div>

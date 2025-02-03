@@ -3,23 +3,11 @@
   <script src="MyAssets/Scripts/select2.min.js"></script>
   <link rel="stylesheet" href="MyAssets/Scripts/css/toastr.min.css" />
 
-  <link
-    rel="stylesheet"
-    href="MyAssets/Scripts/css/jquery.dataTables.min.css"
-  />
-  <link
-    rel="stylesheet"
-    href="MyAssets/Scripts/css/buttons.dataTables.min.css"
-  />
-  <link
-    rel="stylesheet"
-    href="MyAssets/Scripts/css/jquery.contextMenu.min.css"
-  />
+  <link rel="stylesheet" href="MyAssets/Scripts/css/jquery.dataTables.min.css" />
+  <link rel="stylesheet" href="MyAssets/Scripts/css/buttons.dataTables.min.css" />
+  <link rel="stylesheet" href="MyAssets/Scripts/css/jquery.contextMenu.min.css" />
   <link rel="stylesheet" href="MyAssets/Scripts/css/MyCommonCss.css" />
-  <link
-    rel="stylesheet"
-    href="MyAssets/Scripts/css/bootstrap-multiselect.css"
-  />
+  <link rel="stylesheet" href="MyAssets/Scripts/css/bootstrap-multiselect.css" />
   <script src="MyAssets/Elt/EltJS.js"></script>
   <script src="MyAssets/Scripts/toastr.min.js"></script>
   <style>
@@ -54,6 +42,7 @@
     input#mdltext1ml,
     input#mdltext2ml,
     input#seperator,
+    input#sourcecolumnName,
     input#mdltext2mls {
       height: 29px !important;
       font-size: 12px !important;
@@ -219,50 +208,32 @@
   <div class="panel panel-default">
     <!--	<div class="panel-heading">Loaded Data</div>
 		<div class="panel-body"> -->
-    <button
-      id="backward"
-      type="button"
-      class="dt-button buttons-collection buttons-colvis arrow-button"
-    >
+    <button id="backward" type="button" class="dt-button buttons-collection buttons-colvis arrow-button">
       &#8592;
     </button>
-    <button
-      id="forward"
-      type="button"
-      class="dt-button buttons-collection buttons-colvis arrow-button"
-    >
+    <button id="forward" type="button" class="dt-button buttons-collection buttons-colvis arrow-button">
       &#8594;
     </button>
-    <button
-      id="btnApplyFunction"
-      type="button"
-      class="dt-button buttons-collection buttons-colvis arrow-button"
-    >
+    <button id="btnApplyFunction" type="button" class="dt-button buttons-collection buttons-colvis arrow-button">
       Apply Function
     </button>
 
-    <button
-      id="btnAllFunction"
-      type="button"
-      class="dt-button buttons-collection buttons-colvis arrow-button"
-    >
+    <button id="btnAllFunction" type="button" class="dt-button buttons-collection buttons-colvis arrow-button">
       View Functions
     </button>
 
-    <button
-      id="btnFetch"
-      style="display: none !important"
-      type="button"
-      class="dt-button buttons-collection buttons-colvis arrow-button"
-    >
+    <button id="btnFetch" style="display: none !important" type="button"
+      class="dt-button buttons-collection buttons-colvis arrow-button">
       Fetch
+    </button>
+    <button id="btnLifeCycleHeaderUpdate"  type="button"
+      class="dt-button buttons-collection buttons-colvis arrow-button">
+      LifeCycle Header Update
     </button>
 
     <div id="LoadedDataTableRes" class="table-responsive">
-      <table
-        id="LoadedDataTable"
-        class="display table table-bordered gx-tab-spacing-fix-2 GridWithPaginationBar GridWithBorderColor WorkWith table-responsive"
-      >
+      <table id="LoadedDataTable"
+        class="display table table-bordered gx-tab-spacing-fix-2 GridWithPaginationBar GridWithBorderColor WorkWith table-responsive">
         <thead id="LoadedDataTabletableHeader">
           <!-- <tr style="height: 22px!Important;" id="LoadedDataTabletableHeader"></tr> -->
         </thead>
@@ -280,12 +251,7 @@
   <div id="editModal" class="modal fade" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
       <div class="modal-content" style="padding: 17px">
-        <button
-          type="button"
-          class="close"
-          data-dismiss="modal"
-          aria-label="Close"
-        >
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
         <h4 class="modal-title">Edit Function</h4>
@@ -299,11 +265,7 @@
           <form id="editForm">
             <div class="form-group row">
               <input type="hidden" id="editColFunId" name="ColFunId" />
-              <input
-                type="hidden"
-                id="editSrcProfileColId"
-                name="SrcProfileColId"
-              />
+              <input type="hidden" id="editSrcProfileColId" name="SrcProfileColId" />
             </div>
             <!-- <div class="form-group">
 							<label for="ColFunName">Function Name :</label>
@@ -319,12 +281,7 @@
               </div>
 
               <div class="col-md-8">
-                <input
-                  type="text"
-                  class="form-control"
-                  id="editColFunP1"
-                  name="ColFunP1"
-                />
+                <input type="text" class="form-control" id="editColFunP1" name="ColFunP1" />
               </div>
             </div>
 
@@ -334,21 +291,13 @@
               </div>
 
               <div class="col-md-8">
-                <input
-                  type="text"
-                  class="form-control"
-                  id="editColFunP2"
-                  name="ColFunP2"
-                />
+                <input type="text" class="form-control" id="editColFunP2" name="ColFunP2" />
               </div>
             </div>
 
             <div class="form-group row" style="text-align: right">
               <div class="col-md-12">
-                <button
-                  type="button"
-                  class="update-btn-fun Button btn btn-default"
-                >
+                <button type="button" class="update-btn-fun Button btn btn-default">
                   Save changes
                 </button>
               </div>
@@ -378,10 +327,8 @@
     <div class="popup-content" style="width: 50% !important">
       <span id="AllFunctionclosePopup" class="close">&times;</span>
       <div id="AllFunctionhtmlData">
-        <table
-          id="AllFunctiondataTable"
-          class="display table table-bordered gx-tab-spacing-fix-2 GridWithPaginationBar GridWithBorderColor WorkWith table-responsive"
-        >
+        <table id="AllFunctiondataTable"
+          class="display table table-bordered gx-tab-spacing-fix-2 GridWithPaginationBar GridWithBorderColor WorkWith table-responsive">
           <thead>
             <tr>
               <th>Column Name</th>
@@ -416,10 +363,10 @@
     functionData.forEach(function (item) {
       dropdown.append(
         '<option value="' +
-          item.FunctionName +
-          '">' +
-          item.FunctionName +
-          "</option>"
+        item.FunctionName +
+        '">' +
+        item.FunctionName +
+        "</option>"
       );
     });
   }
@@ -427,11 +374,17 @@
   var fetchIsRun = false;
 
   $(document).ready(function () {
+
     fnLoadOrignalGrid();
 
-    $(document).on("click", "#btnFetch", function () {
+    $(document).off("click", "#btnFetch").on("click", "#btnFetch", function () {
       fnGetDataAndLoadTable();
     });
+       $(document).off("click", "#btnLifeCycleHeaderUpdate").on("click", "#btnLifeCycleHeaderUpdate", function () {
+      fnLifeCycleHeaderUpdate();
+    });
+
+
   });
 
   $(document).on("click", "#AllFunctionclosePopup", function () {
@@ -453,6 +406,38 @@
   $(document).on("click", "#btnApplyFunction", function () {
     fnApplyAllFunctions();
   });
+
+
+  $(document).on("click", "#addConditionBtn", function () {
+    var conditionHTML = `
+    <div class="condition-group p-3 mb-2 border rounded shadow-sm bg-light">
+            <div class="form-group row  " >
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" placeholder="Source A Column Name">
+                </div>
+                <div class="col-sm-2">
+                    <select class="form-control">
+                        <option value="=">=</option>
+                    </select>
+                </div>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" placeholder="Source B Column Name">
+                </div>
+                 <div class="col-sm-2 text-right">
+                    <i class="fa fa-trash text-danger remove-condition" style="cursor: pointer;"></i> <!-- Trash icon -->
+                </div>
+            </div>
+             </div>
+        `;
+
+    $("#conditionSection").append(conditionHTML);
+  });
+
+  // Remove condition dynamically
+  $(document).on("click", ".remove-condition", function () {
+    $(this).closest(".condition-group").remove();
+  });
+
 
   $(document).on("click", ".update-btn-fun", function () {
     // Get the form data
@@ -500,32 +485,28 @@
 
     if (functionConfig.FirstFieldShow) {
       htmlData += `<div class="form-group row">
-                      <label id="mdllabel1" class="col-sm-4 col-form-label">${
-                        functionConfig.FirstLabel
-                      } :</label>
+                      <label id="mdllabel1" class="col-sm-4 col-form-label">${functionConfig.FirstLabel
+        } :</label>
                       <div class="col-sm-8">
                           <input type="text" class="form-Control" id="mdltext1ml"
-                                 ${
-                                   functionConfig.FirstFieldIsRequired
-                                     ? "required"
-                                     : ""
-                                 } />
+                                 ${functionConfig.FirstFieldIsRequired
+          ? "required"
+          : ""
+        } />
                       </div>
                    </div><br/>`;
     }
 
     if (functionConfig.SecondFieldShow) {
       htmlData += `<div class="form-group row">
-                      <label id="mdllabel2" class="col-sm-4 col-form-label">${
-                        functionConfig.SecondLabel
-                      } :</label>
+                      <label id="mdllabel2" class="col-sm-4 col-form-label">${functionConfig.SecondLabel
+        } :</label>
                       <div class="col-sm-8">
                           <input type="text" class="form-Control" id="mdltext2ml"
-                                 ${
-                                   functionConfig.SecondFieldIsRequired
-                                     ? "required"
-                                     : ""
-                                 } />
+                                 ${functionConfig.SecondFieldIsRequired
+          ? "required"
+          : ""
+        } />
                       </div>
                    </div><br/>`;
     }
@@ -759,6 +740,137 @@
       }
     });
   }
+
+  function FnFetch(colName, colId, colIndex) {
+    fnInitializeFunction();
+
+    var htmlData = `
+                            <h4 class="mb-4" style=" text-align: left; margin-bottom: 32px;">Fetch</h4>
+                         <form>
+                          
+                             <div class="form-group row">
+                                 <label id="mdllabel3" for="mdltext1" class="col-sm-4 col-form-label">Source Name:</label>
+                                 <div class="col-sm-8">
+                                     <select id="SourceNames"  style="width:100%;">
+
+                                     </select>
+                                     <br />
+                                 </div>
+                             </div>
+
+
+                          <br />
+
+                             
+                            <div class="form-group row">
+                               <label id="mdllabel1" class="col-sm-4 col-form-label">Source Column Name :</label>
+                               <div class="col-sm-8">
+                                   <input type="text" class="form-Control" id="sourcecolumnName" />
+                               </div>
+                           </div>
+
+                          <br />
+
+                                 
+                             <div id="conditionSection">
+                               
+                             </div>
+                     
+                            
+                             <div class="form-group row">
+                                 <div class="col-sm-12 text-left">
+                                     <button type="button" class="btn btn-primary" id="addConditionBtn">+ Add Condition</button>
+                                 </div>
+                             </div>
+                             <br />
+                              <div class="form-group row">
+                              <div class="col-sm-12 text-right">
+                                  <button type="button" class="Button btn btn-default" id="submitBtnFetch">Submit</button>
+                              </div>
+                              </div>
+                           
+                         </form>
+      `;
+
+    populateSourceDropdown("SourceNames");
+
+    setTimeout(function () {
+      $("#SourceNames").select2({
+        placeholder: "Select an option", // Optional: Adds a placeholder
+        allowClear: true // Optional: Adds a clear button
+      });
+    }, 100);
+    
+
+    $("#funhtmlData").html(htmlData);
+
+    $("#funpopupModal").fadeIn();
+
+    $("#submitBtnFetch").on("click", function () {
+      var isValidate = true;
+
+
+       var sqlquerry = "";
+
+      $(".condition-group").each(function (index) {
+        var sourceAColumn = $(this).find("input:eq(0)").val(); 
+        var operator = $(this).find("select").val();         
+        var sourceBColumn = $(this).find("input:eq(1)").val(); 
+        if (index > 0) {
+          sqlquerry += " AND ";
+        }
+        sqlquerry += sourceAColumn + " " + operator + " " + sourceBColumn;
+      });
+
+
+      var SourceNames = $("#SourceNames").val();
+      var sourcecolumnName = $("#sourcecolumnName").val();
+
+      if (SourceNames.trim() === "") {
+        alert("Source Name cannot be empty.");
+        isValidate = false;
+      } else if (sourcecolumnName.trim() === "") {
+        alert("Source Column Name cannot be empty.");
+        isValidate = false;
+      } else if (sqlquerry.trim() === "") {
+        alert("Condition Can not Be Empty");
+        isValidate = false;
+      } 
+
+      if (isValidate) {
+        var data = {
+          FunctionName: "Fetch",
+          Parameter1: SourceNames,
+          Parameter2: sourcecolumnName,
+          Parameter3: sqlquerry,
+          SrcProfileColumn: colName,
+          SrcProfileColId: colId,
+          SrcProfileIndex: colIndex,
+        };
+
+       $.ajax({
+          url: "rest/wsSrcProfileApplyFunction",
+          type: "GET",
+          data: data,
+          headers: {
+            "Content-type": "application/json; charset=UTF-8",
+            Authorization: token,
+          },
+          success: function (responseData) {
+            console.log(responseData);
+            fnLoadTable(responseData);
+            fnFunctionCloseModal();
+          },
+          error: function (xhr, status, error) {
+            console.error("error:", error);
+          },
+        });
+      }
+
+    });
+  }
+
+
 
   function fnAddition(colName, colId, colIndex) {
     fnInitializeFunction();
@@ -996,12 +1108,14 @@
       if (datatype == "Number") {
         if (
           item.FunctionName === "Multiply" ||
+          item.FunctionName === "OpeningBalance" ||
           item.FunctionName === "Addition" ||
           item.FunctionName === "Concat" ||
           item.FunctionName === "Sign" ||
           item.FunctionName === "Filter" ||
           item.FunctionName === "Eliminate" ||
           item.FunctionName === "Plus" ||
+          item.FunctionName === "Divide" ||
           item.FunctionName === "SubTotal"
         ) {
         } else return;
@@ -1011,6 +1125,8 @@
         if (
           item.FunctionName === "Addition" ||
           item.FunctionName === "Multiply" ||
+          item.FunctionName === "OpeningBalance" ||
+          item.FunctionName === "Divide" ||
           item.FunctionName === "Sign" ||
           item.FunctionName === "IsDate" ||
           item.FunctionName === "Format" ||
@@ -1076,7 +1192,11 @@
           fnMultiply(headerText, ProfileColumnId, columnIdx);
         } else if (key == "Addition") {
           fnAddition(headerText, ProfileColumnId, columnIdx);
-        } else if (key == "Concat") {
+        }
+        else if (key == "Fetch") {
+          FnFetch(headerText, ProfileColumnId, columnIdx);
+        }
+        else if (key == "Concat") {
           fnConcat(headerText, ProfileColumnId, columnIdx);
         } else {
           let functionConfig = getFunctionConfigByName(key);
@@ -1138,6 +1258,28 @@
       });
     }
   }
+
+  
+    function fnLifeCycleHeaderUpdate() {
+      
+        $.ajax({
+          url: "rest/wsCopySourceColumntoLifecycle", // Replace with your API endpoint
+          method: "GET",
+          headers: { Authorization: token },
+          data: {
+            SrcProfileId : profile.SrcProfileId,
+            SrcProfileGrpId: profile.GrpAccId,
+            SrcProfilePAccId: profile.PAccId,
+          },
+          success: function (response) {
+            // $("#btnLifeCycleHeaderUpdate").remove();
+          },
+          error: function (error) {
+            console.log("Error:", error);
+          },
+        });
+      
+    }
 
   function fnAllFunctionPopup() {
     if ($.fn.DataTable.isDataTable("#AllFunctiondataTable")) {
@@ -1441,6 +1583,37 @@
       error: function (error) {
         console.log("Error:", error);
       },
+    });
+  }
+
+
+  function populateSourceDropdown(elementName) {
+    $.ajax({
+      url: 'rest/wsGetSources',
+      method: "GET",
+      headers: { Authorization: token },
+      data: {
+        SourceId : profile.SourceId,
+      },
+      success: function (response) {
+        console.log(response);
+        if (!response) {
+          console.warn('Invalid or empty response format.');
+          return;
+        }
+
+        var sourceNamesArray = JSON.parse(response.SourceNamesString);
+
+        let dropdown = $('#' + elementName);
+        dropdown.empty().append('<option value="">Select an option</option>'); // Default option
+
+       $.each(sourceNamesArray, function (index, value) {
+          dropdown.append(`<option value="${value}">${value}</option>`);
+        });
+      },
+      error: function (xhr, status, error) {
+        console.error(`Error (${xhr.status}): ${xhr.responseText || error}`);
+      }
     });
   }
 
@@ -1977,6 +2150,18 @@
       SelectionType: "single-select",
       Icon: "fa-pencil-alt", // Icon representing signing or writing
     },
+     {
+      FunctionId: 47,
+      FunctionName: "Serialize",
+      FirstFieldShow: false,
+      SecondFieldShow: false,
+      FirstLabel: "Sign Value",
+      SecondLabel: "Sign Value 1",
+      FirstFieldIsRequired: false,
+      SecondFieldIsRequired: false,
+      SelectionType: "single-select",
+      Icon: "fa-sort-numeric-up", // Icon representing signing or writing
+    },
     {
       FunctionId: 37,
       FunctionName: "RemoveSpaces",
@@ -2013,6 +2198,42 @@
       SelectionType: "single-select",
       Icon: "fa-share-alt", // Icon representing splitting data
     },
+    {
+      FunctionId: 45,
+      FunctionName: "Divide",
+      FirstFieldShow: true,
+      SecondFieldShow: false,
+      FirstLabel: "Old Value",
+      SecondLabel: "New Value",
+      FirstFieldIsRequired: false,
+      SecondFieldIsRequired: false,
+      SelectionType: "single-select",
+      Icon: "fa-exchange-alt",
+    },
+      {
+      FunctionId: 46,
+      FunctionName: "Fetch",
+      FirstFieldShow: true,
+      SecondFieldShow: false,
+      FirstLabel: "Old Value",
+      SecondLabel: "New Value",
+      FirstFieldIsRequired: false,
+      SecondFieldIsRequired: false,
+      SelectionType: "single-select",
+      Icon: "fa-exchange-alt",
+    },
+    // {
+    //   FunctionId: 29,
+    //   FunctionName: "OpeningBalance",
+    //   FirstFieldShow: false,
+    //   SecondFieldShow: false,
+    //   FirstLabel: "",
+    //   SecondLabel: "",
+    //   FirstFieldIsRequired: false,
+    //   SecondFieldIsRequired: false,
+    //   SelectionType: "multi-select",
+    //   Icon: "fa-money-bill-wave"  // Icon representing money or balance
+    // }
     // {
     // 	"FunctionId": 39,
     // 	"FunctionName": "RTrim",

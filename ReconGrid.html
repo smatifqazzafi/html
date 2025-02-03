@@ -135,7 +135,7 @@
                 border-top: 4px solid #3498db;
                 border-radius: 50%;
                 /* width: 20px;
-                height: 20px; 
+                height: 20px;
                 animation: spin 1s linear infinite;*/
                 display: none;
             }
@@ -322,12 +322,12 @@
                         <label for="sum-C">Sum of CR :</label>
                         <label id="sum-C">0</label>
                     </div>
-                   
+
                     <div class="col-md-2" style="padding-top:8px">
                         <label for="sum-D">Sum of DR:</label>
                         <label id="sum-D">0</label>
                     </div>
-                    
+
                     <div class="col-md-2" style="padding-top:8px">
                         <label for="difference-CD">Difference:</label>
                         <label id="difference-CD">0</label>
@@ -448,7 +448,7 @@
         var currency = '';
         var invFilterVal = '';
         var settleCategoryIdVal = '';
-
+        var isExportAll = false;
         //Filter Variables
         var pFilter = {};
 
@@ -490,6 +490,7 @@
                     'Authorization': pFilter.token
                 },
                 data: {
+                    pFilterStr: JSON.stringify(pFilter),
                     //panelType: panelType
                 },
                 success: function (data) {
@@ -660,11 +661,23 @@
                                     });
                                     var jsonStrin = JSON.stringify(columnSearchValues);
                                     chkOrder = d.order[0].column;
-                                    //
+
+                                    var lengthcount = d.length
+                                    pFilter.isExportAll = isExportAll;
+
+                                    if (isExportAll == true) {
+                                        pFilter.isExportAll = isExportAll;
+                                        var totalEntriesText = $('#dataTable_info').text();
+                                        var totalEntriesMatch = totalEntriesText.match(/of\s([\d,]+)\sentries/);
+                                        if (totalEntriesMatch && totalEntriesMatch[1]) {
+                                             lengthcount = totalEntriesMatch[1].replace(/,/g, '');
+                                        }
+                                    }
+
                                     return {
                                         draw: d.draw,
                                         start: d.start,
-                                        length: d.length,
+                                        length: lengthcount,
                                         searchValue: d.search.value,
                                         sortColumn: d.columns[d.order[0].column].data,
                                         sortDirection: d.order[0].dir,
@@ -674,18 +687,20 @@
                                     };
                                 },
                                 dataSrc: function (response) {
-                                    pFilter.isExportAll = false;
-                                    
                                     if (response.data != '') {
-                                        response.data = JSON.parse(response.data);
-                                        if (response.exportJsonRes != '') {
+                                        if (isExportAll == true) {
+                                            isExportAll = false;
                                             response.exportJsonRes = JSON.parse(response.exportJsonRes);
-                                            const updatedDataDownload = removeColumn(response.exportJsonRes, 'TotalCount');
-                                            //const csv = jsonToCsv(updatedDataDownload);
-                                            downloadCsv(updatedDataDownload, 'Digital-Recon.csv');
-                                            //downloadCsv(JSON.parse(response.exportJsonRes));
+                                            console.log(response.exportJsonRes)
+                                            downloadCsv(response.exportJsonRes, 'DigitalReconReport.csv');
+                                            $("#dataTable_processing").hide();
+
                                         }
-                                        return response.data;
+                                        else {
+                                            response.data = JSON.parse(response.data);
+                                            return response.data;
+                                        }
+
                                     } else {
                                         return response.data;
                                     }
@@ -734,11 +749,11 @@
                                     text: '<i class="fa fa-columns"></i> Column Visibility'
                                 },
                                 {
-                                    text: '<i class="fa-solid fa-download"></i> Export',
+                                    text: '<i class="fa-solid fa-download"></i> Export All',
                                     action: function (e, dt, node, config) {
                                         $(node).attr('id', 'ExportAllButton');
 
-                                        pFilter.isExportAll = true;
+                                        isExportAll = true;
                                         table.ajax.reload();
                                     },
                                     init: function (dt, node, config) {
@@ -828,7 +843,7 @@
 
                                                 currentSelectedIndex = clickedIndex;
                                                 if ($(this).hasClass('selected')) {
-                                                    // rows.removeClass('selected'); 
+                                                    // rows.removeClass('selected');
                                                     $(this).removeClass('selected'); // Deselect the clicked row
                                                 } else {
                                                     // $(this).addClass('selected'); // Select the clicked row
@@ -843,16 +858,17 @@
 
                                 });
                                 $(document).on('keydown', function (event) {
-
-                                    let rows = $('#dataTable tbody tr');
+                                    
+                                    let rows = $('#dataTable tbody tr');                                       
                                     if (invFilterVal == '') {
                                         if (settleCategoryIdVal == '') {
                                             if(event.key === 'ArrowDown'){
                                                 if (selectedColumnId.length == 0){
                                                     currentSelectedIndex++;
                                                     lastSelectedIndex = currentSelectedIndex;
-                                                    rows.eq(currentSelectedIndex).addClass('selected'); // Select new row                                            
-                                               }
+                                                    rows.eq(currentSelectedIndex).addClass('selected'); // Select new row
+
+                                                }
                                             }
                                             if (event.shiftKey) {
                                                 const allLcSame = selectedColumnId.every(item => item.AccLifeCycleId === selectedColumnId[0].AccLifeCycleId);
@@ -938,6 +954,7 @@
                                                         if (currentSelectedIndex < rows.length - 1) {
                                                             currentSelectedIndex++; // Move selection down
                                                             rows.eq(currentSelectedIndex).addClass('selected');
+                                                            
                                                         }
                                                     }
 
@@ -955,7 +972,7 @@
                                                             }
                                                         }
                                                     }
-                                                } 
+                                                }
                                                 else {
                                                     // Handle Arrow Up/Down without Shift
                                                     if (event.key === 'ArrowDown') {
@@ -964,8 +981,10 @@
                                                             currentSelectedIndex++;
                                                             lastSelectedIndex = currentSelectedIndex;
                                                             rows.eq(currentSelectedIndex).addClass('selected'); // Select new row
+
+                                                            
                                                         }
-                                                        
+
                                                     }
                                                     if (event.key === 'ArrowUp') {
                                                         if (currentSelectedIndex > 0) {
@@ -973,9 +992,16 @@
                                                             currentSelectedIndex--;
                                                             lastSelectedIndex = currentSelectedIndex;
                                                             rows.eq(currentSelectedIndex).addClass('selected'); // Select new row
+                                                           
                                                         }
                                                     }
                                                 }
+                                                    
+                                                          rows.eq(currentSelectedIndex)[0].scrollIntoView({
+                                                                    behavior: 'smooth', // Optional: Adds smooth scrolling
+                                                                    block: 'nearest',
+                                                                });
+                                                               
                                             }
                                             updateSelectedRows();
                                         }
@@ -1059,7 +1085,7 @@
                             FilterColumnPosition = JSON.stringify(orderq);
                         });
                         table.on('column-visibility.dt', function (e, settings, column, state) {
-                            
+
                             var visibility = table.columns().visible().toArray();
                             if (savedFilterId > 0) {
                                 $.ajax({
@@ -1167,7 +1193,7 @@
                         const allLcSame = selectedColumnId.every(item => item.AccLifeCycleId === selectedColumnId[0].AccLifeCycleId);
                         const masterExist = selectedColumnId.filter(item => item.DPAccCategory === 'Master').length > 0
                         if (key == 'Investigation') {
-                            
+
                             const alreadyInv = selectedColumnId.find(e => e.InvStatus >= 1);
                             if (alreadyInv != null && alreadyInv.DataId != '') {
                                 alert('Already in Investigation Id: ' + alreadyInv.DataId);
@@ -1175,7 +1201,7 @@
                                 showFloatingContainerStartInvestigation();
                             }
                         } else if (key == 'ForceMatch') {
-                            
+
                             const isOnlyOpen = selectedColumnId.every(item => item.DTranProcMatchStat === 'Open' || item.DTranProcMatchStat === 'ForceOpen');
                             if (allLcSame && masterExist && isOnlyOpen) {
                                 acceptForceMatch = true;
@@ -1235,7 +1261,7 @@
 
             // Event listener for column search input
             $('#myfilterFieldsContainer').on('change', '.mycolumnSearch', function (e) {
-                
+
                 var columnName = $(this).data('column');
                 var searchValue = $(this).val();
                 var existingSearch = columnSearchValues.find(function (search) {
@@ -1251,7 +1277,7 @@
                 table.ajax.reload();
             });
             $('#myfilterFieldsContainer').on('change', '.mycolumnSearchDate', function (e) {
-                
+
                 var columnName = $(this).data('column');
                 var searchValue = $(this).val();
                 searchValue = formatDateToText(searchValue)
@@ -1334,7 +1360,7 @@
             dropdownBtn.addEventListener('click', function (event) {
                 // Stop event propagation to prevent closing the parent dropdown
                 event.stopPropagation();
-                // 
+                //
                 // Toggle the dropdown menu visibility
                 var dropdownMenu = this;
                 var divd = dropdownMenu.querySelector('.btn-group');
@@ -1552,7 +1578,7 @@
             // Add your code here to perform actions when the button is clicked
         };
         function fnsaveFilterButton() {
-            
+
             if (savedFilterId > 0) {
                 $.ajax({
                     url: 'rest/wsSaveColGridFilter',
@@ -1867,7 +1893,7 @@
                         alert(res.errorDescription);
                     }
                     else {
-                        
+
                         p_TrLifeCycleRoles = res.TrLifeCycleRoleMatchUserRoles;
                         if (p_TrLifeCycleRoles == 0) {
                             alert('You have no right for this action');
@@ -1910,11 +1936,11 @@
             (ev) => {
                 ev.preventDefault();
                 let sendComments = document.getElementById('floatingContainerComments').value;
-                
+
                 if (sendComments) {
                     //   if(panelMode == 2 || panelMode == 3)
                     // {
-                    
+
                     if (acceptForceClose) {
                         callWebService('rest/wsForceCloseTransactions', sendComments);
                     }
@@ -1945,7 +1971,7 @@
         //Force Match End
         //History Start
         async function viewHistory(DataId, GrpAccId) {
-            
+
             var data = {
                 DataId: DataId,
                 GrpAccId: GrpAccId,
@@ -1965,7 +1991,7 @@
                 });
         }
         function renderHistory(r, TDataKey) {
-            
+
             let allEvents = r.SDT_DataEvent.map(
                 function (x) {
                     return {
@@ -2113,30 +2139,30 @@
 
         //History End
     </script>
-    <script>
-        const jsonToCsv = (jsonData) => {
-            const keys = Object.keys(jsonData[0]);
-            const csvRows = [keys.join(',')];
+<script>
+    const jsonToCsv = (jsonData) => {
+        const keys = Object.keys(jsonData[0]);
+        const csvRows = [keys.join(',')];
 
-            jsonData.forEach(obj => {
-                
-                const values = keys.map(key => JSON.stringify(obj[key], (key, value) => value === null ? '' : value));
-                csvRows.push(values.join(','));
-            });
+        jsonData.forEach(obj => {
+            debugger;
+            const values = keys.map(key => JSON.stringify(obj[key], (key, value) => value === null ? '' : value));
+            csvRows.push(values.join(','));
+        });
 
-            return csvRows.join('\n');
-        };
-        const downloadCsv = (jsonData, filename = 'data.csv') => {
-            const csvData = jsonToCsv(jsonData);
-            const blob = new Blob([csvData], { type: 'text/csv' });
-            const url = URL.createObjectURL(blob);
+        return csvRows.join('\n');
+    };
+    const downloadCsv = (jsonData, filename = 'ReconciliationDigital.csv') => {
+        const csvData = jsonToCsv(jsonData);
+        const blob = new Blob([csvData], { type: 'text/csv' });
+        const url = URL.createObjectURL(blob);
 
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = filename;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        };
-    </script>
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
+</script>
 </body>

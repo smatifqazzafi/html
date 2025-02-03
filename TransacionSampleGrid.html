@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transaction Grid Popup with Scrollable Columns and Column Removal</title>
+
+    <style>
+        /* Popup styling */
+
+        .table-wrapper {
+            overflow-x: auto;
+            margin-bottom: 10px;
+        }
+
+        #transaction-grid {
+            margin-bottom: 14px;
+            width: 100%;
+            min-width: 800px;
+            border-collapse: collapse;
+            table-layout: fixed;
+        }
+
+        #transaction-grid th,
+        #transaction-grid td {
+            /* border: 1px solid #141111; */
+            text-align: left;
+            width: 150px;
+            word-wrap: break-word;
+            position: relative;
+            padding: 0px 8px;
+        }
+
+
+
+        #transaction-grid thead th {
+            padding: 0px 15px 0px 8px;
+            border: 1px solid #ddd;
+        }
+
+        #transaction-grid th {
+            padding: 4px 8px;
+            border-bottom: 3px solid var(--colors_basecolor) !important;
+            color: var(--colors_gray08);
+        }
+
+
+
+        #transaction-grid thead td {
+            padding: 1px 1px;
+        }
+
+        #transaction-grid tbody td {
+            border: 1px solid #ddd;
+        }
+
+
+        #transaction-grid .remove-column {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            cursor: pointer;
+            color: red;
+            font-size: 14px;
+            display: none;
+        }
+
+        #transaction-grid input[type="text"] {
+            font-weight: 100;
+            width: 90%;
+            border: none;
+            box-sizing: border-box;
+            outline: none;
+        }
+
+        #transaction-grid input[type="text"]:focus {
+            outline: none;
+        }
+
+        #add-column,
+        #save-data,
+        #close-popup {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="table-wrapper">
+
+        <table id="transaction-grid">
+            <thead>
+                <tr>
+                    <th><input type="text" placeholder="Header 1" value="Date"><span class="remove-column"
+                            style="cursor: pointer; color: red;">✖</span></th>
+                    <th><input type="text" placeholder="Header 2" value="Amount"><span class="remove-column"
+                            style="cursor: pointer; color: red;">✖</span></th>
+                    <th><input type="text" placeholder="Header 3" value="Sign"><span class="remove-column"
+                            style="cursor: pointer; color: red;">✖</span></th>
+                    <th><input type="text" placeholder="Header 4" value="Pan"><span class="remove-column"
+                            style="cursor: pointer; color: red;">✖</span></th>
+                    <th><input type="text" placeholder="Header 5" value="Stan"><span class="remove-column"
+                            style="cursor: pointer; color: red;">✖</span></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><input type="text" placeholder="Sample Data 1"></td>
+                    <td><input type="text" placeholder="Sample Data 2"></td>
+                    <td><input type="text" placeholder="Sample Data 3"></td>
+                    <td><input type="text" placeholder="Sample Data 4"></td>
+                    <td><input type="text" placeholder="Sample Data 5"></td>
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+
+    <button id="add-column" class="ButtonMaterialDefault btn btn-default" type="button">Add Column</button>
+    <!-- <button id="add-row">Add Row</button> -->
+    <button id="save-data" class="ButtonMaterial btn btn-default" type="button">Save Data</button>
+
+    <script>
+        $(document).ready(function () {
+
+
+
+            function loadData() {
+
+                var data = {
+                    SourceId: SourceId
+                };
+
+                $.ajax({
+                    url: "rest/wsGetTransactionSampleLine",
+                    type: 'Post',
+                    data: JSON.stringify(data),
+                    headers: {
+                        'Authorization': AuthToken
+                    },
+                    success: function (data) {
+                        if (data.SDT_TransactionLine && data.SDT_TransactionLine.length > 0) {
+
+                            $('#transaction-grid tbody').empty();
+                            $('#transaction-grid thead tr').empty();
+
+                            // // Create headers dynamically
+                            data.SDT_TransactionLine.forEach(function (column, index) {
+                                $('#transaction-grid thead tr').append('<th><input type="text" value="' + column.Headers + '"><span class="remove-column" style="cursor: pointer; color: red;">✖</span></th>');
+                            });
+
+                            // Determine the number of rows from the first Data string
+                            let numberOfRows = data.SDT_TransactionLine[0].Data.split(',').length;
+
+
+                            let row = '<tr>';
+
+                            data.SDT_TransactionLine.forEach(function (column) {
+                                let rowData = column.Data;
+                                row += '<td><input type="text" value="' + rowData + '"></td>';
+                            });
+
+                            row += '</tr>';
+                            $('#transaction-grid tbody').append(row);
+                        }
+
+                    },
+                    error: function (xhr, status, error) {
+                        console.log('Error fetching data:', error);
+                    }
+                });
+            }
+
+            loadData();
+
+            $('#close-popup').click(function () {
+                $('#popup-overlay').hide();
+                $('#popup').hide();
+            });
+
+            $('#add-column').click(function () {
+                let columnIndex = $('#transaction-grid thead th').length + 1;
+                $('#transaction-grid thead tr').append('<th><input type="text" placeholder="Header ' + columnIndex + '"><span class="remove-column" style="cursor: pointer; color: red;">✖</span></th>');
+                $('#transaction-grid tbody tr').each(function () {
+                    $(this).append('<td><input type="text" placeholder="Sample Data ' + columnIndex + '"></td>');
+                });
+            });
+
+
+
+
+            $('#save-data').click(function () {
+
+                let jsonData = []
+
+                // Get column headers and corresponding data
+                $('#transaction-grid thead th').each(function (headerIndex) {
+                    let header = $(this).find('input').val();
+
+                    // Get data for the column by finding all the td elements in the column
+                    let data = $('#transaction-grid tbody tr').map(function () {
+                        return $(this).find('td').eq(headerIndex).find('input').val();
+                    }).get(); // .get() to return an array of values
+
+                    jsonData.push({
+                        Headers: header.trim(),
+                        Data: data.join(',').trim() // Join values if you want them as a comma-separated string
+                    });
+                });
+
+                // Send the data via AJAX request
+                $.ajax({
+                    url: "rest/wsInsertTransactionSampleLine",
+                    type: 'Post',               // Use 'POST' for sending data
+                    contentType: 'application/json', // Content type for JSON data
+                    headers: {
+                        'Authorization': AuthToken
+                    },
+                    data: JSON.stringify({ JsonData: JSON.stringify(jsonData), SourceId: SourceId }),  // Include jsonData as a string
+                    success: function (response) {
+                        $("#ADDSAMPLETRANSACTIONGRIDLINE_MODALContainer_CloseButton").click();
+                    },
+                    error: function (xhr, status, error) {
+                        // Handle error
+                        $("#ADDSAMPLETRANSACTIONGRIDLINE_MODALContainer_CloseButton").click();
+                    }
+                });
+
+
+            });
+
+
+
+            $(document).on('click', '.remove-column', function () {
+                let columnIndex = $(this).parent().index();
+                $('#transaction-grid tr').each(function () {
+                    $(this).find('th, td').eq(columnIndex).remove();
+                });
+            });
+        });
+    </script>
+
+</body>
+
+</html>

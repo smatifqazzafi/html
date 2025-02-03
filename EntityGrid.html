@@ -69,7 +69,7 @@
                 left: 0;
                 position: fixed;
                 width: 100%;
-                height: 100%;
+                height: 70%;
                 display: none;
                 z-index: 15;
             }
@@ -78,8 +78,8 @@
                 top: 0;
                 left: 0;
                 position: fixed;
-                width: 100%;
-                height: 100%;
+                width: 50%;
+                height: 50%;
                 background: rgba(0, 0, 0, 0.2);
             }
 
@@ -313,7 +313,7 @@
             background-color: #fff;
             padding: 20px;
             border-radius: 4px;
-            width: 380px;
+            width: 386px;
             text-align: center;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             position: relative;
@@ -370,11 +370,8 @@
             background-color: #fff;
             border-radius: 8px;
             padding: 30px;
-            width: 800px;
-            /* Increased width */
-            max-height: 400px;
-            /* Set maximum height */
-            overflow-y: hidden;
+            width: 650px;
+            height: 157px;
             /* Allow vertical scrolling if content exceeds max height */
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             z-index: 2;
@@ -491,6 +488,49 @@
         label.page-length{
             color: #5c5a5a !important;
         }
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            visibility: hidden;
+            opacity: 0;
+            transition: visibility 0.3s, opacity 0.3s;
+        }
+        .popup {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        .popup input {
+            width: 80%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .popup button {
+            padding: 10px 20px;
+            background-color: #ff6347;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .popup button:hover {
+            background-color: #ff6347;
+        }
+        .overlay.active {
+            visibility: visible;
+            opacity: 1;
+        }
     </style>
     <div id="warning-popup" class="popup">
         <div class="popup-content">
@@ -506,58 +546,13 @@
 
     <!-- Edit Row -->
 
-    <div id="fullScreenDiv">
-        <div id="grayContainer">
-            <div id="editContainerTitle">ENTITY</div>
-            <div class="orange-bar"></div>
-
-            <!-- Left and Right Column Inputs -->
-            <div style="display: flex; gap: 20px; flex-wrap: wrap;">
-
-                <!-- Left Column -->
-                <div style="flex: 1;">
-                    <div class="tag-input-container">
-                        <label for="caseIdSubject">Company Name:</label>
-                        <input type="text" id="caseIdSubject" class="tag-input" placeholder="">
-                    </div>
-
-                    <div class="tag-input-container">
-                        <label for="accountNo">Account No:</label>
-                        <input type="text" id="accountNo" class="tag-input" placeholder="">
-                    </div>
-                </div>
-
-                <!-- Right Column -->
-                <div style="flex: 1;">
-                    <div class="tag-input-container">
-                        <label for="additionalInfo">Account Type:</label>
-                        <input type="text" id="additionalInfo" class="tag-input" placeholder="">
-                    </div>
-
-                    <div class="tag-input-container">
-                        <label for="transactionType">Transaction Type:</label>
-                        <select id="transactionType" class="form-control">
-                            <option value="">Select Type</option>
-                            <option value="Biller">Biller</option>
-                            <option value="Aggregator">Aggregator</option>
-                        </select>
-                    </div>
-                </div>
-
-            </div>
-
-            <!-- Checkbox -->
-            <div class="checkbox-container">
-                <input type="checkbox" id="confirmCheckbox">
-                <label for="confirmCheckbox">is Fees Only</label>
-            </div>
-
-            <!-- Buttons -->
-            <div class="button-container">
-                <button id="buttonFloatingContainerStartInvestigationAccept" class="ButtonMaterial">ENTER</button>
-                <button id="buttonFloatingContainerStartInvestigationCancel"
-                    class="ButtonMaterialDefault">CANCEL</button>
-            </div>
+    <div class="overlay" id="popupOverlay">
+        <div class="popup">
+            <h2>Enter a Value</h2>
+            <input type="text" id="userInput" placeholder="Enter your input here">
+            <br>
+            <button onclick="saveValue()">Save</button>
+            <button onclick="closePopup()">Cancel</button>
         </div>
     </div>
 
@@ -682,6 +677,108 @@
                     color: red;
                     /* Change text color if needed */
                 }
+                h1 {
+                    color: #004000;
+                    font-size: 24px;
+                    margin-bottom: 20px;
+                }
+
+                label {
+                    font-size: 10px;
+                    color: #333;
+                    margin-bottom: 8px;
+                }
+                input[type="number"] {
+                    width: 50%;
+                    padding: 10px;
+                    margin-bottom: 20px;
+                    border: 1px solid #ccc;
+                    border-radius: 5px;
+                    font-size: 16px;
+                }
+
+                button {
+                    padding: 3px 20px;
+                    font-size: 13px;
+                    background-color: #ff6347;
+                    color: #fff;
+                    border: none;
+                    border-radius: 5px;
+                    cursor: pointer;
+                    transition: background-color 0.3s ease;
+                }
+                button:hover {
+                    background-color: #ff6347;
+                }
+
+                button:active {
+                    background-color: #ff6347;
+                }
+                #entityName {
+                    margin-left: 25px;
+                }
+                #buttonRate {
+                    margin-left: 250px;
+                }
+                /* Popup container styling */
+            .popup-container {
+                display: none; /* Hidden by default */
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+                justify-content: center;
+                align-items: center;
+                z-index: 1000; /* Make sure it appears above other content */
+            }
+
+            /* Popup content styling */
+            .popup-content {
+                background: #ffffff;
+                border-radius: 8px;
+                padding: 20px 30px;
+                width: 384px;
+                text-align: center;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            }
+
+            /* Title styling */
+            .popup-content h2 {
+                color: #ff6347; /* Green color for success */
+                margin-bottom: 10px;
+            }
+
+            /* Paragraph styling */
+            .popup-content p {
+                color: #333333;
+                font-size: 16px;
+                margin-bottom: 20px;
+            }
+
+            /* Close button styling */
+            .close-btn {
+                background: #ff6347; /* Green color for success */
+                color: #ffffff;
+                border: none;
+                padding: 10px 20px;
+                border-radius: 5px;
+                cursor: pointer;
+                font-size: 16px;
+            
+            }
+            
+            #bankName {
+                margin-left: 29px;
+            }
+
+            .close-btn:hover {
+                background: #ff6347; /* Darker green on hover */
+            }
+
+                
+
             </style>
             <div id="filterPanel" style="display: none;">
                 <p id="filterMessage">Filtered by: None</p>
@@ -695,23 +792,6 @@
 
                 </div>
             </div>
-
-            <!-- <div style="display: flex; align-items: center; margin-bottom: 10px;">
-                <div id="datePickerContainer" style="margin-right: 10px;">
-                    <label for="datePicker" style="font-weight: bold; padding: 5px;">Select Date:</label>
-                    <input type="date" id="datePicker" name="datePicker"
-                        style="padding: 5px; border: 1px solid #ccc; border-radius: 5px; width: 150px; text-align: center;">
-                </div>
-                <div id="categoryContainer">
-                    <label for="categorySelect" style="font-weight: bold; padding: 5px;">Select Category:</label>
-                    <select id="categorySelect" name="categorySelect"
-                        style="padding: 5px; border: 1px solid #ccc; border-radius: 5px; width: 150px; text-align: center;">
-                        <option value="">Choose a Category</option>
-                        <option value="Biller">Biller</option>
-                        <option value="Aggregator">Aggregator</option>
-                    </select>
-                </div>
-            </div> -->
 
 
             <div class="table-responsive">
@@ -741,10 +821,7 @@
                             <option value="300">300</option>
                         </select>
                     </div>
-                    <!-- <div class="col-md-1" style="Padding-top:8px">
-                        <label for="sum-Amt">Sum :</label>
-                        <label id="sum-Amt">0</label>
-                    </div> -->
+
                 </div>
             </div>
         </div>
@@ -752,67 +829,64 @@
 
 
     </div>
-    <!-- Investigation Start -->
+
+    <div id="success-popup" class="popup-container">
+        <div class="popup-content">
+            <h2>Success!</h2>
+            <p>Your action was completed successfully.</p>
+            <button class="close-btn" type="button" onclick="closeSuccessPopup()">OK</button>
+        </div>
+    </div>
+    
     <div id="fullScreenDiv">
-        <div id="grayContainer"></div>
-    </div>
-    <div id="floatingContainerStartInvestigation" class="floatingContainerClass">
-        <div id="floatingContainerTitleStartInvestigation" class="TextBlockTitleMaterial">
-            Start Investigation
-        </div>
-        <div style="margin-top: 20px; font-size: 12px;">
-            <div>To: </div>
-            <div class="tag-input-container" id="tag-input-container">
-                <!-- Tags will be dynamically added here -->
-                <input list="deparments" type="text" id="tag-input" class="tag-input"
-                    placeholder="Add one or more recipients" onkeydown="inputCheckSpace(this.value, event);">
-                <datalist id="deparments">
-                    <option value="IT" label="IT Department">
-                    <option value="Branch" label="Branch Manager">
-                    <option value="Accounting" label="Accounting Department">
-                    <option value="General" label="General Management">
-                </datalist>
-            </div>
+        <div id="grayContainer">
+            <div class="form-container">
+                <!-- Column 1 -->
+                <div class="form-column">
+                    <!-- Input Field for Entity Name -->
+                    <label for="entityName">Entity Name:</label>
+                    <input type="text" id="entityName" name="entityName" placeholder="Enter entity name">
+                    
+                    <!-- Input Field for Account Type -->
+                    <label for="accountType" style="margin-left: 93px;">Account Type:</label>
+                    <select id="accountType" name="accountType">
+                        <option value="DA">DA</option>
+                        <option value="FT">FT</option>
+                        <option value="IBFT">IBFT</option>
+                        <option value="RTGS">RTGS</option>
+                    </select>
+                </div>
+    
+                <!-- Column 2 -->
+                <div class="form-column">
+                    <!-- Input Field for Account Number -->
+                    <label for="accountNumber">Account Number:</label>
+                    <input type="text" id="accountNumber" name="accountNumber" placeholder="Enter account number">
 
-            <div>Subject: </div>
-            <div class="tag-input-container">
-                CASE ID #XXXXXX
-                <input type="text" id="caseIdSubject" class="tag-input" placeholder="">
-            </div>
+                    <label for="type" style="margin-left: 136px;">Type:</label>
+                    <input type="text" id="type" name="type" placeholder="Enter Type">
+                    
+                    <!-- Save Button -->
+                    
+                </div>
+                
+                <div class="form-column">
+                    <!-- Input Field for Account Number -->
+                    <label for="bankName">Bank Name:</label>
+                    <input type="text" id="bankName" name="bankName" placeholder="Enter Bank Name">
 
-            <div>Comments: </div>
-            <textarea id="floatingContainerCommentsStartInvestigation" rows="6"
-                style="resize: none; width: 98%;"></textarea>
-            <div>
-                By clicking on "Continue", I accept to start an investigation over the selected transactions.
+                    <label for="accTitle" style="margin-left: 95px;">Account Title: </label>
+                    <input type="text" id="accTitle" name="accTitle" placeholder="Enter Account Title">
+                    
+                    <!-- Save Button -->
+                    
+                </div>
+                <button id="buttonRate" onclick="showSuccessPopup()" >Save</button>
             </div>
-        </div>
-        <div style="margin-top: 20px;">
-            <button id="buttonFloatingContainerStartInvestigationAccept"
-                class="ButtonMaterial btn btn-default">Continue</button>
-            <button id="buttonFloatingContainerStartInvestigationCancel"
-                class="ButtonMaterialDefault btn btn-default">Cancel</button>
-        </div>
-    </div>
-
-    <div id="floatingContainerForceMatch" class="floatingContainerClass">
-        <div id="floatingContainerTitleForceMatch" class="TextBlockTitleMaterial">
-            You are about to force the matching of several transactions
-        </div>
-        <div style="margin-top: 20px; font-size: 12px;">
-            <div>Comments: </div>
-            <textarea id="floatingContainerCommentsForceMatch" rows="6" style="resize: none; width: 98%;"></textarea>
-            <div id="floatingContainerDescription">
-                By clicking on "Continue", I accept to force the matching of the selected transactions.
-            </div>
-        </div>
-        <div style="margin-top: 20px;">
-            <button id="buttonFloatingContainerAccept" type="button" onclick="wsInitiateMatchedTransactions()"
-                class="ButtonMaterial btn btn-default">Continue</button>
-            <button id="buttonFloatingContainerCancel" type="button" onclick="hideFloatingContainerForceMatch()"
-                class="ButtonMaterialDefault btn btn-default">Cancel</button>
         </div>
     </div>
+    
+
 
 
     <div id="floatingContainerForceUnMatch" class="floatingContainerClass">
@@ -842,6 +916,62 @@
         <div id="myfilterFieldsContainer"></div>
     </div>
     <!-- <button id="openFilterPanel" type="button">Open Filters</button> -->
+
+    <div id="fullScreenDiv">
+        <div id="grayContainer">
+            <div id="editContainerTitle">ENTITY</div>
+            <div class="orange-bar"></div> 
+
+            <!-- Left and Right Column Inputs -->
+             <div style="display: flex; gap: 20px; flex-wrap: wrap;"> 
+
+                <!-- Left Column -->
+               <div style="flex: 1;">
+                    <div class="tag-input-container">
+                        <label for="caseIdSubject">Company Name:</label>
+                        <input type="text" id="caseIdSubject" class="tag-input" placeholder="">
+                    </div>
+
+                    <div class="tag-input-container">
+                        <label for="accountNo">Account No:</label>
+                        <input type="text" id="accountNo" class="tag-input" placeholder="">
+                    </div>
+                </div> 
+
+                <!-- Right Column -->
+                 <div style="flex: 1;">
+                    <div class="tag-input-container">
+                        <label for="additionalInfo">Account Type:</label>
+                        <input type="text" id="additionalInfo" class="tag-input" placeholder="">
+                    </div>
+
+                    <div class="tag-input-container">
+                        <label for="transactionType">Transaction Type:</label>
+                        <select id="transactionType" class="form-control">
+                            <option value="">Select Type</option>
+                            <option value="Biller">Biller</option>
+                            <option value="Aggregator">Aggregator</option>
+                        </select>
+                    </div>
+                </div> 
+
+            <!-- </div> -->
+
+            <!-- Checkbox -->
+             <div class="checkbox-container">
+                <input type="checkbox" id="confirmCheckbox">
+                <label for="confirmCheckbox">is Fees Only</label>
+            </div> 
+
+            <!-- Buttons -->
+            <div class="button-container">
+                <button id="buttonFloatingContainerStartInvestigationAccept" class="ButtonMaterial">ENTER</button>
+                <button id="buttonFloatingContainerStartInvestigationCancel"
+                    class="ButtonMaterialDefault">CANCEL</button>
+            </div>
+        </div>
+    </div> 
+    
 
     <script>
 
@@ -874,9 +1004,8 @@
         var FProviderId = '';
         var SettlementId = '';
         var dataSucess = [];
-        var FTranProcDate  = '';
-        var FEntityTypeName = '';
-        var FTranProcAccType1 = '';
+        var FTranProcDate = '';
+        var FCatId = 0;
 
         var pFilter = {};
         
@@ -898,8 +1027,8 @@
                     'Authorization': pFilter.token
                 },
                 data: {
-                    //FTranProcDate: FTranProcDate,
-                    //FTranProcAccType1: FTranProcAccType1
+                    FTranProcDate: FTranProcDate,
+                    FCatId: FCatId
                 },
                 success: function (data) {
                     table = null;
@@ -970,17 +1099,23 @@
                                     data: column.colDBName,
                                     orderable: false,
                                     render: function (data, type, row) {
+                                        
                                         if (column.colDBName == "FTranProcComplete") {
-                                            if (row.FTranProcComplete == '0') {
-                                                return '<div style="color: red;">' + // Change color here
-                                                    '<i class="fa-solid fa-pen-to-square" style="cursor:pointer;" onclick="showEditPopup(\'' + row.id + '\')"></i>' +
-                                                    '</div>'; // Display a edit icon
+                                                if (row.FTranProcComplete == '0') {
+                                                    return '<div style="color: #182f53;">' +
+                                                        '<i class="fa-solid fa-pen-to-square" style="cursor:pointer;" onclick="showEditPopup(\'' + row.id + '\')"></i>' +
+                                                        '</div>';
+                                                } else if (row.FTranProcComplete == '2') {
+                                                    return '<div style="color: #182f53;">' +
+                                                        '<i class="fa-solid fa-arrows-h" style="cursor:pointer;" onclick="showEditPopup(\'' + row.id + '\')"></i>' +
+                                                        '</div>'; 
+                                                } else {
+                                                    return '--';
+                                                }
                                             } else {
-                                                return '--';
+                                                return data;
                                             }
-                                        } else {
-                                            return data;
-                                        }
+
                                     }
                                 };
                             } else {
@@ -1056,8 +1191,7 @@
                                         columnSearchFilter: jsonStrin,
                                         invFilter: invFilterVal,
                                         FTranProcDate: FTranProcDate,
-                                        FEntityTypeName: FEntityTypeName,
-                                        FTranProcAccType1: FTranProcAccType1,
+                                        FCatId: FCatId,
 
                                         colGridFilterStr: JSON.stringify(listColumnGridFilter),
                                         coldbName: coldbName,  // Specify which column to filt
@@ -1066,14 +1200,19 @@
                                     return returnParems
                                 },
                                 dataSrc: function (response) {
-                                    if (response.data != '') {
+                                if (response.data && response.data !== '') {
+                                    try {
                                         response.data = JSON.parse(response.data);
-                                        console.log('response', response.data)
-                                        return response.data;
-                                    } else {
-                                        return response.data;
+                                        console.log('Processed Response Data:', response.data);
+                                    } catch (error) {
+                                        console.error('Error parsing response data:', error);
                                     }
+                                    return response.data;
+                                } else {
+                                    return [];
                                 }
+                            }
+
                             },
                             columns: columnslist,
                             "colReorder": true,
@@ -1105,26 +1244,29 @@
                                         $(node).attr('id', 'buttons-filterButton');
                                         $(node).addClass('dt-button buttons-collection buttons-colvis');
                                     }
-                                }
+                                },
+                                {
+                                   text: '<i class="fa-solid fa-file-text-o"></i> View Voucher',
+                                     action: function (e, dt, node, config) {
+                                         $(node).attr('id', 'buttons-filterButton');
+                                         $('#myfilterPanel').toggleClass('active');
+                                     },
+                                     init: function (dt, node, config) {
+                                         $(node).attr('id', 'buttons-filterButton');
+                                         $(node).addClass('dt-button buttons-collection buttons-colvis');
+                                     }
+                                } 
                             ],
                             "columnDefs": columnDefs,
                             initComplete: function () {
+                                debugger;
                                 var api = this.api();
                                 var contextMenuItems = {};
 
-                                $('#dataTable tbody').on('contextmenu', 'tr:not(.dtrg-group)', function (e) {
-                                    e.preventDefault(); // Prevent the default right-click context menu
-                                    //  if (panelType === 'O') {
-                                    //      // Position and show the context menu
-                                    //      $('#contextMenu').css({
-                                    //          display: 'block',
-                                    //          left: (e.pageX - 300) + 'px',
-                                    //          top: (e.pageY - 50) + 'px',
-                                    //      });
+                                $('#dataTable tbody').on('click', 'tr:not(.dtrg-group)', function (event) {
+                                    let rows = $('#dataTable tbody tr');
+                                    let clickedIndex = rows.index(this);
 
-                                    //  }
-
-                                    return false;
                                 });
 
                                 // Hide the context menu if clicked anywhere else
@@ -1681,19 +1823,27 @@
 
         function hideeditFloatingContainer() {
             document.getElementById('fullScreenDiv').style.display = 'none';
-            document.getElementById('editContainer').style.zIndex = '-1';
-            document.getElementById('editContainer').style.opacity = 0;
+           // document.getElementById('editContainer').style.zIndex = '-1';
+           // document.getElementById('editContainer').style.opacity = 0;
             document.getElementById('editContainer').style.top = '0px';
         }
 
         function showSuccessPopup() {
             document.getElementById('success-popup').style.display = 'flex';
+            //table.ajax.reload();
         }
 
-        function hideSuccessPopup() {
-            document.getElementById('success-popup').style.display = 'none';
-            location.reload(); // Page will refresh after popup is hidden
+        function closeSuccessPopup() {
+            debugger;
+            //table.ajax.reload(); // Refresh the DataTable
+            document.getElementById('success-popup').style.display = 'none'; // Hide the success popup
+            window.location.href = 'wptransaction.aspx';
         }
+
+        // function hideSuccessPopup() {
+        //     document.getElementById('success-popup').style.display = 'none';
+        //     //location.reload(); // Page will refresh after popup is hidden
+        // }
 
         function showPopup() {
             document.getElementById('warning-popup').style.display = 'flex';
@@ -1817,16 +1967,16 @@
             // Restore the original paging after export
             dt.page.len(10).draw(); // Set the page length back to the default or any desired length
         }
-
         // Enter Data
-        function updateData(companyName, accountType, accountNo, IsFees, type) {
-            debugger
+        function updateData(entityName, accountNo , accountType, type, bankName, accTitle) {
+            //debugger
             var data = {
-                FEntitiesName1: companyName,
-                FEntityAccTypeName: accountType,
-                FEntitiesAccountNo: accountNo,
-                isFeesOnly: IsFees,
-                FEntityTypeName: type
+                FTranProcName1: entityName,
+                FTranProcAccType1: accountType,
+                FTranProcAcc1: accountNo,
+                FTranProcEntityTypeName: type,
+                FTranProcBankName: bankName,
+                FTranProcAccTitle1: accTitle
             };
 
             // Log the data being sent
@@ -1845,6 +1995,7 @@
                         debugger
                         hideeditFloatingContainer();
                         showSuccessPopup();
+                        
                     } else {
                         debugger
                         showPopup();
@@ -1860,18 +2011,57 @@
         }
 
 
-        document.getElementById("buttonFloatingContainerStartInvestigationAccept").addEventListener("click", function (ev) {
+        function updateRate(rate) {
+            debugger;
+            
+            var data = {
+                FTranProcExchangeRate1 : rate
+            };
+
+            // Log the data being sent
+            console.log("Sending data:", JSON.stringify(data));
+
+            $.ajax({
+                url: 'rest/prExchangeRate',
+                type: 'POST',
+                data: JSON.stringify(data),
+                // contentType: "application/json; charset=UTF-8",
+                dataType: "json",
+                success: function (res) {
+                    console.log("Response received:", res);
+
+                    if (res.errorDescription == 200) {
+                        debugger
+                        hideeditFloatingContainer();
+                        showSuccessPopup();
+                    } else {
+                        debugger
+                        alert('Error!');
+                    }
+                },
+                error: function (xhr, status, error) {
+                    // Log the error details for debugging
+                    console.error("Error occurred: Status = " + status + ", Error = " + error);
+                    console.error("Response Text: " + xhr.responseText);
+                    console.error("Full Error: ", xhr);  // Log full error object
+                }
+            });
+        }
+
+        document.getElementById("buttonRate").addEventListener("click", function (ev) {
             ev.preventDefault();
 
-            let FEntitiesName1 = document.getElementById('caseIdSubject').value;
-            let FEntityAccTypeName = document.getElementById('additionalInfo').value;
-            let FEntitiesAccountNo = document.getElementById('accountNo').value;
-            let isFeesOnly = document.getElementById('confirmCheckbox').checked;
-            let type = document.getElementById('transactionType').value;
+            let FTranProcName1 = document.getElementById('entityName').value;
+            let FTranProcAcc1 = document.getElementById('accountNumber').value;
+            let FTranProcAccType1 = document.getElementById('accountType').value;
+            let FTranProcEntityTypeName = document.getElementById('type').value;
+            let FTranProcBankName = document.getElementById('bankName').value;
+            let FTranProcAccTitle1 = document.getElementById('accTitle').value;
 
-            console.log("Collected form data:", FEntitiesName1, FEntityAccTypeName, FEntitiesAccountNo, isFeesOnly, type);  // Debugging
+            console.log("Collected form data:", FTranProcName1, FTranProcAcc1, FTranProcAccType1, FTranProcEntityTypeName, FTranProcBankName, FTranProcAccTitle1);  // Debugging
 
-            updateData(FEntitiesName1, FEntityAccTypeName, FEntitiesAccountNo, isFeesOnly, type);
+            updateData(FTranProcName1, FTranProcAcc1, FTranProcAccType1, FTranProcEntityTypeName, FTranProcBankName, FTranProcAccTitle1);
+            table.ajax.reload();
         });
 
 

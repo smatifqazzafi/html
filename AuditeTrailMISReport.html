@@ -8,24 +8,44 @@
         <link rel="stylesheet" href="MyAssets/Scripts/css/MyCommonCss.css">
         <link rel="stylesheet" href="MyAssets/Scripts/css/bootstrap-multiselect.css">
         <style>
-            .modal-body {
-                max-height: 300px;
-                /* Adjust height as needed */
-                overflow-y: auto;
-                /* Enables scrolling */
+            /* #region */
+            .TextBlock {
+                padding-right: 3pt;
+                white-space: wrap !important;
+                font-size: var(--fontsizes_xs);
+                font-style: normal;
+                color: var(--colors_gray08);
+                vertical-align: middle;
             }
 
-            #displayReason {
-                white-space: pre-wrap;
-                /* To preserve line breaks if necessary */
-                word-wrap: break-word;
-                /* Ensures long words break properly */
+            button.dt-button {
+                white-space: nowrap ! Important;
+                background-color: var(--colors_basecolor) ! Important;
+                display: inline-block ! Important;
+                text-decoration: none ! Important;
+                color: var(--colors_baseforecolor) ! Important;
+                border: var(--borders_xs) solid var(--colors_actionborder_and_focuscolor) ! Important;
+                text-align: center ! Important;
+                text-indent: 0 !Important;
+                vertical-align: middle ! Important;
+                cursor: pointer ! Important;
+                font-style: normal ! Important;
+                font-variant: normal ! Important;
+                padding-bottom: None ! Important;
+                padding-left: None ! Important;
+                padding-right: None ! Important;
+                padding-top: None ! Important;
+                border-style: none ! Important;
+                text-transform: uppercase ! Important;
+                box-shadow: 0 7px 10px -5px var(--colors_basecolorshadow) ! Important;
+                border-radius: var(--radius_m) ! Important;
             }
 
+            /* #region end */
             #dataTable tbody tr.dtrg-group.dtrg-start.dtrg-level-0 {
                 background-color: var(--colors_backgroundcolor) !Important;
             }
-
+          
             /* Investigation Work Start */
 
             .tag-input-container {
@@ -242,9 +262,9 @@
                 position: fixed;
                 right: 0;
                 top: 0;
-                width: 300px;
+                width: 330px;
                 height: 100%;
-                background-color: #f4f4f4;
+                background-color: var(--colors_basecolor);
                 box-shadow: -2px 0 5px rgba(0, 0, 0, 0.5);
                 transform: translateX(100%);
                 transition: transform 0.3s ease-in-out;
@@ -255,63 +275,6 @@
                 margin-top: 5px;
                 background-color: var(--colors_backgroundcolor);
             }
-
-            .popup {
-                display: none;
-                /* Hidden by default */
-                position: fixed;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                background-color: white;
-                border: 1px solid #ccc;
-                border-radius: 10px;
-                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-                z-index: 1000;
-                width: 300px;
-                text-align: center;
-            }
-
-            .popup-content {
-                padding: 20px;
-            }
-
-            .close-btn {
-                position: absolute;
-                top: 10px;
-                right: 10px;
-                font-size: 20px;
-                cursor: pointer;
-            }
-
-            .success-icon {
-                color: green;
-                font-size: 30px;
-                margin-left: 3px;
-            }
-
-            .success-message {
-                font-size: 12px;
-                color: #333;
-                padding-left: 6px;
-            }
-
-            .warning-icon {
-                font-size: 30px;
-                color: #FFA500;
-                margin-left: 29px;
-                /* Orange color for warning */
-            }
-
-            .warning-message {
-                font-size: 12px;
-                color: #333;
-                margin: 0;
-                padding-left: 35px;
-                /* Remove default margin */
-            }
-
-
 
             /* Filter Panel End */
 
@@ -337,8 +300,9 @@
         }
         </style>
     </head>
+      
     <div id="container">
-
+        <!-- Your content goes here -->
     </div>
     <div class="panel PanelWithBorder Panel_BaseColor">
         <!-- <div id="PanelHeader_DVPANEL_TABLEATTRIBUTESContainer" class="panel-heading PanelWithBorder_Header Panel_BaseColor_Header">
@@ -355,7 +319,7 @@
             </div> -->
             <div id="mainHeader">
                 <div id="mainHeaderLeft" style="float: left;">
-
+            
                 </div>
             </div>
             <div class="table-responsive">
@@ -363,6 +327,10 @@
                     class="display table table-bordered gx-tab-spacing-fix-2 GridWithPaginationBar GridWithBorderColor WorkWith table-responsive">
                     <thead id="tableHeader">
                         <!-- Table header will be populated dynamically by JavaScript -->
+                         <!-- Loader element -->
+                         <div id="loader" style="display: none;">
+                            <i class="fa fa-spinner fa-spin"></i> Loading...
+                        </div>
                     </thead>
                     <tbody></tbody>
                 </table>
@@ -372,6 +340,7 @@
         <div class="panel-footer">
             <div class="form-group">
                 <div class="col-md-12">
+
                     <div class="col-md-1" style="Padding-top:8px">
                         <label for="pageLength" class="page-length">Page Length:</label>
                     </div>
@@ -379,72 +348,44 @@
                         <select id="pageLength" class="form-control">
                             <option value="10">10</option>
                             <option value="25">25</option>
-                            <option value="50" selected>50</option>
+                            <option value="20" selected>20</option>
                             <option value="100">100</option>
                             <option value="200">200</option>
                             <option value="300">300</option>
                         </select>
                     </div>
-                    <!-- <div class="col-md-1" style="Padding-top:8px">
-                        <label for="sum-Amt">Sum :</label>
-                        <label id="sum-Amt">0</label>
+                
+                    <!-- <div class="col-md-2" style="padding-top:8px">
+                        <label for="sum-C">Sum of CR :</label>
+                        <label id="sum-C">0</label>
+                    </div>
+                   
+                    <div class="col-md-2" style="padding-top:8px">
+                        <label for="sum-D">Sum of DR:</label>
+                        <label id="sum-D">0</label>
+                    </div>
+                    
+                    <div class="col-md-2" style="padding-top:8px">
+                        <label for="difference-CD">Difference:</label>
+                        <label id="difference-CD">0</label>
                     </div> -->
+
+
+
+
+
+
                 </div>
             </div>
         </div>
 
         <div id="total-Amt"></div>
 
-
-
     </div>
     <!-- Investigation Start -->
     <div id="fullScreenDiv">
         <div id="grayContainer"></div>
     </div>
-
-    <!-- Modal -->
-    <div class="modal fade" id="balanceModal" tabindex="-1" role="dialog" aria-labelledby="balanceModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="balanceModalLabel" style="font-weight: bold;">Balance Difference</h5>
-                </div>
-                <div class="modal-body">
-                    <input type="number" style="display: none;" id="CStatErrId">
-
-                    <p id>
-                        The difference between the <strong>Opening Balance</strong> and <strong>Closing Balance</strong>
-                        is:
-                        <span id="balanceDifference" style="font-weight: bold; font-size: 12px;"></span>.
-                    </p>
-
-                    <label for="reason" style="font-weight: bold;">Reason for the difference:</label>
-
-                    <p id="displayReason" class="text-danger" style="font-style: italic;">
-                    </p>
-
-
-                    <!-- Add Comments Section -->
-                    <label for="comments" style="font-weight: bold;">Add Comments:</label>
-                    <textarea id="comments" class="form-control" rows="3"
-                        placeholder="Enter your comments here..."></textarea>
-
-                    <br>
-                    <p>Do you want to proceed with this difference?</p>
-
-                </div>
-                <div class="modal-footer">
-                    <button type="button" style="font-size: 14px;" class="btn buttons-colvis"
-                        id="proceedBtn">Proceed</button>
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
     <div id="floatingContainerStartInvestigation" class="floatingContainerClass">
         <div id="floatingContainerTitleStartInvestigation" class="TextBlockTitleMaterial">
             Start Investigation
@@ -481,31 +422,6 @@
                 class="ButtonMaterial btn btn-default">Continue</button>
             <button id="buttonFloatingContainerStartInvestigationCancel"
                 class="ButtonMaterialDefault btn btn-default">Cancel</button>
-        </div>
-    </div>
-
-    <div id="success-popup" class="popup">
-        <div class="popup-content">
-            <span class="close-btn" onclick="hideSuccessPopup()">&times;</span>
-            <div class="popup-body">
-                <div class="success-icon">✅
-                    <p style="font-size: small;">Success</p>
-                </div>
-                <p class="success-message">Successfully Archeived!</p>
-            </div>
-        </div>
-    </div>
-
-
-    <div id="warning-popup" class="popup">
-        <div class="popup-content">
-            <span class="close-btn" onclick="closePopup()">&times;</span>
-            <div class="popup-body">
-                <div class="warning-icon">⚠️
-                    <p style="font-size: small;">Warning</p>
-                </div>
-                <p class="warning-message">All Items Amount Sign is same . </p>
-            </div>
         </div>
     </div>
 
@@ -586,26 +502,29 @@
         var p_TrLifeCycleRoles = 1;
         var authorizationPanel = false;
 
-        $(document).ready(function () {
 
+        $(document).ready(function () {
+           
             var columnSearchValues = [];
             var chkOrder;
             var columnDefs = [];
             // $('#openFilterPanel').click(function () {
             //     $('#myfilterPanel').addClass('active');
             // });
+            debugger;
 
             $('#closeFilterPanel').click(function () {
                 $('#myfilterPanel').removeClass('active');
             });
             $.ajax({
-                url: 'rest/wsCashError',
+                url: 'rest/wsgenexusAdcReport',
                 method: 'GET',
                 headers: {
                     'Authorization': pFilter.token
                 },
                 data: {
                     //panelType: panelType
+                    ModuleName: pFilter.ViewName
                 },
                 success: function (data) {
                     if (data && data.myCols && data.myCols.length > 0) {
@@ -614,11 +533,12 @@
                         var headerFullHtml = '';
                         showLoader();
                         filteredColList = filteredColJson !== '[]' && filteredColJson !== '' ? JSON.parse(filteredColJson) : [];
-                        data.myCols.unshift({ colIndex: 0, colName: 'Action', colDBName: 'Action', colDataType: 2 })
+                        //data.myCols.unshift({ colIndex: 0, colName: 'Action', colDBName: 'Action', colDataType: 2 })
 
                         //Remove Some Column From Array
 
                         //End
+
 
                         if (filteredColList.length > 0) {
 
@@ -643,7 +563,7 @@
 
                             }
                         }
-                        data.myCols = changeIndices(data.myCols);
+                        // data.myCols = changeIndices(data.myCols);
                         data.myCols.forEach(function (column, indexs) {
                             if (column.colDBName == 'Action') {
                                 // headerFilterHtml += '<th></th>'
@@ -654,7 +574,7 @@
                                         "targets": indexs, // Assuming index corresponds to column index
                                         "render": function (data, type, row) {
                                             // Example: Format the data as needed, for example, convert it to uppercase
-                                            return formatDateFromString(data);
+                                             return formatDateFromString(data);
                                         }
                                     };
                                     columnDefs.push(columnDef);
@@ -684,7 +604,7 @@
 
                         $('#tableHeader').html(headerFullHtml);
                         var columnslist = data.myCols.map(function (column) {
-                            if (column.colDBName == "Action" || column.colDBName == "CStatErrOpenSign") {
+                            if (column.colDBName == "Action" || column.colDBName == "CTranProcSign") {
                                 return {
                                     data: column.colDBName,
                                     orderable: false,
@@ -695,20 +615,20 @@
                                                 trIcons = '<i class="fas fa-search"></i>'
                                                 //  return '<i class="fas fa-search"></i>'; // Display a check icon
                                             }
-                                            if (row.PseudoAuthorizationLevel >= 1) {
-                                                if (row.PseudoStatusComplete == true) {
-                                                    trIcons += ' <i class="fas fa-check"></i>(' + row.PseudoAuthorizationLevel + ')'
+                                            if (row.TrGroupAuthorizationLevel >= 1) {
+                                                if (row.TrGroupisForceStatusComplete == true) {
+                                                    trIcons += ' <i class="fas fa-check"></i>(' + row.TrGroupAuthorizationLevel + ')'
                                                 }
                                                 else {
-                                                    trIcons += ' <i class="fas fa-user"></i>(' + row.PseudoAuthorizationLevel + ')'
+                                                    trIcons += ' <i class="fas fa-user"></i>(' + row.TrGroupAuthorizationLevel + ')'
                                                 }
                                             }
 
                                             return trIcons;
 
                                         }
-                                        else if (column.colDBName == "CStatErrOpenSign") {
-                                            return '<span style="color: black;font-size: small;font-weight: bolder;">' + row.CStatErrOpenSign + '</span>'
+                                        else if (column.colDBName == "CTranProcSign") {
+                                            return '<span style="color: black;font-size: small;font-weight: bolder;">' + row.CTranProcSign + '</span>'
                                         }
                                         else {
                                             return data;
@@ -729,10 +649,14 @@
                         data.myCols.forEach(function (column, indexs) {
                             if (column.colDBName !== 'Action') {
                                 filterFieldsHtml += '<div class="filter-field">';
-                                filterFieldsHtml += fnGenDropDown(indexs, 25, column.colDBName, column.colName) + '<label style="margin-top: 5px" for="filter-' + column.colDBName + '">' + column.colName + '&nbsp</label>';
+                                filterFieldsHtml += fnGenDropDown(indexs, 25, column.colDBName, column.colName) + '<label class="label-title" style="margin-top: 5px;" for="filter-' + column.colDBName + '">' + column.colName + '&nbsp</label>';
                                 if (column.colDataType == 'D') {
                                     filterFieldsHtml += '<input type="date" class="mycolumnSearchDate MyGridTextBox wwp-daterange-picker-input" placeholder="Search ' + column.colName + '" data-column="' + column.colDBName + '" />'; //+ fnGenDropDown(indexs, 13, column.colDBName, column.colName);
-                                } else {
+                                }
+                                // else if (column.colDataType == 'A') {
+                                //     filterFieldsHtml += '<input type="number" class="mycolumnSearchDate MyGridTextBox" placeholder="Search ' + column.colName + '" data-column="' + column.colDBName + '" />'; //+ fnGenDropDown(indexs, 13, column.colDBName, column.colName);
+                                // }
+                                 else {
                                     filterFieldsHtml += '<input type="text" class="mycolumnSearch MyGridTextBox"  data-column="' + column.colDBName + '" />';
                                 }
                                 filterFieldsHtml += '</div>';
@@ -752,22 +676,23 @@
                             var FilterColumnVisN = $('#GRIDFILTER_GRIDFILTERCOLUMNVIS').val() !== '[]' && $('#GRIDFILTER_GRIDFILTERCOLUMNVIS').val() !== '' ? $('#GRIDFILTER_GRIDFILTERCOLUMNVIS').val() : '[]';
                             FilterColumnVis = JSON.parse(FilterColumnVisN.trim());
                         }
-                        updateFilterMessage();
+                        
+                        // updateFilterMessage();
                         table = $('#dataTable').DataTable({
                             processing: true,
                             serverSide: true,
                             paging: true,
-                            pageLength: 50,
+                            pageLength: 20,
                             timeout: 9000000,
                             order: [[1, 'asc']],
                             ajax: {
-                                url: 'rest/wsCashError',
+                                url: 'rest/wsgenexusAdcReport',
                                 type: 'GET',
                                 headers: {
                                     'Authorization': pFilter.token
                                 },
                                 data: function (d) {
-                                 
+                                    $('#dataTable_filter').hide();
                                     var searchData = {};
                                     $('.columnSearch').each(function () {
                                         var column = $(this).data('column');
@@ -785,19 +710,18 @@
                                         columnSearchFilter: jsonStrin,
                                         colGridFilterStr: JSON.stringify(listColumnGridFilter),
                                         pFilterStr: JSON.stringify(pFilter),
+                                        ModuleName: pFilter.ViewName,
                                     };
                                 },
                                 dataSrc: function (response) {
-                                    
+                                    pFilter.isExportAll = false;
+                                    debugger;
                                     if (response.data != '') {
                                         response.data = JSON.parse(response.data);
-                                        
-
-                                        const balanceDifference = response.data.map(item => ({
-                                            BalanceDifference: item["BalanceDifference"]
-                                        }));
-
-                                        console.log('Balance Difference', balanceDifference);
+                                        if (response.exportJsonRes != '' && response.exportJsonRes != undefined) {
+                                            response.exportJsonRes = JSON.parse(response.exportJsonRes);
+                                            downloadCsv(response.exportJsonRes, 'AuditeTrailMISReport.csv');
+                                        }
                                         return response.data;
                                     } else {
                                         return response.data;
@@ -808,31 +732,53 @@
 
                             drawCallback: function (settings) {
 
-                                updateContextMenu(pFilter);
-
+                            },
+                            rowGroup: {
+                                dataSrc: function (row) {
+                                    if (chkOrder == 2) {
+                                        return 'Group ID  : ' + row.CGrpId;
+                                    } else {
+                                        return null;
+                                    }
+                                }
                             },
                             columns: columnslist,
                             "colReorder": true,
                             dom: 'Bfrtip',
                             buttons: [
                                 {
-                                    extend: 'csv',
-                                    text: '<i class="fa fa-download"></i> CSV'
+                                    text: '<i class="fa-solid fa-download"></i> Export All',
+                                    action: function (e, dt, node, config) {
+                                        $(node).attr('id', 'ExportAllButton');
+
+                                        pFilter.isExportAll = true;
+                                        table.ajax.reload();
+                                    },
+                                    init: function (dt, node, config) {
+                                        $(node).attr('id', 'ExportAllButton');
+                                        $(node).addClass('dt-button buttons-collection buttons-colvis');
+                                    }
                                 },
+                                // {
+                                //     text: '<i class="fa-solid fa-download"></i> Export PDF',
+                                //     action: function (e, dt, node, config) {
+                                //         $(node).attr('id', 'ExportPdfButton');
+                                //         fnExportPDFBtn("aprAuditeTrailMISReport","AuditeTrailMISReport");
+                                        
+
+                                //     },
+                                //     init: function (dt, node, config) {
+                                //         $(node).attr('id', 'ExportPdfButton');
+                                //         $(node).addClass('dt-button buttons-collection buttons-colvis');
+                                //     }
+                                // },
+                                // {
+                                //     extend: 'csv',
+                                //     text: '<i class="fa fa-download"></i> CSV'
+                                // },
                                 {
                                     extend: 'colvis',
                                     text: '<i class="fa fa-columns"></i> Column Visibility'
-                                },
-                                {
-                                    text: '<i class="fa-solid fa-save"></i> Save',
-                                    action: function (e, dt, node, config) {
-                                        $(node).attr('id', 'saveFilterButton');
-                                        fnsaveFilterButton();
-                                    },
-                                    init: function (dt, node, config) {
-                                        $(node).attr('id', 'saveFilterButton');
-                                        $(node).addClass('dt-button buttons-collection buttons-colvis');
-                                    }
                                 },
                                 {
                                     text: '<i class="fa-solid fa-remove"></i> Clear',
@@ -843,6 +789,7 @@
                                     init: function (dt, node, config) {
                                         $(node).attr('id', 'clearFilterButton');
                                         $(node).addClass('dt-button buttons-collection buttons-colvis');
+
                                     }
                                 },
                                 {
@@ -866,49 +813,26 @@
                                         $(node).attr('id', 'buttons-filterButton');
                                         $(node).addClass('dt-button buttons-collection buttons-colvis');
                                     }
-                                }
+                                },
 
 
                             ],
+                            
+
                             "columnDefs": columnDefs,
                             initComplete: function () {
+                                $('#dataTable').removeAttr('style');
                                 var api = this.api();
                                 // Handle row selection
-                                // $('#dataTable tbody').on('click', 'tr:not(.dtrg-group)', function () {
-                                //     if (invFilterVal == '') {
-                                //         if (settleCategoryIdVal == '') {
-                                //             $(this).toggleClass('selected');
-                                //             updateSelectedRows();
-                                //         }
-                                //     }
+                                $('#dataTable tbody').on('click', 'tr:not(.dtrg-group)', function () {
+                                    if (invFilterVal == '') {
+                                        if (settleCategoryIdVal == '') {
+                                            // $(this).toggleClass('selected');
+                                            // updateSelectedRows();
+                                        }
+                                    }
 
-                                // });
-
-
-                                // daniyal code 
-                                $('#dataTable tbody').on('click', 'tr:not(.dtrg-group)', function (event) {
-    if (invFilterVal == '') {
-        if (settleCategoryIdVal == '') {
-
-            if (!event.ctrlKey) {
-                $('#dataTable tbody tr').removeClass('selected'); 
-                $(this).addClass('selected'); 
-            } else {
-                $(this).toggleClass('selected');
-            }
-
-            // Selected rows ko update karein
-            updateSelectedRows();
-        }
-    }
-});
-
-
-
-                                // daniyal code 
-
-
-
+                                });
 
                             }
                         });
@@ -919,7 +843,6 @@
                                 $('#dataTable tbody tr.dtrg-group').css('display', 'none');
                             }
                         });
-
 
 
                         $("#dataTable thead").sortable({
@@ -958,6 +881,9 @@
                                 $.ajax({
                                     url: 'rest/wsSaveColGridFilter',
                                     type: 'GET',
+                                    headers: {
+                                        'Authorization': pFilter.token
+                                    },
                                     dataType: 'json',
                                     data: {
                                         filterJson: JSON.stringify(listColumnGridFilter),
@@ -986,6 +912,9 @@
                                 $.ajax({
                                     url: 'rest/wsSaveColGridFilter',
                                     type: 'GET',
+                                    headers: {
+                                        'Authorization': pFilter.token
+                                    },
                                     dataType: 'json',
                                     data: {
                                         filterJson: JSON.stringify(listColumnGridFilter),
@@ -1024,104 +953,8 @@
                 $.contextMenu('destroy', '#dataTable tbody tr');
                 contextMenuItems = {};
 
-                if (pFilter.matchSts === '') {
-                    contextMenuItems["ShowTransaction"] = {
-                        name: "Show Transaction",
-                        icon: "fa-credit-card",
-                        callback: function () {
-                            const url = `wpcasherror.aspx`;
-                            window.location.href = url;
-                        }
-                    };
+                contextMenuItems["NoAction"] = { name: "No Action", icon: "stop" };
 
-                    if (fnGetPageName() == 'wpincorrectcashstatementauthorizationpending') {
-                        contextMenuItems["ViewHistory"] = { name: "View History", icon: "fa-history" };
-                        contextMenuItems["InitiatePseudoCharge"] = { name: "Accept", icon: "fa-check" };
-                        contextMenuItems["RejectPseudoCharge"] = { name: "Reject", icon: "fa-circle-xmark" };
-                    }
-                    else {
-                        contextMenuItems["ViewHistory"] = { name: "View History", icon: "fa-history" };
-                        contextMenuItems["InitiatePseudoCharge"] = { name: "Create Pseudo Gap", icon: "fa-plus" };
-                    }
-
-                }
-                else {
-                    contextMenuItems["NoAction"] = { name: "No Action", icon: "stop" };
-                }
-
-                // Initialize the context menu
-                $.contextMenu({
-                    selector: '#dataTable tbody tr',
-                    callback: function (key, options) {
-                        var row = table.row(options.$trigger).data(); // Get data of clicked row
-                        // Perform action based on the selected row data or key
-                        const allLcSame = selectedColumnId.every(item => item.AccLifeCycleId === selectedColumnId[0].AccLifeCycleId);
-                        const masterExist = selectedColumnId.filter(item => item.CPAccCategory === 'Master').length > 0
-                        if (key == 'Investigation') {
-                            debugger;
-                            const alreadyInv = selectedColumnId.find(e => e.InvStatus >= 1);
-                            if (alreadyInv != null && alreadyInv.DataId != '') {
-                                alert('Already in Investigation Id: ' + alreadyInv.DataId);
-                            } else {
-                                showFloatingContainerStartInvestigation();
-                            }
-                        } else if (key == 'ForceMatch') {
-                            debugger;
-                            const isOnlyOpen = selectedColumnId.every(item => item.CTranProcMatchStat === 'Open');
-                            if (allLcSame && masterExist && isOnlyOpen) {
-                                acceptForceMatch = true;
-                                fnGetAuthLevel(selectedColumnId[0].AccLifeCycleId, true, true);
-                            } else {
-                                if (!allLcSame) {
-                                    alert('Please select one Life Cycle transactions for force match');
-                                }
-                                if (!masterExist) {
-                                    alert('Please select one master transaction for force match');
-                                }
-                                if (!isOnlyOpen) {
-                                    alert('Please select only open transactions for force match');
-                                }
-                            }
-                        }
-                        else if (key == 'ForceUnMatch') {
-                            if (allLcSame) {
-                                acceptForceMatch = true;
-                                fnGetAuthLevel(selectedColumnId[0].AccLifeCycleId, true, false);
-                            } else {
-                                alert('Please select one Life Cycle transactions for force unmatch');
-                            }
-                        }
-                        else if (key == 'RejectPseudoCharge') {
-                            if (allLcSame) {
-                                acceptForceMatch = false;
-                                fnGetAuthLevel(selectedColumnId[0].AccLifeCycleId, false, true);
-
-                            } else {
-                                alert('Please select same match set transactions for this action');
-                            }
-                        }
-                        else if (key == 'RejectPseudoChargeUM') {
-                            if (allLcSame) {
-                                acceptForceMatch = true;
-                                fnGetAuthLevel(selectedColumnId[0].AccLifeCycleId, false, false);
-
-                            } else {
-                                alert('Please select same match set transactions for this action');
-                            }
-                        }
-                        else if (key == 'InitiatePseudoCharge') {
-                            debugger;
-                            acceptForceMatch = true;
-                            fnGetAuthLevel(selectedColumnId[0].AccLifeCycleId, false, false);
-
-                            //InitiatePseudoChargePop(selectedColumnId[0].DataId, selectedColumnId[0].AccLifeCycleId);
-                        }
-                        else if (key == 'ViewHistory') {
-                            viewHistory(selectedColumnId[0].DataId, selectedColumnId[0].AccLifeCycleId);
-                        }
-                    },
-                    items: contextMenuItems
-                });
             }
 
             // Event listener for column search input
@@ -1161,100 +994,57 @@
                 table.page.len($(this).val()).draw();
             });
 
-            // Function to update selected rows
+
+
             function updateSelectedRows() {
                 var selectedRows = table.rows('.selected').data();
                 selectedColumnId = [];
-                debugger;
+
                 selectedRows.each(function (row, index) {
-                    selectedColumnId.push({ DataId: row.CStatErrId, AccLifeCycleId: row.CGrpAccId, CAccountId: row.CPAccId });
-                    BalanceDifference: row["BalanceDifference"]
-                    //console.log("Row ID:", row.CStatErrId, "Balance Difference:", row["BalanceDifference"]);
-                    //ArchiveError(row.CStatErrId);
+                    selectedColumnId.push({
+                        ProcCode: row.DTranProcText3,
+                        TransDate: row.DTranProcTrnDate,
+                        SettDate: row.DTranProcDate1,
+                        Origin: row.Origin,
+                        Sign: row.DTranProcSign,
+                        Pan: row.DTranProcText2,
+                        Stan: row.DTranProcText1,
+                        Amount: row.DTranProcTrnAmount, // Adjusted to match "Amount" field
+                        Text: row.DTranProcText4,
+                        CBAACCOUNTNUMBER: row.DTranProcText5,
+                        ISSUERIMD: row.DTranProcText6,
+                        ACQIMD: row.DTranProcText7
+                    });
                 });
+
+                var sumC = 0;
+                var sumD = 0;
+
+                // Calculate sums based on Sign
+                $.each(selectedColumnId, function (index, item) {
+                    if (item.Sign === "C") {
+                        sumC += parseFloat(item.Amount) || 0; // Add to sumC
+                    } else if (item.Sign === "D") {
+                        sumD += parseFloat(item.Amount) || 0; // Add to sumD
+                    }
+                });
+
+                // Update the respective divs with the sums
+                $('#sum-C').text(sumC.toFixed(4));
+                $('#sum-D').text(sumD.toFixed(4));
+
+                // Calculate the absolute difference and determine CR/DR
+                // Calculate the difference or show "0.0000"
+                if (sumC === 0 && sumD === 0) {
+                    $('#difference-CD').text('0.0000'); // Default value when no rows are selected
+                } else {
+                    var difference = Math.abs(sumC - sumD).toFixed(4);
+                    var suffix = sumC > sumD ? " CR" : " DR"; // Determine if CR or DR is needed
+                    $('#difference-CD').text(difference + suffix);
+                }
             }
-            getDepartments();
-
+            
         });
-
-        // View Amount History
-
-        function InitiatePseudoChargePop() {
-
-
-            var selectedRows = table.rows('.selected').data();
-
-            if (selectedRows.length === 0) {
-                console.log('No rows selected.');
-                return;
-            }
-
-            var row = selectedRows[0];
-
-            $('#CStatErrId').val(row["CStatErrId"]);
-
-            $('#balanceDifference').text(row["BalanceDifference"] + ".0000");
-            $('#displayReason').text(row["CStatErrComment"]);
-
-            $('#balanceModal').modal('show');
-        }
-
-
-
-        function hidePopUp() {
-            var popup = document.getElementById('popContainer').closest('div'); // Get the outer popup div
-            popup.style.display = 'none'; // Hide the entire popup
-            //showSuccessPopup(); // Reload the page or you can handle this differently
-        }
-
-        $('#proceedBtn').on('click', function () {
-
-            var parsedValue = parseInt($('#CStatErrId').val(), 10);
-            var sendComments = $('#comments').val();
-            debugger;
-
-            callWebService('rest/wsCreatePseudoCharge', sendComments);
-
-            // $.ajax({
-            //     url: 'rest/wsArchiveCtranErrorInCtran',
-            //     type: 'POST',
-            //     headers: { 'Authorization': pFilter.token },
-            //     dataType: 'json',
-            //     contentType: 'application/json; charset=UTF-8',
-            //     data: JSON.stringify({ CStatErrId: parsedValue, Comments : comments }),
-            //     success: function (res) {
-
-            //        if (res.errorMessage) { 
-            //             alert(res.errorMessage); 
-            //         } else {
-            //             $('#balanceModal').modal('hide');
-            //             location.reload(); 
-            //         }
-
-            //     },
-            //     error: function (xhr, status, error) {
-            //         console.error('Error:', error);
-            //     }
-            // });
-        });
-
-
-        function closePopup() {
-            document.getElementById('warning-popup').style.display = 'none';
-        }
-
-        function showSuccessPopup() {
-            document.getElementById("success-popup").style.display = "block";
-        }
-
-        function showPopup() {
-            document.getElementById('warning-popup').style.display = 'flex';
-        }
-
-        function hideSuccessPopup() {
-            document.getElementById("success-popup").style.display = "none";
-        }
-
 
         function fnGenDropDown(uniqueIndex, mleft, coldbName, colName) {
             var dropdownHtml = '<span  class="dropdown" style="margin-top: 2px;margin-left: -13px;">' +
@@ -1277,49 +1067,98 @@
                 event.stopPropagation();
                 table.ajax.reload();
             });
-            // alert('here')
+           
 
-            // Add click event listener to the dropdown button
             dropdownBtn.addEventListener('click', function (event) {
                 // Stop event propagation to prevent closing the parent dropdown
                 event.stopPropagation();
-                // debugger;
+
                 // Toggle the dropdown menu visibility
                 var dropdownMenu = this;
                 var divd = dropdownMenu.querySelector('.btn-group');
-                divd.classList.add('open');
-                //dropdownMenu.classList.toggle('open');
+
+                // Check if the dropdown is currently open
+                if (divd.classList.contains('open')) {
+                    // If open, remove the 'open' class to close it
+                    divd.classList.remove('open');
+                } else {
+                    // If closed, add the 'open' class to open it
+                    divd.classList.add('open');
+                }
             });
+
         }
 
-        
+        // Pagination variables
+        let offset = 0;
+        const limit = 20;
+        let hasMoreData = true;
+        let buttonshow = 0;
 
-        function fnLoadSelect(indexSelect) {
+        function fnLoadSelect(indexSelect, Next = 0) {
+            if (Next == 0) {
+                offset = 0;
+                GetForReportGridSelect(indexSelect, Next);
+            } else {
+                offset += limit;
+                GetForReportGridSelect(indexSelect, Next);
+            }
+        }
+
+        function GetForReportGridSelect(indexSelect, Next) {
             var colname = $('#dropdownMenuButton' + indexSelect).data('colname');
             var coldbName = $('#dropdownMenuButton' + indexSelect).data('coldbname');
             var btnDDL = $('#dropdownMenuButton' + indexSelect);
             var filterDDL = $('#dropdownMenuButtonChild' + indexSelect);
-            filterDDL.prop('disabled', true); // Disable the button
+
+            // Disable button and show loading state
+            filterDDL.prop('disabled', true);
             btnDDL.addClass('loader');
+
             $.ajax({
-                url: 'rest/wsGetForGridSelectCash', // Replace with your server endpoint URL
+                url: 'rest/wsGetForReportGridSelect', // Replace with your server endpoint URL
                 type: 'GET',
+                headers: {
+                    'Authorization': pFilter.token
+                },
                 data: {
                     FieldName: coldbName,
                     pFilterStr: JSON.stringify(pFilter),
+                    ModuleName: pFilter.ViewName,
+                    offset: offset,
+                    limit: limit,
                 },
                 success: function (data) {
+                    if (data.listSelect.length < limit) {
+                        hasMoreData = false;
+                    } else {
+                        hasMoreData = true;
+                    }
+
+                    $('#gridFilterDD' + indexSelect).empty();
                     // Populate multiselect dropdown with fetched data
                     $.each(data.listSelect, function (index, item) {
-                        $('#gridFilterDD' + indexSelect).append('<option value="' + item.colValue + '">' + item.colValue + '</option>');
+                        if (item.colValue.length > 0) {
+                            $('#gridFilterDD' + indexSelect).append('<option value="' + item.colValue + '">' + item.colValue + '</option>');
+                        }
                     });
+
+
+
+                    if (hasMoreData && Next == 0 && buttonshow == 0) {
+                        buttonshow = 1;
+                        $('#dropdownMenuButtonChild' + indexSelect).append(
+                            '<button id="NextButtonFilter" type="button"  onclick="fnLoadSelect(' + indexSelect + ', 1)" class="btn btn-primary"><i class="fa fa-arrow-right"></i></button>'
+                        );
+                    }
+
 
                     // Initialize multiselect dropdown
                     $('#gridFilterDD' + indexSelect).multiselect({
-                        buttonWidth: '200px', // Adjust button width as needed
+                        buttonWidth: '200px',
                         maxHeight: 300,
                         nonSelectedText: `Select ${colname}`,
-                        enableFiltering: true, // Enable filtering in dropdown
+                        enableFiltering: true,
                         onChange: function (element, checked) {
                             var selectedValues = $('#gridFilterDD' + indexSelect).val();
                             if (selectedValues != '') {
@@ -1327,13 +1166,11 @@
                                     return search.fieldName === coldbName;
                                 });
                                 if (existingSearch) {
-                                    // existingSearch.searchValue = searchValue;
                                     const filteredList = listColumnGridFilter.filter(filterItem => filterItem.fieldName !== coldbName);
                                     listColumnGridFilter = filteredList;
-                                    listColumnGridFilter.push(new colGridFilter(selectedValues, coldbName))
+                                    listColumnGridFilter.push(new colGridFilter(selectedValues, coldbName));
                                 } else {
-                                    listColumnGridFilter.push(new colGridFilter(selectedValues, coldbName))
-                                    // columnSearchValues.push(new ColumnSearchValue(columnName, searchValue));
+                                    listColumnGridFilter.push(new colGridFilter(selectedValues, coldbName));
                                 }
                                 updateFilterMessage();
 
@@ -1342,16 +1179,23 @@
                                     return search.fieldName === coldbName;
                                 });
                                 if (existingSearchN) {
-                                    // existingSearch.searchValue = searchValue;
                                     const filteredList = listColumnGridFilter.filter(filterItem => filterItem.fieldName !== coldbName);
                                     listColumnGridFilter = filteredList;
-                                    // console.log(filteredList)
-                                    // listColumnGridFilter.push(new colGridFilter(selectedValues, coldbName))
                                 }
                                 updateFilterMessage();
                             }
                         }
                     });
+
+
+                    $('#gridFilterDD' + indexSelect).multiselect('rebuild');
+
+                    //Close the dropdown after loading new data
+                    if (Next === 1) {
+                        btnDDL.removeClass('loader');
+                        btnDDL.dropdown('hide'); // Manually close dropdown after clicking "Next"
+                    }
+
                     addEventListeners(indexSelect);
                     btnDDL.removeClass('loader'); // Remove loading class
                     filterDDL.prop('disabled', false);
@@ -1362,10 +1206,12 @@
                     filterDDL.prop('disabled', false);
                 }
             });
-
         }
+       
 
         function fnclearFilterButton() {
+            $('#myfilterPanel').toggleClass('active');
+            // $("#clearFilterButton").click();
             // This function will be called when the button with id "myButton" is clicked
             listColumnGridFilter = [];
             updateFilterMessage();
@@ -1378,6 +1224,9 @@
                 $.ajax({
                     url: 'rest/wsSaveColGridFilter',
                     type: 'GET',
+                    headers: {
+                    'Authorization': pFilter.token
+                    },
                     dataType: 'json',
                     data: {
                         filterJson: JSON.stringify(listColumnGridFilter),
@@ -1423,488 +1272,31 @@
             var filtermsg = "Filtered by: ";
             document.getElementById("filterMessage").textContent = filtertext == '' ? filtermsg + 'None' : filtermsg + filtertext;
         }
-
-        async function callWebService(serviceURL, inComments) {
-            var data = {
-                AccLifeCycleId: selectedColumnId[0].AccLifeCycleId,
-                sTDataGroupMatchKey: selectedColumnId.map(e => e.DataId),
-                sTDataGroupComment: inComments,
-                acceptForceMatch: acceptForceMatch
-            };
-
-            fetch(serviceURL, {
-                method: "POST",
-                body: JSON.stringify(data),
-                headers: { "Content-type": "application/json; charset=UTF-8", 'Authorization': pFilter.token }
-            })
-                .then(response => response.json())
-                .then(res => {
-
-                    if (res.errorDescription != '') {
-                        alert(res.errorDescription);
-                        table.ajax.reload();
-                    }
-
-                    if (res.error == 0) {
-                        if (authorizationPanel) {
-                            //location.reload(true);
-                            table.ajax.reload();
-                        }
-                        else {
-                            $('#balanceModal').modal('hide');
-                            table.ajax.reload();
-                        }
-                    }
-                });
-        };
-
-
-        function downloadVoucher() {
-            $.ajax({
-                url: 'rest/wsFileDownload',
-                type: 'GET',
-                contentType: 'application/json; charset=UTF-8',
-                success: function (data) {
-                    // alert('test');
-                    var base64String = data.base64;
-                    downloadBase64String('xlsx', base64String);
-                },
-                error: function (xhr, status, error) {
-                    console.error('Error:', error);
-                }
-            });
-        }
-
     </script>
     <script>
-        var SDT_InvTemplate = [];
-        function showFloatingContainerStartInvestigation() {
-            document.getElementById('fullScreenDiv').style.display = 'block';
-            document.getElementById('floatingContainerStartInvestigation').style.zIndex = '20';
-            document.getElementById('floatingContainerStartInvestigation').style.opacity = 1;
-            document.getElementById('floatingContainerStartInvestigation').style.top = '70px';
-        }
-        function hideFloatingContainerStartInvestigation() {
-            document.getElementById('fullScreenDiv').style.display = 'none';
-            document.getElementById('floatingContainerStartInvestigation').style.zIndex = '-1';
-            document.getElementById('floatingContainerStartInvestigation').style.opacity = 0;
-            document.getElementById('floatingContainerStartInvestigation').style.top = '0px';
-        }
+        const jsonToCsv = (jsonData) => {
+            const keys = Object.keys(jsonData[0]);
+            const csvRows = [keys.join(',')];
 
-        var tags = [];
-
-        function addNewTag(tagName) {
-            tags.push(tagName);
-            renderTagHolder();
-        }
-
-        function deleteTag(tagName) {
-            for (let i = 0; i < tags.length; i++) {
-                if (tagName == tags[i]) {
-                    tags.splice(i, 1);
-                    break;
-                }
-            }
-
-            renderTagHolder();
-        }
-
-        function renderTagHolder() {
-            let auxHTML = '';
-
-            tags.forEach(x => {
-                auxHTML = auxHTML + `<div class="tag">
-                                    <span>${x}</span>
-                                    <span class="close" onclick="deleteTag('${x}')"><i class="fa fa-close"></i></span>
-                                </div>`
-            });
-
-            let auxDataList = '<datalist id="departments">';
-
-            SDT_InvTemplate.forEach(x => {
-                if (tags.indexOf(x.InvTemplateId) < 0) {
-                    auxDataList = auxDataList + `<option value="${x.InvTemplateId}" label="${x.InvTemplateDescription}">`;
-                }
-            });
-
-            auxDataList = auxDataList + '</datalist>';
-
-            document.getElementById("tag-input-container").innerHTML = auxHTML + `<input list="departments" type="text" id="tag-input" class="tag-input" placeholder="" onkeydown="inputCheckSpace(this.value, event);">`
-                + auxDataList;
-            document.getElementById("tag-input").focus();
-        }
-
-        async function getDepartments() {
-            data = {
-                Module: 'CashError'
-            };
-
-            fetch('rest/wsGetDepartments', {
-                method: "POST",
-                //mode: "no-cors",
-                body: JSON.stringify(data),
-                headers: {
-                    "Content-type": "application/json; charset=UTF-8",
-                    "Authorization": pFilter.token,  // Dynamically adding the token
-                }
-            })
-                .then(response => response.json())
-                .then(res => {
-                    SDT_InvTemplate = res.SDT_InvTemplate;
-                    renderTagHolder();
-                });
-        }
-        function inputCheckSpace(val, event) {
-            if (event.key === 'Enter' || event.key === ',' || event.key === ' ') {
-                event.preventDefault();
-                addNewTag(val);
-            }
-        }
-        async function startInvestigation(inSubject, inComments) {
-
-            var data = {
-                InvestigationSubject: inSubject,
-                InvestigationContent: inComments,
-                colInvTemplateId: tags,
-                sTDataGroupMatchKey: selectedColumnId.map(e => e.DataId),
-                InvDataList: selectedColumnId,
-                Module: "CashError"
-            };
-
-            fetch('rest/wsStartInvestigationNew', {
-                method: "POST",
-                mode: "no-cors",
-                body: JSON.stringify(data),
-                headers: { "Content-type": "application/json; charset=UTF-8" }
-            })
-                .then(response => response.json())
-                .then(res => {
-                    if (res.error == 0) {
-                        alert('Investigation started: Case #' + res.InvestigationCaseId);
-                        hideFloatingContainerStartInvestigation();
-                        table.ajax.reload();
-                    }
-                    else {
-                        alert('Could not start an investigation: ' + res.errorDescription);
-                    }
-                });
-        }
-        document.getElementById("buttonFloatingContainerStartInvestigationAccept").addEventListener("click",
-            (ev) => {
-                ev.preventDefault();
-
-                let sendSubject = document.getElementById('caseIdSubject').value;
-                let sendComments = document.getElementById('floatingContainerCommentsStartInvestigation').value;
-
-                if (sendComments) {
-                    if (tags.length > 0) {
-                        startInvestigation(sendSubject, sendComments)
-                    }
-                    else {
-                        alert('The field "To" must contain at least one recipient.');
-                    }
-                }
-                else {
-                    alert('A comment must be entered in order to continue.');
-                }
-
-            }
-            , false);
-        document.getElementById("buttonFloatingContainerStartInvestigationCancel").addEventListener("click",
-            (ev) => {
-                ev.preventDefault();
-                hideFloatingContainerStartInvestigation();
-            }
-            , false);
-        document.getElementById("buttonFloatingContainerCancel").addEventListener("click",
-            (ev) => {
-                ev.preventDefault();
-                hideFloatingContainer();
-            }
-            , false);
-        function formatDate(inputDateString) {
-            if (inputDateString == '' || inputDateString == null || inputDateString == '  /  /  ') {
-                return ''
-            }
-            // Parse the input date string
-            var parts = inputDateString.split('/');
-            var month = parseInt(parts[0]);
-            var day = parseInt(parts[1]);
-            var year = parseInt(parts[2]);
-
-            // Handle 2-digit years
-            if (year < 100) {
-                var currentYear = new Date().getFullYear();
-                var currentCentury = Math.floor(currentYear / 100) * 100;
-                var centuryOffset = currentYear % 100;
-
-                if (year <= centuryOffset) {
-                    // Year is in the current century
-                    year += currentCentury;
-                } else {
-                    // Year is in the previous century
-                    year += currentCentury - 100;
-                }
-            }
-
-            // Create a Date object
-            var date = new Date(year, month - 1, day); // Note: Month is zero-based in JavaScript Date object
-
-            // Format the date as 'YYYYDDMM'
-            var formattedDate = date.getFullYear() + ('0' + (date.getMonth() + 1)).slice(-2) + ('0' + date.getDate()).slice(-2);
-
-            return formattedDate;
-        }
-        //Force Match Start
-        async function fnGetAuthLevel(AccLifeCycleId, accept, isForceMatchPrm) {
-            var data = {
-                LCName: '',
-                moduleName: 'Cash',
-                AccLifeCycleId: AccLifeCycleId
-            };
-            fetch('rest/wsGetTrLifeCycleRoleByLcName', {
-                method: "POST",
-                // mode: "no-cors",
-                body: JSON.stringify(data),
-                headers: { "Content-type": "application/json; charset=UTF-8", 'Authorization': pFilter.token }
-            })
-                .then(response => response.json())
-                .then(res => {
-                    if (res.errorDescription != '') {
-                        alert(res.errorDescription);
-                        table.ajax.reload();
-                    }
-                    else {
-                        debugger;
-                        p_TrLifeCycleRoles = res.TrLifeCycleRoleMatchUserRoles;
-                        if (p_TrLifeCycleRoles == 0) {
-                            alert('You have no right for this action');
-                        } else {
-
-                            isForceMatch = isForceMatchPrm;
-                            //showFloatingContainer(accept);
-                            InitiatePseudoChargePop(accept);
-                            table.ajax.reload();
-                        }
-                    }
-                });
-        }
-
-
-        function showFloatingContainer(accept) {
-
-
-            acceptForceMatch = accept;
-            if (accept) {
-                document.getElementById('floatingContainerTitle').innerHTML = `You are about to ${TrLifeCycleRolesActionLabel[p_TrLifeCycleRoles]} the process of the selected transactions`;
-                document.getElementById('floatingContainerDescription').innerHTML = `By clicking on "Continue", I accept to ${TrLifeCycleRolesActionLabel[p_TrLifeCycleRoles]} the process of the selected transactions.`;
-            }
-            else {
-                document.getElementById('floatingContainerTitle').innerHTML = 'You are about to reject the process of the selected transactions';
-                document.getElementById('floatingContainerDescription').innerHTML = 'By clicking on "Continue", I accept to reject the process of the selected transactions.';
-            }
-
-            document.getElementById('fullScreenDiv').style.display = 'block';
-            document.getElementById('floatingContainer').style.zIndex = '20';
-            document.getElementById('floatingContainer').style.opacity = 1;
-            document.getElementById('floatingContainer').style.top = '70px';
-        }
-
-        document.getElementById("buttonFloatingContainerAccept").addEventListener("click",
-            (ev) => {
-                ev.preventDefault();
-                let sendComments = document.getElementById('floatingContainerComments').value;
+            jsonData.forEach(obj => {
                 debugger;
-                if (sendComments) {
-                    //   if(panelMode == 2 || panelMode == 3)
-                    // {
-                    if (isForceMatch) {
-                        callWebService('rest/wsMatchProposedTransactionsCash', sendComments);
-                    }
-                    else if (!isForceMatch) {
-                        callWebService('rest/wsUnMatchTransactionsCash', sendComments);
-                    }
-                }
-                else {
-                    alert('A comment must be entered in order to continue.')
-                }
-            }
-            , false);
+                const values = keys.map(key => JSON.stringify(obj[key], (key, value) => value === null ? '' : value));
+                csvRows.push(values.join(','));
+            });
 
-        function hideFloatingContainer() {
-            document.getElementById('fullScreenDiv').style.display = 'none';
-            document.getElementById('floatingContainer').style.zIndex = '-1';
-            document.getElementById('floatingContainer').style.opacity = 0;
-            document.getElementById('floatingContainer').style.top = '0px';
-        }
-        function fnGetPageName() {
-            var pathname = window.location.pathname; // gets the path part of the URL
-            var pageName = pathname.substring(pathname.lastIndexOf('/') + 1).replace('.aspx', ''); // extracts the page name
-            return pageName.toLowerCase();
-        }
+            return csvRows.join('\n');
+        };
+        const downloadCsv = (jsonData, filename = 'data.csv') => {
+            const csvData = jsonToCsv(jsonData);
+            const blob = new Blob([csvData], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
 
-        async function viewHistory(DataId, GrpAccId) {
-            debugger;
-            var data = {
-                DataId: DataId,
-                GrpAccId: GrpAccId,
-                Module: 'Cash'
-            };
-
-            fetch('rest/wsGetPseudoChargeAuthorizeHistory', {
-                method: "POST",
-                //mode: "no-cors",
-                body: JSON.stringify(data),
-                headers: { "Content-type": "application/json; charset=UTF-8", 'Authorization': pFilter.token }
-            })
-                .then(response => response.json())
-                .then(res => {
-                    renderHistory(res, DataId);
-                    showFloatingContainerHistory();
-                });
-        }
-
-        function renderHistory(r, TDataKey) {
-
-            let allEvents = r.SDT_DataEvent.map(
-                function (x) {
-                    return {
-                        InvestigationEventComments: x.TranEventComment,
-                        InvestigationEventDateTime: x.TranEventDateTime,
-                        InvestigationEventId: x.TranEventId,
-                        InvestigationEventType: x.TranEventType,
-                        InvestigationEventUser: x.TranEventUserId,
-                        InvestigationEventUserName: x.TranEventUserName,
-                        InvestigationEventIsMe: false
-                    }
-                }).concat(r.SDT_InvestigationCase.Event).sort(function (a, b) {
-                    if (a.InvestigationEventDateTime < b.InvestigationEventDateTime) {
-                        return -1;
-                    }
-                    else {
-                        return 1;
-                    }
-                });
-
-            let auxHTML = `<table style="display: block;" class="mainGridStyle header-fixed"><thead><tr><th class="thS">Balancing Amount</th><th class="thS">Match Status</th></tr></thead>
-                    <tbody><tr><td class="cTdPad">${r.LoadDate.replace('T', ' ')}</td><td class="cTdPad">${r.B}</td></tr></tbody></table> <br><br>`;
-
-            auxHTML = ''
-            auxHTML = auxHTML + `<table style="display: block;" class="mainGridStyle header-fixed"><thead><tr><th class="thS">Date/Time</th><th class="thS">Event</th><th class="thS">User</th><th class="thS">Comments</th></tr></thead><tbody>`;
-
-            try {
-                allEvents.forEach(x => {
-                    let typeDescription = getEventDescription(x.InvestigationEventType);
-                    let tr = `<tr>
-                                <td class="cTdPad">${x.InvestigationEventDateTime.replace('T', ' ')}</td>
-                                <td class="cTdPad">${typeDescription}</td>
-                                <td class="cTdPad">${x.InvestigationEventUserName}</td>
-                                <td class="cTdPad">${x.InvestigationEventComments}</td>
-                            </tr>`;
-                    auxHTML = auxHTML + tr;
-                });
-            }
-            catch (err) {
-                //
-            }
-
-            auxHTML = auxHTML + `</tbody></table>`;
-            document.getElementById('HistoryContainer').innerHTML = auxHTML;
-        }
-        document.getElementById("buttonFloatingContainerHistoryAccept").addEventListener("click",
-            (ev) => {
-                ev.preventDefault();
-                hideFloatingContainerHistory();
-            }
-            , false);
-        function hideFloatingContainerHistory() {
-            document.getElementById('fullScreenDiv').style.display = 'none';
-            document.getElementById('floatingContainerHistory').style.zIndex = '-1';
-            document.getElementById('floatingContainerHistory').style.opacity = 0;
-            document.getElementById('floatingContainerHistory').style.top = '0px';
-        }
-
-        function showFloatingContainerHistory() {
-            document.getElementById('fullScreenDiv').style.display = 'block';
-            document.getElementById('floatingContainerHistory').style.zIndex = '20';
-            document.getElementById('floatingContainerHistory').style.opacity = 1;
-            document.getElementById('floatingContainerHistory').style.top = '70px';
-        }
-        function getEventDescription(eventTypeId) {
-            switch (eventTypeId) {
-                case 'CRE':
-                    return 'Case start';
-                    break;
-                case 'COM':
-                    return 'Comment';
-                    break;
-                case 'FWD':
-                    return 'Forward Case';
-                    break;
-                case 'ESC':
-                    return 'Escalation';
-                    break;
-                case 'CLO':
-                    return 'Case Close';
-                    break;
-                case 'INV':
-                    return 'Investigation';
-                    break;
-                case 'Open':
-                    return 'Open';
-                    break;
-                case 'FOR':
-                    return 'Force Match: Complete';
-                    break;
-                case 'FM1':
-                    return 'Force Match: Initiate';
-                case 'PO1':
-                    return 'Pseudo Charge Open : Initiate';
-                case 'PO2':
-                    return 'Pseudo Charge Open : Authorize';
-                case 'PO3':
-                    return 'Pseudo Charge Open : Approve';
-                case 'POR':
-                    return 'Pseudo Charge Open : Reject';
-                    break;
-                case 'FM2':
-                    return 'Force Match: Authorize';
-                    break;
-                case 'FM3':
-                    return 'Force Match: Approve';
-                    break;
-                case 'FMR':
-                    return 'Force Match: Reject';
-                    break;
-                case 'FUM':
-                    return 'Force Unmatch: Complete';
-                    break;
-                case 'FGR':
-                    return 'Force Group';
-                    break;
-                case 'UNG':
-                    return 'Ungroup';
-                    break;
-                case 'UM1':
-                    return 'Force Unmatch: Initiate';
-                    break;
-                case 'UM2':
-                    return 'Force Unmatch: Authorize';
-                    break;
-                case 'UM3':
-                    return 'Force Unmatch: Approve';
-                    break;
-                case 'UMR':
-                    return 'Force Unmatch: Reject';
-                    break;
-                default:
-                    return 'Unknown';
-            }
-        }
-
-        //History End
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = filename;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        };
     </script>
-
-
-
 </body>

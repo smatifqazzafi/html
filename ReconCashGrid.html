@@ -321,12 +321,12 @@
                         <label for="sum-C">Sum of CR :</label>
                         <label id="sum-C">0</label>
                     </div>
-
+                   
                     <div class="col-md-2" style="padding-top:8px">
                         <label for="sum-D">Sum of DR:</label>
                         <label id="sum-D">0</label>
                     </div>
-
+                    
                     <div class="col-md-2" style="padding-top:8px">
                         <label for="difference-CD">Difference:</label>
                         <label id="difference-CD">0</label>
@@ -447,7 +447,7 @@
         var currency = '';
         var invFilterVal = '';
         var settleCategoryIdVal = '';
-
+        var isExportAll = false;
         //Filter Variables
         var pFilter = {};
 
@@ -468,8 +468,8 @@
             if (fnGetPageName() == 'wpinvestigationcase') {
                 // $('#sumAmtdiv').hide();
                 $('#sum-C').hide();
-                $('#sum-D').hide();
-                $('#difference-CD').hide();
+                 $('#sum-D').hide();
+                 $('#difference-CD').hide();
             }
             var columnSearchValues = [];
             var chkOrder;
@@ -484,6 +484,7 @@
                 url: 'rest/wsReconCashData',
                 method: 'GET',
                 data: {
+                    pFilterStr: JSON.stringify(pFilter),
                     //panelType: panelType
                 },
                 headers: {
@@ -657,10 +658,22 @@
                                     });
                                     var jsonStrin = JSON.stringify(columnSearchValues);
                                     chkOrder = d.order[0].column;
+                                    
+                                    var lengthcount = d.length
+                                    pFilter.isExportAll = isExportAll;
+                                    if (isExportAll == true) {
+                                        pFilter.isExportAll = isExportAll;
+                                        var totalEntriesText = $('#dataTable_info').text();
+                                        var totalEntriesMatch = totalEntriesText.match(/of\s([\d,]+)\sentries/);
+                                        if (totalEntriesMatch && totalEntriesMatch[1]) {
+                                            var lengthcount = totalEntriesMatch[1].replace(/,/g, '');
+                                        }
+                                    }
+
                                     return {
                                         draw: d.draw,
                                         start: d.start,
-                                        length: d.length,
+                                        length: lengthcount,
                                         searchValue: d.search.value,
                                         sortColumn: d.columns[d.order[0].column].data,
                                         sortDirection: d.order[0].dir,
@@ -670,9 +683,21 @@
                                     };
                                 },
                                 dataSrc: function (response) {
-                                    if (response.data != '') {
-                                        response.data = JSON.parse(response.data);
-                                        return response.data;
+                                    console.log(response.exportJsonRes)
+                                     if (response.data != '') {
+                                        if (isExportAll == true) {
+                                            pFilter.isExportAll = isExportAll;
+                                            isExportAll = false;
+                                            response.exportJsonRes = JSON.parse(response.exportJsonRes);
+                                            downloadCsv(response.exportJsonRes, 'CashReconReport.csv');
+                                            $("#dataTable_processing").hide();
+
+                                        }
+                                        else {
+                                            response.data = JSON.parse(response.data);
+                                            return response.data;
+                                        }
+
                                     } else {
                                         return response.data;
                                     }
@@ -712,12 +737,21 @@
                             dom: 'Bfrtip',
                             buttons: [
                                 {
-                                    extend: 'csv',
-                                    text: '<i class="fa fa-download"></i> CSV'
-                                },
-                                {
                                     extend: 'colvis',
                                     text: '<i class="fa fa-columns"></i> Column Visibility'
+                                },
+                                {
+                                    text: '<i class="fa fa-download"></i> Export All',
+                                    action: function (e, dt, node, config) {
+                                        $(node).attr('id', 'ExportAllButton');
+                                        isExportAll = true;
+                                        pFilter.isExportAll = true;
+                                        table.ajax.reload();
+                                    },
+                                    init: function (dt, node, config) {
+                                        $(node).attr('id', 'ExportAllButton');
+                                        $(node).addClass('dt-button buttons-collection buttons-colvis');
+                                    }
                                 },
                                 {
                                     text: '<i class="fa-solid fa-save"></i> Save',
@@ -816,12 +850,12 @@
                                     let rows = $('#dataTable tbody tr');
                                     if (invFilterVal == '') {
                                         if (settleCategoryIdVal == '') {
-                                            if (event.key === 'ArrowDown') {
-                                                if (selectedColumnId.length == 0) {
+                                            if(event.key === 'ArrowDown'){
+                                                if (selectedColumnId.length == 0){
                                                     currentSelectedIndex++;
                                                     lastSelectedIndex = currentSelectedIndex;
                                                     rows.eq(currentSelectedIndex).addClass('selected'); // Select new row                                            
-                                                }
+                                               }
                                             }
                                             if (event.shiftKey) {
                                                 const allLcSame = selectedColumnId.every(item => item.AccLifeCycleId === selectedColumnId[0].AccLifeCycleId);
@@ -839,7 +873,7 @@
                                                             }
 
                                                         }
-                                                        else {
+                                                        else{
                                                             alert('No records selected. Please select at least one record to proceed with this action');
                                                         }
                                                         break;
@@ -852,7 +886,7 @@
                                                                 alert('Please select one Life Cycle transactions for force unmatch');
                                                             }
                                                         }
-                                                        else {
+                                                        else{
                                                             alert('No records selected. Please select at least one record to proceed with this action');
                                                         }
                                                         break;
@@ -874,7 +908,7 @@
                                                                 }
                                                             }
                                                         }
-                                                        else {
+                                                        else{
                                                             alert('No records selected. Please select at least one record to proceed with this action');
                                                         }
                                                         break;
@@ -882,7 +916,7 @@
                                                         if (selectedColumnId.length > 0) {
                                                             viewHistory(selectedColumnId[0].DataId, selectedColumnId[0].AccLifeCycleId);
                                                         }
-                                                        else {
+                                                        else{
                                                             alert('No records selected. Please select at least one record to proceed with this action');
                                                         }
                                                         break;
@@ -934,6 +968,11 @@
                                                         }
                                                     }
                                                 }
+                                                rows.eq(currentSelectedIndex)[0].scrollIntoView({
+                                                                    behavior: 'smooth', // Optional: Adds smooth scrolling
+                                                                    block: 'nearest',
+                                                                });
+                                                               
                                             }
                                             updateSelectedRows();
                                         }
@@ -1121,7 +1160,6 @@
                                 showFloatingContainerStartInvestigation();
                             }
                         } else if (key == 'ForceMatch') {
-
                             debugger;
 
                             const isOnlyOpen = selectedColumnId.every(item => item.CTranProcMatchStat === 'Open'  || item.CTranProcMatchStat === 'ForceOpen');
@@ -2068,4 +2106,31 @@
 
         //History End
     </script>
+
+<script>
+    const jsonToCsv = (jsonData) => {
+        const keys = Object.keys(jsonData[0]);
+        const csvRows = [keys.join(',')];
+
+        jsonData.forEach(obj => {
+            debugger;
+            const values = keys.map(key => JSON.stringify(obj[key], (key, value) => value === null ? '' : value));
+            csvRows.push(values.join(','));
+        });
+
+        return csvRows.join('\n');
+    };
+    const downloadCsv = (jsonData, filename = 'data.csv') => {
+        const csvData = jsonToCsv(jsonData);
+        const blob = new Blob([csvData], { type: 'text/csv' });
+        const url = URL.createObjectURL(blob);
+
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
+</script>
 </body>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic jsTree Example</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.12/themes/default/style.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.12/jstree.min.js"></script>
+    <style>
+       .jstree-default .jstree-anchor {
+        font-weight: bold;
+    line-height: 24px;
+    font-size: 12px  !important;
+    height: 39px !important;
+}
+    </style>
+</head>
+
+<body>
+
+    <div id="jstree_demo" style="padding: 20px;"></div>
+
+    <script>
+        $(document).ready(function () {
+
+            $.ajax({
+                url: 'rest/wsGetRoleHierarchy',
+                type: 'POST',
+                contentType: 'application/json', // Specify content type
+                success: function (data) {
+                    console.log('Response:', data);
+                     const roles = JSON.parse(data.jsonResult);
+                     roles.forEach(role => {
+                        console.log(`Role ID: ${role.RoleId}, Role Name: ${role.RoleName.trim()}, Level: ${role.Level}`)
+                    })
+
+                      let treeData = roles.map(role => ({
+                        "id": role.RoleId,
+                        "parent": role.ParentRoleId ? role.ParentRoleId.toString() : "#",
+                        "text": role.RoleName.trim(),
+                        "icon": "fa fa-user"
+                    }));
+
+                     $('#jstree_demo').jstree({
+                        'core': {
+                            'data': treeData
+                        },
+                        "types": {
+                             "default": {
+                                "icon": "fa fa-file  text-warning"
+                             },
+                             "file": {
+                                 "icon": "fa fa-file  text-warning"
+                             }
+                         },
+                    });
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error:', error);
+                }
+            });
+            $('#jstree_demo').on("select_node.jstree", function (e, data) {
+                // Display an alert with the selected node's text
+                // alert("Selected node: " + data.node.id);
+            });
+
+        });
+    </script>
+
+</body>
+
+</html>

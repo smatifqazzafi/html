@@ -104,9 +104,64 @@ label.label-title {
 i.fa-solid.fa-filter {
     color: var(--colors_backgroundcolor);
 }
+.table-responsive{
+    overflow-x: hidden !important;
+}
+
+#LoadedDataTableRes.table-responsive {
+    overflow-x: scroll !important;
+}
+    
+#dataTable{
+    display: block;
+    min-height: 60px;;
+    max-height: 350px;
+    overflow-x: auto !important;
+    overflow-y: auto !important;
+    width: 100% !important;
+}
+#tableHeader{
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+#dataTable::-webkit-scrollbar {
+    width: 3px; /* Width of the vertical scrollbar */
+    height: 5px !important; /* Height of the horizontal scrollbar */
+}
+#dataTable::-webkit-scrollbar-thumb {
+    background-color: var(--colors_basecolor); /* Color of the scrollbar handle */
+    border-radius: 4px; /* Rounded corners */
+}
+table.dataTable.no-footer {
+     border-bottom: 1px solid transparent !important; 
+}
+#dataTable::-webkit-scrollbar-thumb:hover {
+    background-color: #555; /* Handle color on hover */
+}
+/* #UABACK_MPAGE {
+
+    font-size: 18px;
+    color: white;
+    margin-left: 10px !important;
+} */
+/* .panel-footer {
+    padding: 5px 0px !important; 
+}*/
+.form-group {
+    margin-bottom: 0px !important;
+} 
+
+#NextButtonFilter{
+    background-color: var(--colors_basecolor) !important;
+}
+.btnSearchDD{
+    background-color: var(--colors_basecolor) !important;
+}
 </style>
 <script>
-       //submenu
+
        document.addEventListener("DOMContentLoaded", function () {
     const submenus = document.querySelectorAll('.submenu');
 
@@ -125,9 +180,22 @@ i.fa-solid.fa-filter {
 });
 
     $(document).ready(function () {
-    //    $('#PanelBody_DVPANEL_PANELTBLContainer').css('overflow-y', 'auto');
-    //    $('#PanelBody_DVPANEL_PANELTBLContainer').css('height', '300px');
+        debugger;
 
+       
+
+        if(fnGetPageName() == 'wphome')
+        { 
+            $('#UABACK_MPAGE').hide();
+        }
+        else{
+            $('#UABACK_MPAGE').show();
+        //     let reloadFlag = document.cookie.includes('reloadFlag=true');
+        // if (!reloadFlag) { document.cookie = 'reloadFlag=true;max-age=60'; setTimeout(function () { window.location.reload(); }, 0.2); } else { document.cookie = 'reloadFlag=;max-age=0'; }
+
+        }
+ 
+        
     $('#TBLBUTTON').css('background', 'white');
         $('#TBLBUTTON').css('padding', '5px');
         $('#TBLBUTTON').css('text-align', 'center');
@@ -147,12 +215,11 @@ i.fa-solid.fa-filter {
         'display': 'flex' // Flex container ensure karna zaroori hai
     });
 
-        // $('.SimpleCardTable').find('i.menu-icon').css({
-        //     'font-size': '29px',
-        //     'text-align':'center ',
-        //     'color': '#ff6347'
-        // });
-    
+        function fnGetPageName() {
+            var pathname = window.location.pathname; // gets the path part of the URL
+            var pageName = pathname.substring(pathname.lastIndexOf('/') + 1).replace('.aspx', ''); // extracts the page name
+            return pageName.toLowerCase();
+        }
 
    // Target all <i> elements with class 'menu-icon' inside SimpleCardTable
         $('.SimpleCardTable').find('i.menu-icon').css({
@@ -247,8 +314,13 @@ i.fa-solid.fa-filter {
     $('#loader').show();
 
     // Get the current URL and replace with the specified procedure name
+
+
     let currentUrl = window.location.href;
-    let pdfUrl = currentUrl.replace(/[^/]*$/, procedurename + ".aspx");
+    let lastSlashIndex = currentUrl.lastIndexOf('/');
+    let pdfUrl = currentUrl.substring(0, lastSlashIndex + 1) + encodeURIComponent(procedurename) + ".aspx";
+
+
 
     // Fetch the PDF as a blob and trigger the download
     fetch(pdfUrl)
@@ -305,8 +377,6 @@ i.fa-solid.fa-filter {
         return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
     }
 
-
-
     function formatDateFromString(dateString) {
     // Extract year, month, and day from the input string
 
@@ -338,7 +408,6 @@ i.fa-solid.fa-filter {
 }
 }
 
-
 function formatDateFromString(dateString) {
     if (dateString && dateString.length > 0 && dateString.trim() !== '' 
         && dateString !== '1900-01-01' && dateString !== '1900-01-01T00:00:00' 
@@ -363,12 +432,11 @@ function formatDateFromString(dateString) {
         hours = hours ? hours : 12; // The hour '0' should be '12'
 
         // Combine date and time
-        return `${day}-${month}-${year} ${hours}:${minutes} ${ampm}`;
+         return `${day}-${month}-${year}`;
     } else {
         return '';
     }
 }
-
 
 function formatDateFromString1(dateString) {
     if (dateString && dateString.length > 0 && dateString.trim() !== '' 
@@ -397,8 +465,4 @@ function formatDateFromString1(dateString) {
         return '';
     }
 }
-
-
-
-
 </script>
