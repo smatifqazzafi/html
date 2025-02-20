@@ -683,7 +683,7 @@
                                     };
                                 },
                                 dataSrc: function (response) {
-                                    console.log(response.exportJsonRes)
+                                    console.log(response.data)
                                      if (response.data != '') {
                                         if (isExportAll == true) {
                                             pFilter.isExportAll = isExportAll;
@@ -857,7 +857,7 @@
                                                     rows.eq(currentSelectedIndex).addClass('selected'); // Select new row                                            
                                                }
                                             }
-                                            if (event.shiftKey) {
+                                            if (event.altKey) {
                                                 const allLcSame = selectedColumnId.every(item => item.AccLifeCycleId === selectedColumnId[0].AccLifeCycleId);
                                                 const masterExist = selectedColumnId.filter(item => item.CPAccCategory === 'Master').length > 0
                                                 switch (event.key.toLowerCase()) {
@@ -1105,38 +1105,38 @@
 
                 // Conditionally add items based on the value of panelType
                 if (pFilter.matchSts === '') {
-                    contextMenuItems["Investigation"] = { name: "Start Investigation (Shift + I)", icon: "inv" };
-                    contextMenuItems["ForceUnMatch"] = { name: "Force UnMatch (Shift + U)", icon: "unmatch" };
-                    contextMenuItems["ForceMatch"] = { name: "Force Match (Shift + M)", icon: "match" };
-                    contextMenuItems["ViewHistory"] = { name: "View History (Shift + H)", icon: "vhistory" };
+                    contextMenuItems["Investigation"] = { name: "Start Investigation (Alt + I)", icon: "inv" };
+                    contextMenuItems["ForceUnMatch"] = { name: "Force UnMatch (Alt + U)", icon: "unmatch" };
+                    contextMenuItems["ForceMatch"] = { name: "Force Match (Alt + M)", icon: "match" };
+                    contextMenuItems["ViewHistory"] = { name: "View History (Alt + H)", icon: "vhistory" };
                 } else if (pFilter.matchSts === '%Match%') {
-                    contextMenuItems["ForceUnMatch"] = { name: "Force UnMatch (Shift + U)", icon: "unmatch" };
-                    contextMenuItems["ViewHistory"] = { name: "View History (Shift + H)", icon: "match" };
+                    contextMenuItems["ForceUnMatch"] = { name: "Force UnMatch (Alt + U)", icon: "unmatch" };
+                    contextMenuItems["ViewHistory"] = { name: "View History (Alt + H)", icon: "match" };
                 } else if (pFilter.matchSts === 'Open') {
-                    contextMenuItems["Investigation"] = { name: "Start Investigation (Shift + I)", icon: "inv" };
-                    contextMenuItems["ForceMatch"] = { name: "Force Match (Shift + M)", icon: "match" };
-                    contextMenuItems["ViewHistory"] = { name: "View History (Shift + H)", icon: "vhistory" };
+                    contextMenuItems["Investigation"] = { name: "Start Investigation (Alt + I)", icon: "inv" };
+                    contextMenuItems["ForceMatch"] = { name: "Force Match (Alt + M)", icon: "match" };
+                    contextMenuItems["ViewHistory"] = { name: "View History (Alt + H)", icon: "vhistory" };
                 } else if (pFilter.matchSts.toString() === '4') {
 
                     if (fnGetPageName() == 'wpauthorizationpendingcash') {
-                        contextMenuItems["Investigation"] = { name: "Start Investigation (Shift + I)", icon: "inv" };
+                        contextMenuItems["Investigation"] = { name: "Start Investigation (Alt + I)", icon: "inv" };
                         contextMenuItems["ForceMatch"] = { name: "Accept", icon: "match" };
                         contextMenuItems["RejectReq"] = { name: "Reject", icon: "unmatch" };
-                        contextMenuItems["ViewHistory"] = { name: "View History (Shift + H)", icon: "vhistory" };
+                        contextMenuItems["ViewHistory"] = { name: "View History (Alt + H)", icon: "vhistory" };
                     }
                     else if (fnGetPageName() == 'wpauthorizationumpendingcash') {
-                        contextMenuItems["Investigation"] = { name: "Start Investigation (Shift + I)", icon: "inv" };
+                        contextMenuItems["Investigation"] = { name: "Start Investigation (Alt + I)", icon: "inv" };
                         contextMenuItems["ForceUnMatch"] = { name: "Accept", icon: "match" };
                         contextMenuItems["RejectReqUM"] = { name: "Reject", icon: "unmatch" };
-                        contextMenuItems["ViewHistory"] = { name: "View History (Shift + H)", icon: "vhistory" };
+                        contextMenuItems["ViewHistory"] = { name: "View History (Alt + H)", icon: "vhistory" };
                     }
                     else if (pFilter.NoAction == 1) {
                         contextMenuItems["NoAction"] = { name: "No Action", icon: "stop" };
                     } else {
-                        contextMenuItems["Investigation"] = { name: "Start Investigation (Shift + I)", icon: "inv" };
-                        contextMenuItems["ForceMatch"] = { name: "Force Match (Shift + M)", icon: "match" };
-                        contextMenuItems["ForceUnMatch"] = { name: "Force UnMatch (Shift + U)", icon: "unmatch" };
-                        contextMenuItems["ViewHistory"] = { name: "View History (Shift + H)", icon: "vhistory" };
+                        contextMenuItems["Investigation"] = { name: "Start Investigation (Alt + I)", icon: "inv" };
+                        contextMenuItems["ForceMatch"] = { name: "Force Match (Alt + M)", icon: "match" };
+                        contextMenuItems["ForceUnMatch"] = { name: "Force UnMatch (Alt + U)", icon: "unmatch" };
+                        contextMenuItems["ViewHistory"] = { name: "View History (Alt + H)", icon: "vhistory" };
                     }
                 }
                 else {

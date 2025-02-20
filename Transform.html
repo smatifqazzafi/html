@@ -415,7 +415,7 @@
                 <div class="col-sm-4">
                     <input type="text" class="form-control" placeholder="Source A Column Name">
                 </div>
-                <div class="col-sm-2">
+                <div class="col-sm-2" style="display:none;">
                     <select class="form-control">
                         <option value="=">=</option>
                     </select>
@@ -423,7 +423,14 @@
                 <div class="col-sm-4">
                     <input type="text" class="form-control" placeholder="Source B Column Name">
                 </div>
-                 <div class="col-sm-2 text-right">
+                <div class="col-sm-3">
+                    <select class="form-control">
+                        <option value="">Select Conditon</option>
+                        <option value="OR">OR</option>
+                        <option value="AND">AND</option>
+                    </select>
+                </div>
+                 <div class="col-sm-1 text-right">
                     <i class="fa fa-trash text-danger remove-condition" style="cursor: pointer;"></i> <!-- Trash icon -->
                 </div>
             </div>
@@ -571,7 +578,10 @@
           success: function (responseData) {
             console.log(responseData);
             fnLoadTable(responseData);
+            
             fnFunctionCloseModal();
+            $("#BTNUATRANSNEXT").click();
+
           },
           error: function (xhr, status, error) {
             console.error("Error:", error);
@@ -654,6 +664,10 @@
             console.log(responseData);
             fnLoadTable(responseData);
             fnFunctionCloseModal();
+
+             //AJAX success hone ke baad button click hoga
+        $("#BTNUATRANSNEXT").click();
+
           },
           error: function (xhr, status, error) {
             console.error("Error:", error);
@@ -732,6 +746,9 @@
             console.log(responseData);
             fnLoadTable(responseData);
             fnFunctionCloseModal();
+            
+             //AJAX success hone ke baad button click hoga
+        $("#BTNUATRANSNEXT").click();
           },
           error: function (xhr, status, error) {
             console.error("Error:", error);
@@ -749,7 +766,7 @@
                          <form>
                           
                              <div class="form-group row">
-                                 <label id="mdllabel3" for="mdltext1" class="col-sm-4 col-form-label">Source Name:</label>
+                                 <label id="mdllabel3" for="mdltext1" class="col-sm-4 col-form-label">Source B Name:</label>
                                  <div class="col-sm-8">
                                      <select id="SourceNames"  style="width:100%;">
 
@@ -763,7 +780,7 @@
 
                              
                             <div class="form-group row">
-                               <label id="mdllabel1" class="col-sm-4 col-form-label">Source Column Name :</label>
+                               <label id="mdllabel1" class="col-sm-4 col-form-label">Source B Column Name :</label>
                                <div class="col-sm-8">
                                    <input type="text" class="form-Control" id="sourcecolumnName" />
                                </div>
@@ -813,13 +830,13 @@
        var sqlquerry = "";
 
       $(".condition-group").each(function (index) {
+       
         var sourceAColumn = $(this).find("input:eq(0)").val(); 
-        var operator = $(this).find("select").val();         
+        var operator = $(this).find("select:eq(0)").val();
         var sourceBColumn = $(this).find("input:eq(1)").val(); 
-        if (index > 0) {
-          sqlquerry += " AND ";
-        }
-        sqlquerry += sourceAColumn + " " + operator + " " + sourceBColumn;
+        var condition = $(this).find("select:eq(1)").val(); 
+       
+        sqlquerry += sourceAColumn + " " + operator + " " + sourceBColumn + " " + condition + " " ;
       });
 
 
@@ -860,6 +877,9 @@
             console.log(responseData);
             fnLoadTable(responseData);
             fnFunctionCloseModal();
+            
+             //AJAX success hone ke baad button click hoga
+        $("#BTNUATRANSNEXT").click();
           },
           error: function (xhr, status, error) {
             console.error("error:", error);
@@ -941,6 +961,9 @@
             console.log(responseData);
             fnLoadTable(responseData);
             fnFunctionCloseModal();
+            
+             //AJAX success hone ke baad button click hoga
+        $("#BTNUATRANSNEXT").click();
           },
           error: function (xhr, status, error) {
             console.error("Error:", error);
@@ -1025,6 +1048,8 @@
             console.log(responseData);
             fnLoadTable(responseData);
             fnFunctionCloseModal();
+        //AJAX success hone ke baad button click hoga
+        $("#BTNUATRANSNEXT").click();
           },
           error: function (xhr, status, error) {
             console.error("Error:", error);
@@ -1188,16 +1213,21 @@
 
         if (key == "Filter") {
           fnFilter(headerText, ProfileColumnId, columnIdx);
+
         } else if (key == "Multiply") {
           fnMultiply(headerText, ProfileColumnId, columnIdx);
+         
         } else if (key == "Addition") {
           fnAddition(headerText, ProfileColumnId, columnIdx);
+         
         }
         else if (key == "Fetch") {
           FnFetch(headerText, ProfileColumnId, columnIdx);
+         
         }
         else if (key == "Concat") {
           fnConcat(headerText, ProfileColumnId, columnIdx);
+        
         } else {
           let functionConfig = getFunctionConfigByName(key);
           generateDynamicFunctionModal(
@@ -1206,6 +1236,7 @@
             columnIdx,
             functionConfig
           );
+          
         }
       },
       items: contextMenuItems,
@@ -1259,27 +1290,28 @@
     }
   }
 
-  
-    function fnLifeCycleHeaderUpdate() {
-      
-        $.ajax({
-          url: "rest/wsCopySourceColumntoLifecycle", // Replace with your API endpoint
-          method: "GET",
-          headers: { Authorization: token },
-          data: {
-            SrcProfileId : profile.SrcProfileId,
-            SrcProfileGrpId: profile.GrpAccId,
-            SrcProfilePAccId: profile.PAccId,
-          },
-          success: function (response) {
-            // $("#btnLifeCycleHeaderUpdate").remove();
-          },
-          error: function (error) {
-            console.log("Error:", error);
-          },
-        });
-      
-    }
+
+  function fnLifeCycleHeaderUpdate() {
+
+    $.ajax({
+      url: "rest/wsCopySourceColumntoLifecycle", // Replace with your API endpoint
+      method: "GET",
+      headers: { Authorization: token },
+      data: {
+        SrcProfileId: profile.SrcProfileId,
+        SrcProfileGrpId: profile.GrpAccId,
+        SrcProfilePAccId: profile.PAccId,
+      },
+      success: function (response) {
+        showToaster("LifeCycle header has been updated",true)
+        // $("#btnLifeCycleHeaderUpdate").remove();
+      },
+      error: function (error) {
+        console.log("Error:", error);
+      },
+    });
+
+  }
 
   function fnAllFunctionPopup() {
     if ($.fn.DataTable.isDataTable("#AllFunctiondataTable")) {
@@ -1357,6 +1389,8 @@
           fnLoadTable(response);
           fnAllFunctionPopup();
           fnApplyAllFunctions();
+
+          $("#BTNUATRANSNEXT").click();
         },
         error: function (error) {
           console.log("Error:", error);
@@ -1607,7 +1641,7 @@
         let dropdown = $('#' + elementName);
         dropdown.empty().append('<option value="">Select an option</option>'); // Default option
 
-       $.each(sourceNamesArray, function (index, value) {
+        $.each(sourceNamesArray, function (index, value) {
           dropdown.append(`<option value="${value}">${value}</option>`);
         });
       },
@@ -1893,18 +1927,30 @@
       SelectionType: "single-select",
       Icon: "fa-trash", // Icon representing deletion or elimination
     },
-    // {
-    // 	"FunctionId": 20,
-    // 	"FunctionName": "LTrim",
-    // 	"FirstFieldShow": true,
-    // 	"SecondFieldShow": false,
-    // 	"FirstLabel": "Starting Index",
-    // 	"SecondLabel": "",
-    // 	"FirstFieldIsRequired": false,
-    // 	"SecondFieldIsRequired": false,
-    // 	"SelectionType": "single-select",
-    // 	"Icon": "fa-cut"  // Icon representing trimming
-    // },
+    {
+      FunctionId: 20,
+      FunctionName: "LTrim",
+      FirstFieldShow: true,
+      SecondFieldShow: false,
+      FirstLabel: "Starting Index",
+      SecondLabel: "",
+      FirstFieldIsRequired: false,
+      SecondFieldIsRequired: false,
+      SelectionType: "single-select",
+      Icon: "fa-scissors"  // Icon representing trimming
+    },
+    {
+      FunctionId: 39,
+      FunctionName: "RTrim",
+      FirstFieldShow: true,
+      SecondFieldShow: true,
+      FirstLabel: "First Value",
+      SecondLabel: "Second Value",
+      FirstFieldIsRequired: false,
+      SecondFieldIsRequired: false,
+      SelectionType: "single-select",
+      Icon: "fa-scissors"
+    },
     {
       FunctionId: 21,
       FunctionName: "Lappend",
@@ -2150,7 +2196,7 @@
       SelectionType: "single-select",
       Icon: "fa-pencil-alt", // Icon representing signing or writing
     },
-     {
+    {
       FunctionId: 47,
       FunctionName: "Serialize",
       FirstFieldShow: false,
@@ -2177,9 +2223,9 @@
     {
       FunctionId: 38,
       FunctionName: "Trim",
-      FirstFieldShow: false,
+      FirstFieldShow: true,
       SecondFieldShow: false,
-      FirstLabel: "Sign Value",
+      FirstLabel: "Trim Direction",
       SecondLabel: "Sign Value 1",
       FirstFieldIsRequired: false,
       SecondFieldIsRequired: false,
@@ -2210,7 +2256,7 @@
       SelectionType: "single-select",
       Icon: "fa-exchange-alt",
     },
-      {
+    {
       FunctionId: 46,
       FunctionName: "Fetch",
       FirstFieldShow: true,
@@ -2221,6 +2267,18 @@
       SecondFieldIsRequired: false,
       SelectionType: "single-select",
       Icon: "fa-exchange-alt",
+    },
+    {
+      FunctionId: 48,
+      FunctionName: "GroupBy",
+      FirstFieldShow: false,
+      SecondFieldShow: false,
+      FirstLabel: "Sign Value",
+      SecondLabel: "Sign Value 1",
+      FirstFieldIsRequired: false,
+      SecondFieldIsRequired: false,
+      SelectionType: "single-select",
+      Icon: "fa-columns", // Icon representing signing or writing
     },
     // {
     //   FunctionId: 29,

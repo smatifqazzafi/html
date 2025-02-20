@@ -5,16 +5,27 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dynamic jsTree Example</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.12/themes/default/style.min.css" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.12/jstree.min.js"></script>
+
+    <link rel="stylesheet" href="MyAssets/Scripts/style.min.css">
+    <script src="MyAssets/Scripts/TreeFolder/jquery.min.js"></script>
+    <script src="MyAssets/Scripts/TreeFolder/jstree.min.js"></script>
+
+
     <style>
-       .jstree-default .jstree-anchor {
-        font-weight: bold;
-    line-height: 24px;
-    font-size: 12px  !important;
-    height: 39px !important;
-}
+        .jstree-default .jstree-anchor {
+            font-weight: bold;
+            line-height: 24px;
+            font-size: 15px !important;
+            margin-bottom: 18px;
+            /* height: 39px !important; */
+        }
+
+
+        .jstree-themeicon {
+            background-size: 24px 24px !important;
+            width: 24px !important;
+            height: 24px !important;
+        }
     </style>
 </head>
 
@@ -31,40 +42,98 @@
                 contentType: 'application/json', // Specify content type
                 success: function (data) {
                     console.log('Response:', data);
-                     const roles = JSON.parse(data.jsonResult);
-                     roles.forEach(role => {
+                    const roles = JSON.parse(data.jsonResult);
+                    roles.forEach(role => {
                         console.log(`Role ID: ${role.RoleId}, Role Name: ${role.RoleName.trim()}, Level: ${role.Level}`)
                     })
 
-                      let treeData = roles.map(role => ({
-                        "id": role.RoleId,
-                        "parent": role.ParentRoleId ? role.ParentRoleId.toString() : "#",
-                        "text": role.RoleName.trim(),
-                        "icon": "fa fa-user"
-                    }));
 
-                     $('#jstree_demo').jstree({
+                    let treeData = roles.map(role => (
+                        {
+
+                            "id": role.RoleId,
+                            "parent": role.ParentRoleId ? role.ParentRoleId : "#",
+                            "text": role.RoleName.trim(),
+                            "icon": "fa fa-users",
+
+                        }
+
+
+                    ));
+
+
+
+                    $.ajax({
+                        url: 'rest/wsGetRoleUsers',
+                        type: 'POST',
+                        async: false,
+                        contentType: 'application/json', // Specify content type
+                        data: JSON.stringify({ RoleId: 3 }),
+                        success: function (data) {
+
+                            const users = JSON.parse(data.jsonResult);
+
+                            let treeDatas = users.map(user => ({
+                                "id": `User_${user.UserId}_${Date.now()}_${Math.floor(Math.random() * 1000)}`,
+                                "parent": user.UserMemRoleRoleId,
+                                "text": user.UserName,
+                                "icon": "fa fa-user-circle text-success",
+
+                            }));
+
+                            treeDatas.forEach(user => {
+                                treeData.push({
+                                    "id": user.id,
+                                    "parent": user.parent,
+                                    "text": user.text,
+                                    "icon": user.icon,
+
+                                });
+                            });
+
+                        },
+                        error: function (xhr, status, error) {
+                            console.error("Error fetching users:", error);
+                        }
+                    });
+
+                    $('#jstree_demo').jstree({
                         'core': {
                             'data': treeData
                         },
                         "types": {
-                             "default": {
-                                "icon": "fa fa-file  text-warning"
-                             },
-                             "file": {
-                                 "icon": "fa fa-file  text-warning"
-                             }
-                         },
+                            "role": { "icon": "fa fa-user text-primary" },
+                            "children": { "icon": "fa fa-user-circle text-success" }
+                        }
+                    }).on('ready.jstree', function () {
+                        $(this).jstree("open_all");
                     });
+
+
                 },
                 error: function (xhr, status, error) {
                     console.error('Error:', error);
                 }
             });
-            $('#jstree_demo').on("select_node.jstree", function (e, data) {
-                // Display an alert with the selected node's text
-                // alert("Selected node: " + data.node.id);
+
+            // $('#jstree_demo').on("select_node.jstree", function (e, data) {
+            //     let roleProcessAccessId = data.node.id.includes("User") ? data.node.parent : data.node.id;
+            //     window.open("wpLifeCycleAccess.aspx?TrnMode=INS&RoleProcessAccessId=" + roleProcessAccessId, "_blank");
+            // });
+
+            $('#jstree_demo').on("click", ".jstree-anchor", function () {
+                let nodeId = $(this).parent().attr("id"); // Selected node ID
+                let parentId = $(this).closest("li").attr("parent") || nodeId; // Parent ID if exists
+
+                let roleProcessAccessId = nodeId.includes("User") ? parentId : nodeId;
+                setTimeout(() => {
+                    let isuser = roleProcessAccessId.includes("User") ? true : false;
+                    if (!isuser)
+                       { window.open("wpLifeCycleAccess.aspx?TrnMode=INS&RoleProcessAccessId=" + roleProcessAccessId, "_blank");}
+
+                }, 100);
             });
+
 
         });
     </script>

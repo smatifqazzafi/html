@@ -509,6 +509,7 @@ function populateMultiplyDropdown(elementName) {
         }
     });
 }
+
 function fnCloseModal() {
     $('#popupModal').fadeOut();
 }

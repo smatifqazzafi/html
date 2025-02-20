@@ -135,7 +135,7 @@
                 border-top: 4px solid #3498db;
                 border-radius: 50%;
                 /* width: 20px;
-                height: 20px;
+                height: 20px; 
                 animation: spin 1s linear infinite;*/
                 display: none;
             }
@@ -172,7 +172,6 @@
                 border-radius: 3px;
                 cursor: pointer;
                 min-width: 0px !Important;
-                background-color: var(--colors_danger_condform);
             }
 
             /*  .dt-button {
@@ -255,19 +254,6 @@
                 justify-content: center !Important;
                 border-bottom: 1px solid white;
             }
-
-            h4 {
-                /* font-size: 18px; */
-                color: var(--colors_backgroundcolor);
-            }
-
-            .myfilter-panel {
-                background-color: var(--colors_basecolor);
-            }
-
-            label.page-length {
-                color: #5c5a5a !important;
-            }
         </style>
     </head>
     <div id="container">
@@ -306,7 +292,7 @@
             <div class="form-group">
                 <div class="col-md-12">
                     <div class="col-md-1" style="Padding-top:8px">
-                        <label for="pageLength" class="page-length">Page Length :</label>
+                        <label for="pageLength">Page Length:</label>
                     </div>
                     <div class="col-md-2">
                         <select id="pageLength" class="form-control">
@@ -318,20 +304,7 @@
                             <option value="300">300</option>
                         </select>
                     </div>
-                    <div class="col-md-2" style="padding-top:8px">
-                        <label for="sum-C">Sum of CR :</label>
-                        <label id="sum-C">0</label>
-                    </div>
 
-                    <div class="col-md-2" style="padding-top:8px">
-                        <label for="sum-D">Sum of DR:</label>
-                        <label id="sum-D">0</label>
-                    </div>
-
-                    <div class="col-md-2" style="padding-top:8px">
-                        <label for="difference-CD">Difference:</label>
-                        <label id="difference-CD">0</label>
-                    </div>
                 </div>
             </div>
         </div>
@@ -344,7 +317,7 @@
         <div id="grayContainer"></div>
     </div>
     <div id="floatingContainerStartInvestigation" class="floatingContainerClass">
-        <div id="floatingContainerTitleStartInvestigation" style="color: #000!Important;" class="TextBlockTitleMaterial">
+        <div id="floatingContainerTitleStartInvestigation" style="color: #000;" class="TextBlockTitleMaterial">
             Start Investigation
         </div>
         <div style="margin-top: 20px; font-size: 12px;">
@@ -384,7 +357,7 @@
 
     <!-- Investigation End -->
     <div id="floatingContainer" class="floatingContainerClass">
-        <div id="floatingContainerTitle" style="color: #000!Important;" class="TextBlockTitleMaterial">
+        <div id="floatingContainerTitle" style="color: #000;" class="TextBlockTitleMaterial">
             You are about to force the matching of several transactions
         </div>
         <div style="margin-top: 20px; font-size: 12px;">
@@ -400,7 +373,7 @@
         </div>
     </div>
     <div id="floatingContainerHistory" class="floatingContainerClass">
-        <div id="floatingContainerHistoryTitle" style="color: #000!Important;" class="TextBlockTitleMaterial">
+        <div id="floatingContainerHistoryTitle" style="color: #000;" class="TextBlockTitleMaterial">
             Transaction History
         </div>
         <div style="margin-top: 20px; font-size: 12px;">
@@ -448,7 +421,7 @@
         var currency = '';
         var invFilterVal = '';
         var settleCategoryIdVal = '';
-        var isExportAll = false;
+
         //Filter Variables
         var pFilter = {};
 
@@ -456,7 +429,6 @@
         const TrLifeCycleRolesActionLabel = ['', 'initiate', 'authorize', 'approve'];
         var acceptForceMatch = false;
         var isForceMatch = false;
-        var acceptForceClose = false;
         var p_TrLifeCycleRoles = 1;
         var authorizationPanel = false;
 
@@ -466,11 +438,9 @@
 
 
         $(document).ready(function () {
+
             if (fnGetPageName() == 'wpinvestigationcase') {
-                // $('#sumAmtdiv').hide();
-                 $('#sum-C').hide();
-                 $('#sum-D').hide();
-                 $('#difference-CD').hide();
+                $('#sumAmtdiv').hide();
             }
             var columnSearchValues = [];
             var chkOrder;
@@ -479,19 +449,20 @@
             //     $('#myfilterPanel').addClass('active');
             // });
 
+            getDepartments();
+
 
             $('#closeFilterPanel').click(function () {
                 $('#myfilterPanel').removeClass('active');
             });
             $.ajax({
-                url: 'rest/wsReconData',
+                url: 'rest/wsCoronaCashItem',
                 method: 'GET',
+                data: {
+                    //panelType: panelType
+                },
                 headers: {
                     'Authorization': pFilter.token
-                },
-                data: {
-                    pFilterStr: JSON.stringify(pFilter),
-                    //panelType: panelType
                 },
                 success: function (data) {
                     if (data && data.myCols && data.myCols.length > 0) {
@@ -614,9 +585,10 @@
                         var filterFieldsHtml = `<div id="filterPanel">
                 <p id="filterMessage">Filtered by: None</p></div>`;
                         data.myCols.forEach(function (column, indexs) {
+
                             if (column.colDBName !== 'Action') {
                                 filterFieldsHtml += '<div class="filter-field">';
-                                filterFieldsHtml += fnGenDropDown(indexs, 25, column.colDBName, column.colName) + '<label class="label-title" style="margin-top: 5px" for="filter-' + column.colDBName + '">' + column.colName + '&nbsp</label>';
+                                filterFieldsHtml += fnGenDropDown(indexs, 25, column.colDBName, column.colName) + '<label style="margin-top: 5px" for="filter-' + column.colDBName + '">' + column.colName + '&nbsp</label>';
                                 if (column.colDataType == 'D') {
                                     filterFieldsHtml += '<input type="date" class="mycolumnSearchDate MyGridTextBox wwp-daterange-picker-input" placeholder="Search ' + column.colName + '" data-column="' + column.colDBName + '" />'; //+ fnGenDropDown(indexs, 13, column.colDBName, column.colName);
                                 } else {
@@ -648,7 +620,7 @@
                             timeout: 9000000,
                             order: [[1, 'asc']],
                             ajax: {
-                                url: 'rest/wsReconData',
+                                url: 'rest/wsCoronaCashItem',
                                 type: 'GET',
                                 headers: {
                                     'Authorization': pFilter.token
@@ -661,23 +633,10 @@
                                     });
                                     var jsonStrin = JSON.stringify(columnSearchValues);
                                     chkOrder = d.order[0].column;
-
-                                    var lengthcount = d.length
-                                    pFilter.isExportAll = isExportAll;
-
-                                    if (isExportAll == true) {
-                                        pFilter.isExportAll = isExportAll;
-                                        var totalEntriesText = $('#dataTable_info').text();
-                                        var totalEntriesMatch = totalEntriesText.match(/of\s([\d,]+)\sentries/);
-                                        if (totalEntriesMatch && totalEntriesMatch[1]) {
-                                             lengthcount = totalEntriesMatch[1].replace(/,/g, '');
-                                        }
-                                    }
-
                                     return {
                                         draw: d.draw,
                                         start: d.start,
-                                        length: lengthcount,
+                                        length: d.length,
                                         searchValue: d.search.value,
                                         sortColumn: d.columns[d.order[0].column].data,
                                         sortDirection: d.order[0].dir,
@@ -688,22 +647,11 @@
                                 },
                                 dataSrc: function (response) {
                                     if (response.data != '') {
-                                        if (isExportAll == true) {
-                                            isExportAll = false;
-                                            response.exportJsonRes = JSON.parse(response.exportJsonRes);
-                                            downloadCsv(response.exportJsonRes, 'DigitalReconReport.csv');
-                                            $("#dataTable_processing").hide();
-
-                                        }
-                                        else {
-                                            response.data = JSON.parse(response.data);
-                                            return response.data;
-                                        }
-
+                                        response.data = JSON.parse(response.data);
+                                        return response.data;
                                     } else {
                                         return response.data;
                                     }
-
                                 }
 
                             },
@@ -717,48 +665,35 @@
 
                             },
                             rowCallback: function (row, data, index) {
-                                if (data.DTranProcMatchStat.includes('Match')) {
+                                if (data.CITMSTATUS.startsWith('M')) {
                                     $(row).css('color', 'green');
-                                } else if (data.DTranProcMatchStat.includes('Open')) {
+                                } else if (data.CITMSTATUS.startsWith('O')) {
                                     $(row).css('color', 'red');
                                 }
-                                else if (data.DTranProcMatchStat.includes('Propose')) {
+                                else if (data.CITMSTATUS.startsWith('P')) {
                                     $(row).css('color', '#eed202');
                                 }
                             },
-                            rowGroup: {
-                                dataSrc: function (row) {
-                                    if (chkOrder == 2) {
-                                        return 'Group ID  : ' + row.DGrpId;
-                                    } else {
-                                        return null;
-                                    }
-                                }
-                            },
+                            // rowGroup: {
+                            //     dataSrc: function (row) {
+                            //         if (chkOrder == 2) {
+                            //             return 'Group ID  : ' + row.DGrpId;
+                            //         } else {
+                            //             return null;
+                            //         }
+                            //     }
+                            // },
                             columns: columnslist,
                             "colReorder": true,
                             dom: 'Bfrtip',
                             buttons: [
-                                // {
-                                //     extend: 'csv',
-                                //     text: '<i class="fa fa-download"></i> CSV'
-                                // },
+                                {
+                                    extend: 'csv',
+                                    text: '<i class="fa fa-download"></i> CSV'
+                                },
                                 {
                                     extend: 'colvis',
                                     text: '<i class="fa fa-columns"></i> Column Visibility'
-                                },
-                                {
-                                    text: '<i class="fa-solid fa-download"></i> Export All',
-                                    action: function (e, dt, node, config) {
-                                        $(node).attr('id', 'ExportAllButton');
-
-                                        isExportAll = true;
-                                        table.ajax.reload();
-                                    },
-                                    init: function (dt, node, config) {
-                                        $(node).attr('id', 'ExportAllButton');
-                                        $(node).addClass('dt-button buttons-collection buttons-colvis');
-                                    }
                                 },
                                 {
                                     text: '<i class="fa-solid fa-save"></i> Save',
@@ -809,7 +744,6 @@
                             ],
                             "columnDefs": columnDefs,
                             initComplete: function () {
-                                debugger;
                                 var api = this.api();
                                 // Handle row selection
                                 // $('#dataTable tbody').on('click', 'tr:not(.dtrg-group)', function () {
@@ -842,7 +776,7 @@
 
                                                 currentSelectedIndex = clickedIndex;
                                                 if ($(this).hasClass('selected')) {
-                                                    // rows.removeClass('selected');
+                                                    // rows.removeClass('selected'); 
                                                     $(this).removeClass('selected'); // Deselect the clicked row
                                                 } else {
                                                     // $(this).addClass('selected'); // Select the clicked row
@@ -857,21 +791,19 @@
 
                                 });
                                 $(document).on('keydown', function (event) {
-                                    
-                                    let rows = $('#dataTable tbody tr');                                       
+
+                                    let rows = $('#dataTable tbody tr');
                                     if (invFilterVal == '') {
                                         if (settleCategoryIdVal == '') {
-                                            if(event.key === 'ArrowDown'){
-                                                if (selectedColumnId.length == 0){
+                                            if (event.key === 'ArrowDown') {
+                                                if (selectedColumnId.length == 0) {
                                                     currentSelectedIndex++;
                                                     lastSelectedIndex = currentSelectedIndex;
-                                                    rows.eq(currentSelectedIndex).addClass('selected'); // Select new row
-
+                                                    rows.eq(currentSelectedIndex).addClass('selected'); // Select new row                                            
                                                 }
                                             }
-                                            if (event.altKey) {
+                                            if (event.shiftKey) {
                                                 const allLcSame = selectedColumnId.every(item => item.AccLifeCycleId === selectedColumnId[0].AccLifeCycleId);
-                                                const masterExist = selectedColumnId.filter(item => item.DPAccCategory === 'Master').length > 0
                                                 switch (event.key.toLowerCase()) {
                                                     case 'i':
                                                         if (selectedColumnId.length > 0) {
@@ -885,52 +817,49 @@
                                                             }
 
                                                         }
-                                                        else{
+                                                        else {
                                                             alert('No records selected. Please select at least one record to proceed with this action');
                                                         }
                                                         break;
                                                     case 'u':
                                                         if (selectedColumnId.length > 0) {
-                                                            if (allLcSame) {
+                                                            const isOnlyMatch = selectedColumnId.every(item => item.CITMSTATUS.startsWith('M'));
+                                                            if (allLcSame && isOnlyMatch) {
                                                                 acceptForceMatch = true;
                                                                 fnGetAuthLevel(selectedColumnId[0].AccLifeCycleId, true, false);
                                                             } else {
                                                                 alert('Please select one Life Cycle transactions for force unmatch');
                                                             }
                                                         }
-                                                        else{
+                                                        else {
                                                             alert('No records selected. Please select at least one record to proceed with this action');
                                                         }
                                                         break;
                                                     case 'm':
                                                         if (selectedColumnId.length > 0) {
-                                                            const isOnlyOpen = selectedColumnId.every(item => item.DTranProcMatchStat === 'Open' || item.DTranProcMatchStat === 'ForceOpen');
-                                                            if (allLcSame && masterExist && isOnlyOpen) {
+                                                            const isOnlyOpen = selectedColumnId.every(item => item.CITMSTATUS.startsWith('O'));
+                                                            if (allLcSame && isOnlyOpen) {
                                                                 acceptForceMatch = true;
                                                                 fnGetAuthLevel(selectedColumnId[0].AccLifeCycleId, true, true);
                                                             } else {
                                                                 if (!allLcSame) {
                                                                     alert('Please select one Life Cycle transactions for force match');
                                                                 }
-                                                                if (!masterExist) {
-                                                                    alert('Please select one master transaction for force match');
-                                                                }
                                                                 if (!isOnlyOpen) {
                                                                     alert('Please select only open transactions for force match');
                                                                 }
                                                             }
                                                         }
-                                                        else{
+                                                        else {
                                                             alert('No records selected. Please select at least one record to proceed with this action');
                                                         }
                                                         break;
                                                     case 'c':
-                                                        if (selectedColumnId.length > 0) {
-                                                            acceptForceClose = true;
-                                                            acceptForceMatch = true;
-                                                            fnGetAuthLevel(selectedColumnId[0].AccLifeCycleId, true, false);
+                                                        if (allLcSame) {
+                                                            fnGetAuthLevel(selectedColumnId[0].AccLifeCycleId, false, true);
+                                                            acceptForceMatch = false;
                                                         }
-                                                        else{
+                                                        else {
                                                             alert('No records selected. Please select at least one record to proceed with this action');
                                                         }
                                                         break;
@@ -938,7 +867,7 @@
                                                         if (selectedColumnId.length > 0) {
                                                             viewHistory(selectedColumnId[0].DataId, selectedColumnId[0].AccLifeCycleId);
                                                         }
-                                                        else{
+                                                        else {
                                                             alert('No records selected. Please select at least one record to proceed with this action');
                                                         }
                                                         break;
@@ -953,7 +882,6 @@
                                                         if (currentSelectedIndex < rows.length - 1) {
                                                             currentSelectedIndex++; // Move selection down
                                                             rows.eq(currentSelectedIndex).addClass('selected');
-                                                            
                                                         }
                                                     }
 
@@ -980,8 +908,6 @@
                                                             currentSelectedIndex++;
                                                             lastSelectedIndex = currentSelectedIndex;
                                                             rows.eq(currentSelectedIndex).addClass('selected'); // Select new row
-
-                                                            
                                                         }
 
                                                     }
@@ -991,16 +917,9 @@
                                                             currentSelectedIndex--;
                                                             lastSelectedIndex = currentSelectedIndex;
                                                             rows.eq(currentSelectedIndex).addClass('selected'); // Select new row
-                                                           
                                                         }
                                                     }
                                                 }
-                                                    
-                                                          rows.eq(currentSelectedIndex)[0].scrollIntoView({
-                                                                    behavior: 'smooth', // Optional: Adds smooth scrolling
-                                                                    block: 'nearest',
-                                                                });
-                                                               
                                             }
                                             updateSelectedRows();
                                         }
@@ -1059,10 +978,10 @@
                                 $.ajax({
                                     url: 'rest/wsSaveColGridFilter',
                                     type: 'GET',
+                                    dataType: 'json',
                                     headers: {
                                         'Authorization': pFilter.token
                                     },
-                                    dataType: 'json',
                                     data: {
                                         filterJson: JSON.stringify(listColumnGridFilter),
                                         savedFilterId: savedFilterId,
@@ -1090,10 +1009,10 @@
                                 $.ajax({
                                     url: 'rest/wsSaveColGridFilter',
                                     type: 'GET',
+                                    dataType: 'json',
                                     headers: {
                                         'Authorization': pFilter.token
                                     },
-                                    dataType: 'json',
                                     data: {
                                         filterJson: JSON.stringify(listColumnGridFilter),
                                         savedFilterId: savedFilterId,
@@ -1132,51 +1051,41 @@
                 contextMenuItems = {};
 
                 // Conditionally add items based on the value of panelType
-                if (pFilter.matchSts === '') {
-                    contextMenuItems["Investigation"] = { name: "Start Investigation (Alt + I)", icon: "inv" };
-                    contextMenuItems["ForceUnMatch"] = { name:  "Force UnMatch       (Alt + U)", icon: "unmatch" };
-                    contextMenuItems["ForceMatch"] = { name:    "Force Match         (Alt + M)", icon: "match" };
-                    contextMenuItems["ForceClose"] = { name:    "Force Close         (Alt + C)", icon: "match" };
-                    contextMenuItems["ViewHistory"] = { name:   "View History        (Alt + H)", icon: "vhistory" };
-                } else if (pFilter.matchSts === '%Match%') {
-                    contextMenuItems["ForceUnMatch"] = { name: "Force UnMatch (Alt + U)", icon: "unmatch" };
-                    contextMenuItems["ViewHistory"] = { name:  "View History  (Alt + H)", icon: "match" };
-                } else if (pFilter.matchSts === '%Open%') {
-                    contextMenuItems["Investigation"] = { name: "Start Investigation (Alt + I)", icon: "inv" };
-                    contextMenuItems["ForceMatch"] = { name:    "Force Match         (Alt + M)", icon: "match" };
-                    contextMenuItems["ForceClose"] = { name:    "Force Close         (Alt + C)", icon: "match" };
-                    contextMenuItems["ViewHistory"] = { name:   "View History        (Alt + H)", icon: "vhistory" };
-                } else if (pFilter.matchSts === '%Close%') {
-                    contextMenuItems["Investigation"] = { name: "Start Investigation (Alt + I)", icon: "inv" };
-                    contextMenuItems["ForceUnMatch"] = { name:  "Force UnMatch       (Alt + U)", icon: "unmatch" };
-                    contextMenuItems["ViewHistory"] = { name:   "View History        (Alt + H)", icon: "vhistory" };
+
+                debugger;
+                if (pFilter.matchSts === "") {
+                    contextMenuItems["Investigation"] = { name: "Start Investigation", icon: "inv" };
+                    contextMenuItems["ForceUnMatch"] = { name: "Force UnMatch", icon: "unmatch" };
+                    contextMenuItems["ForceMatch"] = { name: "Force Match", icon: "match" };
+                    contextMenuItems["ViewHistory"] = { name: "View History", icon: "vhistory" };
+                } else if (pFilter.matchSts === '%M%') {
+                    contextMenuItems["ForceUnMatch"] = { name: "Force UnMatch", icon: "unmatch" };
+                    contextMenuItems["ViewHistory"] = { name: "View History", icon: "match" };
+                } else if (pFilter.matchSts === '%O%') {
+                    contextMenuItems["Investigation"] = { name: "Start Investigation", icon: "inv" };
+                    contextMenuItems["ForceMatch"] = { name: "Force Match", icon: "match" };
+                    contextMenuItems["ViewHistory"] = { name: "View History", icon: "vhistory" };
                 } else if (pFilter.matchSts.toString() === '4') {
 
-                    if (fnGetPageName() == 'wpauthorizationpending') {
-                        contextMenuItems["Investigation"] = { name: "Start Investigation (Alt + I)", icon: "inv" };
-                        contextMenuItems["ForceMatch"] =    { name:    "Accept", icon: "match" };
-                        contextMenuItems["RejectReq"] =     { name:     "Reject", icon: "unmatch" };
-                        contextMenuItems["ViewHistory"] =   { name:   "View History        (Alt + H)", icon: "vhistory" };
+                    if (fnGetPageName() == 'wpcashauthorizationpending') {
+                        contextMenuItems["Investigation"] = { name: "Start Investigation", icon: "inv" };
+                        contextMenuItems["ForceMatch"] = { name: "Accept", icon: "match" };
+                        contextMenuItems["RejectReq"] = { name: "Reject", icon: "unmatch" };
+                        contextMenuItems["ViewHistory"] = { name: "View History", icon: "vhistory" };
                     }
-                    else if (fnGetPageName() == 'wpauthorizationumpending') {
-                        contextMenuItems["Investigation"] = { name: "Start Investigation (Alt + I)", icon: "inv" };
-                        contextMenuItems["ForceUnMatch"] =  { name:  "Accept", icon: "match" };
-                        contextMenuItems["RejectReqUM"] =   { name:   "Reject", icon: "unmatch" };
-                        contextMenuItems["ViewHistory"] =   { name:   "View History        (Alt + H)", icon: "vhistory" };
-                    }
-                    else if (fnGetPageName() == 'wpdforcecloseauthorizationpending') {
-                        contextMenuItems["Investigation"] = { name: "Start Investigation (Alt + I)", icon: "inv" };
-                        contextMenuItems["ForceClose"] =    { name:    "Accept", icon: "match" };
-                        contextMenuItems["RejectReqFC"] =   { name:   "Reject", icon: "unmatch" };
-                        contextMenuItems["ViewHistory"] =   { name:   "View History        (Alt + H)", icon: "vhistory" };
+                    else if (fnGetPageName() == 'wpcashauthorizationunpending') {
+                        contextMenuItems["Investigation"] = { name: "Start Investigation", icon: "inv" };
+                        contextMenuItems["ForceUnMatch"] = { name: "Accept", icon: "match" };
+                        contextMenuItems["RejectReqUM"] = { name: "Reject", icon: "unmatch" };
+                        contextMenuItems["ViewHistory"] = { name: "View History", icon: "vhistory" };
                     }
                     else if (pFilter.NoAction == 1) {
                         contextMenuItems["NoAction"] = { name: "No Action", icon: "stop" };
                     } else {
-                        contextMenuItems["Investigation"] = { name: "Start Investigation (Alt + I)", icon: "inv" };
-                        contextMenuItems["ForceMatch"] =    { name:    "Force Match         (Alt + M)", icon: "match" };
-                        contextMenuItems["ForceUnMatch"] =  { name:  "Force UnMatch       (Alt + U)", icon: "unmatch" };
-                        contextMenuItems["ViewHistory"] =   { name:   "View History        (Alt + H)", icon: "vhistory" };
+                        contextMenuItems["Investigation"] = { name: "Start Investigation", icon: "inv" };
+                        contextMenuItems["ForceMatch"] = { name: "Force Match", icon: "match" };
+                        contextMenuItems["ForceUnMatch"] = { name: "Force UnMatch", icon: "unmatch" };
+                        contextMenuItems["ViewHistory"] = { name: "View History", icon: "vhistory" };
                     }
                 }
                 else {
@@ -1187,10 +1096,9 @@
                 $.contextMenu({
                     selector: '#dataTable tbody tr',
                     callback: function (key, options) {
-                        var row = table.row(options.$trigger).data(); // Get data of clicked row
-                        // Perform action based on the selected row data or key
+                        var row = table.row(options.$trigger).data();
+
                         const allLcSame = selectedColumnId.every(item => item.AccLifeCycleId === selectedColumnId[0].AccLifeCycleId);
-                        const masterExist = selectedColumnId.filter(item => item.DPAccCategory === 'Master').length > 0
                         if (key == 'Investigation') {
 
                             const alreadyInv = selectedColumnId.find(e => e.InvStatus >= 1);
@@ -1201,16 +1109,13 @@
                             }
                         } else if (key == 'ForceMatch') {
 
-                            const isOnlyOpen = selectedColumnId.every(item => item.DTranProcMatchStat === 'Open' || item.DTranProcMatchStat === 'ForceOpen');
-                            if (allLcSame && masterExist && isOnlyOpen) {
+                            const isOnlyOpen = selectedColumnId.every(item => item.CITMSTATUS.startsWith('O'));
+                            if (allLcSame && isOnlyOpen) {
                                 acceptForceMatch = true;
                                 fnGetAuthLevel(selectedColumnId[0].AccLifeCycleId, true, true);
                             } else {
                                 if (!allLcSame) {
                                     alert('Please select one Life Cycle transactions for force match');
-                                }
-                                if (!masterExist) {
-                                    alert('Please select one master transaction for force match');
                                 }
                                 if (!isOnlyOpen) {
                                     alert('Please select only open transactions for force match');
@@ -1218,21 +1123,15 @@
                             }
                         }
                         else if (key == 'ForceUnMatch') {
-                            if (allLcSame) {
+                            const isOnlyMatch = selectedColumnId.every(item => item.CITMSTATUS.startsWith('M'));
+                            if (allLcSame && isOnlyMatch) {
                                 acceptForceMatch = true;
                                 fnGetAuthLevel(selectedColumnId[0].AccLifeCycleId, true, false);
                             } else {
-                                alert('Please select one Life Cycle transactions for force unmatch');
+                                if (!isOnlyMatch) {
+                                    alert('Please select only Match transactions for force Un match');
+                                }
                             }
-                        }
-                        else if (key == 'ForceClose') {
-                            // if (allLcSame) {
-                            acceptForceClose = true;
-                            acceptForceMatch = true;
-                            fnGetAuthLevel(selectedColumnId[0].AccLifeCycleId, true, false);
-                            // } else {
-                            //     alert('Please select one Life Cycle transactions for force unmatch');
-                            // }
                         }
                         else if (key == 'RejectReq') {
                             if (allLcSame) {
@@ -1299,37 +1198,27 @@
                 var selectedRows = table.rows('.selected').data();
                 selectedColumnId = [];
                 selectedRows.each(function (row, index) {
-                    selectedColumnId.push({ DataId: row.DTranProcId, AccLifeCycleId: row.DGrpAccId, DAccountId: row.DPAccId, GroupId: row.DGrpId == undefined ? 0 : row.DGrpId, InvStatus: row.InvStatus, DPAccCategory: row.DPAccCategory, DTranProcMatchStat: row.DTranProcMatchStat, Amount: row.DTranProcTrnAmount, Sign: row.DTranProcSign });
+                    selectedColumnId.push({ DataId: row.GUGLGID, CITMSTATUS: row.CITMSTATUS, AccLifeCycleId: row.ContainerId });
                 });
-                var sumC = 0;
-                var sumD = 0;
+                //     var sumC = 0;
+                //     var sumD = 0;
 
-                // Iterate through each item in the data array
-                $.each(selectedColumnId, function (index, item) {
-                    if (item.Sign === "C") {
-                        sumC += item.Amount;
-                    } else if (item.Sign === "D") {
-                        sumD += item.Amount;
-                    }
-                });
+                //     // Iterate through each item in the data array
+                //     $.each(selectedColumnId, function (index, item) {
+                //         if (item.Sign === "C") {
+                //             sumC += item.Amount;
+                //         } else if (item.Sign === "D") {
+                //             sumD += item.Amount;
+                //         }
+                //     });
 
-                // Calculate Sum of C - Sum of D
-                // Update the respective divs with the sums
-                $('#sum-C').text(sumC.toFixed(4));
-                $('#sum-D').text(sumD.toFixed(4));
+                //     // Calculate Sum of C - Sum of D
+                //     var result = (sumC - sumD).toFixed(4);
+                //     $('#sum-Amt').text(result);
+                // }
 
-                // Calculate the absolute difference and determine CR/DR
-                // Calculate the difference or show "0.0000"
-                if (sumC === 0 && sumD === 0) {
-                    $('#difference-CD').text('0.0000'); // Default value when no rows are selected
-                } else {
-                    var difference = Math.abs(sumC - sumD).toFixed(4);
-                    var suffix = sumC > sumD ? " CR" : " DR"; // Determine if CR or DR is needed
-                    $('#difference-CD').text(difference + suffix);
-                }
+                // getDepartments();
             }
-
-            getDepartments();
 
         });
         function fnGenDropDown(uniqueIndex, mleft, coldbName, colName) {
@@ -1359,21 +1248,17 @@
             dropdownBtn.addEventListener('click', function (event) {
                 // Stop event propagation to prevent closing the parent dropdown
                 event.stopPropagation();
-                //
+                // 
                 // Toggle the dropdown menu visibility
                 var dropdownMenu = this;
                 var divd = dropdownMenu.querySelector('.btn-group');
-                if (divd.classList.contains('open')) {
-                    // If open, remove the 'open' class to close it
-                    divd.classList.remove('open');
-                } else {
-                    // If closed, add the 'open' class to open it
-                    divd.classList.add('open');
-                }
+                divd.classList.add('open');
+                //dropdownMenu.classList.toggle('open');
             });
         }
 
-        function ofnLoadSelect(indexSelect) {
+        function fnLoadSelect(indexSelect) {
+
             var colname = $('#dropdownMenuButton' + indexSelect).data('colname');
             var coldbName = $('#dropdownMenuButton' + indexSelect).data('coldbname');
             var btnDDL = $('#dropdownMenuButton' + indexSelect);
@@ -1381,14 +1266,14 @@
             filterDDL.prop('disabled', true); // Disable the button
             btnDDL.addClass('loader');
             $.ajax({
-                url: 'rest/wsGetForGridSelect', // Replace with your server endpoint URL
+                url: 'rest/wsGetFoCoronaGridSelect', // Replace with your server endpoint URL
                 type: 'GET',
-                headers: {
-                    'Authorization': pFilter.token
-                },
                 data: {
                     FieldName: coldbName,
                     pFilterStr: JSON.stringify(pFilter),
+                },
+                headers: {
+                    'Authorization': pFilter.token
                 },
                 success: function (data) {
                     // Populate multiselect dropdown with fetched data
@@ -1475,7 +1360,7 @@
             btnDDL.addClass('loader');
 
             $.ajax({
-                url: 'rest/wsGetForGridSelectPaging', // Replace with your server endpoint URL
+                url: 'rest/wsGetForGridSelectCashPaging', // Replace with your server endpoint URL
                 type: 'GET',
                 headers: {
                     'Authorization': pFilter.token
@@ -1568,7 +1453,6 @@
 
 
         //endregion
-
         function fnclearFilterButton() {
             // This function will be called when the button with id "myButton" is clicked
             listColumnGridFilter = [];
@@ -1582,10 +1466,10 @@
                 $.ajax({
                     url: 'rest/wsSaveColGridFilter',
                     type: 'GET',
+                    dataType: 'json',
                     headers: {
                         'Authorization': pFilter.token
                     },
-                    dataType: 'json',
                     data: {
                         filterJson: JSON.stringify(listColumnGridFilter),
                         FilterColumnPosition: JSON.stringify(FilterColumnPosition),
@@ -1754,16 +1638,14 @@
 
         async function getDepartments() {
             data = {
-                Module: 'Digital'
+                Module: 'UD'
             };
+
             fetch('rest/wsGetDepartments', {
                 method: "POST",
-                ////mode: "no-cors",
+                //mode: "no-cors",
                 body: JSON.stringify(data),
-                headers: {
-                    "Content-type": "application/json; charset=UTF-8",
-                    "Authorization": pFilter.token,  // Dynamically adding the token
-                }//{ "Content-type": "application/json; charset=UTF-8", "Authorization": pFilter.token }
+                headers: { "Content-type": "application/json; charset=UTF-8", 'Authorization': pFilter.token }
             })
                 .then(response => response.json())
                 .then(res => {
@@ -1786,7 +1668,7 @@
                 colInvTemplateId: tags,
                 sTDataGroupMatchKey: selectedColumnId.map(e => e.DataId),
                 InvDataList: selectedColumnId,
-                Module: "Digital"
+                Module: "UD"
             };
 
             fetch('rest/wsStartInvestigationNew', {
@@ -1877,7 +1759,7 @@
         async function fnGetAuthLevel(AccLifeCycleId, accept, isForceMatchPrm) {
             var data = {
                 LCName: '',
-                moduleName: 'Digital',
+                moduleName: 'UD',
                 AccLifeCycleId: AccLifeCycleId
             };
             fetch('rest/wsGetTrLifeCycleRoleByLcName', {
@@ -1897,12 +1779,9 @@
                         if (p_TrLifeCycleRoles == 0) {
                             alert('You have no right for this action');
                         } else {
-                            if (acceptForceClose) {
-                                showFloatingContainer(true);
-                            } else {
-                                isForceMatch = isForceMatchPrm;
-                                showFloatingContainer(accept);
-                            }
+
+                            isForceMatch = isForceMatchPrm;
+                            showFloatingContainer(accept);
                         }
                     }
                 });
@@ -1914,9 +1793,6 @@
 
             acceptForceMatch = accept;
             if (accept) {
-                document.getElementById('floatingContainerTitle').innerHTML = `You are about to ${TrLifeCycleRolesActionLabel[p_TrLifeCycleRoles]} the process of the selected transactions`;
-                document.getElementById('floatingContainerDescription').innerHTML = `By clicking on "Continue", I accept to ${TrLifeCycleRolesActionLabel[p_TrLifeCycleRoles]} the process of the selected transactions.`;
-            } else if (acceptForceClose) {
                 document.getElementById('floatingContainerTitle').innerHTML = `You are about to ${TrLifeCycleRolesActionLabel[p_TrLifeCycleRoles]} the process of the selected transactions`;
                 document.getElementById('floatingContainerDescription').innerHTML = `By clicking on "Continue", I accept to ${TrLifeCycleRolesActionLabel[p_TrLifeCycleRoles]} the process of the selected transactions.`;
             }
@@ -1939,15 +1815,11 @@
                 if (sendComments) {
                     //   if(panelMode == 2 || panelMode == 3)
                     // {
-
-                    if (acceptForceClose) {
-                        callWebService('rest/wsForceCloseTransactions', sendComments);
-                    }
-                    else if (isForceMatch) {
-                        callWebService('rest/wsMatchProposedTransactions', sendComments);
+                    if (isForceMatch) {
+                        callWebService('rest/wsManualMatchTransactionsUD', sendComments);
                     }
                     else if (!isForceMatch) {
-                        callWebService('rest/wsUnMatchTransactions', sendComments);
+                        callWebService('rest/wsManualUnMatchTransactionsUD', sendComments);
                     }
                 }
                 else {
@@ -1974,7 +1846,7 @@
             var data = {
                 DataId: DataId,
                 GrpAccId: GrpAccId,
-                Module: 'Digital'
+                Module: 'UD'
             };
 
             fetch('rest/wsGetTransactionHistory', {
@@ -2011,9 +1883,9 @@
                     }
                 });
 
-            let auxHTML = `<table style="display: block;" class="mainGridStyle header-fixed"><thead><tr><th class="thS">Creation Date</th><th class="thS">Match Status</th></tr></thead>
+            let auxHTML1 = `<table style="display: block;" class="mainGridStyle header-fixed"><thead><tr><th class="thS">Creation Date</th><th class="thS">Match Status</th></tr></thead>
                     <tbody><tr><td class="cTdPad">${r.LoadDate.replace('T', ' ')}</td><td class="cTdPad">${r.MatchStatus}</td></tr></tbody></table> <br><br>`;
-
+            let auxHTML = ''
             auxHTML = auxHTML + `<table style="display: block;" class="mainGridStyle header-fixed"><thead><tr><th class="thS">Date/Time</th><th class="thS">Event</th><th class="thS">User</th><th class="thS">Comments</th></tr></thead><tbody>`;
 
             try {
@@ -2138,30 +2010,30 @@
 
         //History End
     </script>
-<script>
-    const jsonToCsv = (jsonData) => {
-        const keys = Object.keys(jsonData[0]);
-        const csvRows = [keys.join(',')];
+    <script>
+        const jsonToCsv = (jsonData) => {
+            const keys = Object.keys(jsonData[0]);
+            const csvRows = [keys.join(',')];
 
-        jsonData.forEach(obj => {
-            debugger;
-            const values = keys.map(key => JSON.stringify(obj[key], (key, value) => value === null ? '' : value));
-            csvRows.push(values.join(','));
-        });
+            jsonData.forEach(obj => {
 
-        return csvRows.join('\n');
-    };
-    const downloadCsv = (jsonData, filename = 'ReconciliationDigital.csv') => {
-        const csvData = jsonToCsv(jsonData);
-        const blob = new Blob([csvData], { type: 'text/csv' });
-        const url = URL.createObjectURL(blob);
+                const values = keys.map(key => JSON.stringify(obj[key], (key, value) => value === null ? '' : value));
+                csvRows.push(values.join(','));
+            });
 
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = filename;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-    };
-</script>
+            return csvRows.join('\n');
+        };
+        const downloadCsv = (jsonData, filename = 'data.csv') => {
+            const csvData = jsonToCsv(jsonData);
+            const blob = new Blob([csvData], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = filename;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        };
+    </script>
 </body>

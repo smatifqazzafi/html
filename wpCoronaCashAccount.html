@@ -447,8 +447,12 @@
             $.ajax({
                 url: 'rest/wsCoronaCashAccount',
                 method: 'GET',
+
                 data: {
                     //panelType: panelType
+                },
+                headers: {
+                    'Authorization': AuthToken
                 },
                 success: function (data) {
                     if (data && data.myCols && data.myCols.length > 0) {
@@ -595,6 +599,9 @@
                             ajax: {
                                 url: 'rest/wsCoronaCashAccount',
                                 type: 'GET',
+                                headers: {
+                                    'Authorization': AuthToken
+                                },
                                 data: function (d) {
                                     var searchData = {};
                                     $('.columnSearch').each(function () {
@@ -857,7 +864,7 @@
                         if (key == 'PhysicalAccount') {
                             var defaultValue = 0;
                             var firstValue = selectedColumnId.length > 0 ? selectedColumnId[0].CCORIDAC : defaultValue;
-                            window.open('wpCoronaPhyCashAccount.aspx?CCORIDAC=' + firstValue);
+                            window.open('wpCashAccount.aspx?CCORIDAC=' + firstValue);
 
                         }
 
@@ -964,7 +971,7 @@
                 data: {
                     FieldName: coldbName,
                     pFilterStr: JSON.stringify(pFilter),
-                    module:"CoronaCashAccount"
+                    module: "CoronaCashAccount"
                 },
                 success: function (data) {
                     // Populate multiselect dropdown with fetched data

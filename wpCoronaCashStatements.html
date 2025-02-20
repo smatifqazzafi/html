@@ -450,6 +450,9 @@
                 data: {
                     //panelType: panelType
                 },
+                headers: {
+                    'Authorization': AuthToken
+                },
                 success: function (data) {
                     if (data && data.myCols && data.myCols.length > 0) {
                         var headerHtml = '';
@@ -595,6 +598,9 @@
                             ajax: {
                                 url: 'rest/wsCoronaCashStatement',
                                 type: 'GET',
+                                headers: {
+                    'Authorization': AuthToken
+                },
                                 data: function (d) {
                                     var searchData = {};
                                     $('.columnSearch').each(function () {
@@ -857,7 +863,7 @@
                         if (key == 'CashItem') {
                             var defaultValue = 0;
                             var firstValue = selectedColumnId.length > 0 ? selectedColumnId[0].CSTAID : defaultValue;
-                            window.open('wpCoronaCashItem.aspx?CSTAID=' + firstValue);
+                            window.open('wpCashStatements.aspx?CSTAID=' + firstValue);
 
                         }
                       

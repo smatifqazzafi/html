@@ -516,7 +516,7 @@
 
             getMakerCheckerCombo(item) {
                 let authLevel = (item.authLevel !== undefined) ? item.authLevel : 0;
-                let auxAuthLevels = ['Viewer', 'Initiator', 'Authorizer', 'Approver'];
+                let auxAuthLevels = ['Viewer', 'Maker', 'Checker', 'Approver'];
                 let auxHTML = `<select class="ulct-dropdown" UserId='${item.id}' NodeType='user' HierarchyLevel='${item.parentHierarchy}' onchange='changeUserAuthLevel(this);'>`
                 for (let i = 0; i <= 3; i++) {
                     let auxSelected = (i === authLevel) ? 'selected' : '';
@@ -554,7 +554,6 @@
                 //     }
                 // });
                 SDT_LifeCycle.forEach(x => {
-                    console.log(x)
                     let auxSelected = '';
                     //if(currentLifeCycle == x.TrLifeCycleName) auxSelected = 'selected';
                     ////console.log(currentLifeCycle.filter(y => y.LifeCycleName == x.TrLifeCycleName));
@@ -572,7 +571,7 @@
                         (x.Module == 'Cash' && levelType == 'Cash Admin') ||
                         (x.Module == 'NonFinalcial' && levelType == 'Non Financial Admin') ||
                         (x.Module == 'UD' && levelType == 'UD Admin') ||
-                        (x.Module == 'Settlement' && levelType == 'Settlement Admin') ||
+                        (x.Module == 'Settlement' && levelType == 'Settlement Admin') || 
                         (x.Module == 'Transformation' && levelType == 'Transformer Admin') || levelType == 'Administrator'
                     ) {
                         auxHTML += `<option value='${x.AccLifeCycleId}'>${auxSelected} ${x.AccLifeCycleName}</option>`;
@@ -694,9 +693,8 @@ debugger;
                     trashIcon.addEventListener('click', (e) => {
                         e.preventDefault();
                         e.stopPropagation();
-
                         if (item.type === 'file') {
-                           showRemoveUserPopup(item.id, item.parentHierarchy, item.name);
+                            showRemoveUserPopup(item.id, item.parentHierarchy, item.name);
                         }
                     });
                 }
@@ -797,7 +795,7 @@ debugger;
                     e.preventDefault();
                     e.stopPropagation();
                     if (currentNodeIdForContext) {
-
+                        
                         showAddUserPopup(currentNodeIdForContext);
                     }
                     contextMenu.style.display = 'none';
@@ -1038,7 +1036,7 @@ debugger;
 
         function showAddUserPopupRolesWithLevelType(parentId, levelName, leveltype) {
 
-
+            
 
             let userOptions = `<option value=''>---</option>`;
             var filterName = 'A';
@@ -1080,7 +1078,7 @@ debugger;
 
             if (leveltype === 'Transformer Admin') {
 
-
+                
                 if (levelName === 'Transformer Admin')
                     IsAdministrator = true
 
@@ -1105,15 +1103,13 @@ debugger;
             popupTitle.textContent = "Add User";
             popupContent.innerHTML = `
                     <label>User Name:</label>
-                    <select id="popup_adduser_select">${userOptions}</select><br>
-                    <label>Comment:</label>
-                    <input id="comment" name="comment"/>
+                    <select id="popup_adduser_select">${userOptions}</select>
+                    <u style="color: var(--colors_gxqv-color-01); cursor: pointer; float: right; margin-top:5px;" onclick="createNewUser('${parentId}');">Create new user</u>
                     <div style="margin-top:20px;text-align:right;">
                         <button type="button" class="ulct-confirm-btn" onclick="confirmAddUser('${parentId}')">Confirm</button>
                         <button type="button" class="ulct-cancel-btn" onclick="hidePopup()">Cancel</button>
                     </div>
                 `;
-                //<u style="color: var(--colors_gxqv-color-01); cursor: pointer; float: right; margin-top:5px;" onclick="createNewUser('${parentId}');">Create new user</u>
             popup.classList.add('active');
         }
 
@@ -1161,11 +1157,6 @@ debugger;
 
         function confirmAddUser(parentId) {
             const userId = document.getElementById('popup_adduser_select').value;
-            const comment = document.getElementById('comment').value;
-            if(comment === ""){
-                alert("Comment is required")
-                return;
-            }
             if (!userId) {
                 alert('Please select a user.');
                 return;
@@ -1173,8 +1164,7 @@ debugger;
             let parentItem = findNodeById(parseInt(parentId), globalHierarchyData);
             var data = {
                 HierarchyLevelName: parentItem.originalName || parentItem.name,
-                ReconUserId: userId,
-                Comment : comment
+                ReconUserId: userId
             };
 
             fetch('rest/wsAddSubUser', {
@@ -1198,10 +1188,6 @@ debugger;
             popupContent.innerHTML = `
                     <div style="font-size:14px; margin-bottom:10px;">This will remove the user ${userName} from the current level.</div>
                     <div style="font-size:14px;">Click "Remove" to confirm.</div>
-                    <div>
-                        <label>Comment:</label>
-                        <input id="commentDelete" name="commentDelete"/>
-                    </div>
                     <div style="margin-top:20px;text-align:right;">
                         <button type="button" class="ulct-confirm-btn" onclick="confirmRemoveUser('${userId}', '${parentLevel}')">Remove</button>
                         <button type="button" class="ulct-cancel-btn" onclick="hidePopup()">Cancel</button>
@@ -1211,14 +1197,8 @@ debugger;
         }
 
         function confirmRemoveUser(userId, parentLevel) {
-            const comments = document.getElementById('commentDelete').value;
-            if(comments === ""){
-                alert("Comment is required")
-                return;
-            }
             var data = {
                 HierarchyLevelName: parentLevel,
-                Comments : comments,
                 ReconUserId: userId
             };
             fetch('rest/wsRemoveSubUser', {
@@ -1241,9 +1221,7 @@ debugger;
             popupTitle.textContent = "Delete Sub-Role";
             popupContent.innerHTML = `
                     <div style="font-size:14px; margin-bottom:10px;">This action cannot be undone.</div>
-                    <div style="font-size:14px;">
-                        Click "Delete" to confirm.<br>
-                    </div>
+                    <div style="font-size:14px;">Click "Delete" to confirm.</div>
                     <div style="margin-top:20px;text-align:right;">
                         <button type="button" class="ulct-confirm-btn" onclick="confirmDeleteSublevel('${folderId}')">Delete</button>
                         <button type="button" class="ulct-cancel-btn" onclick="hidePopup()">Cancel</button>
@@ -1253,11 +1231,9 @@ debugger;
         }
 
         function confirmDeleteSublevel(folderId) {
-
             let item = findNodeById(parseInt(folderId), globalHierarchyData);
             var data = {
-                HierarchyLevelName: item.originalName || item.name,
-                Comment : comment
+                HierarchyLevelName: item.originalName || item.name
             };
             fetch('rest/wsDeleteSublevel', {
                 method: "POST",
@@ -1725,7 +1701,7 @@ debugger;
     }
 
     function reassignUserTo(userId, level, userFullName, currentLevel) {
-
+        
         document.getElementById('PanelRemoveUser').style.display = 'block';
         document.getElementById('PanelRemoveUserWarning').innerHTML = `Upon completion of this task, user ${userFullName} will no longer be assigned the ${currentLevel} role.`;
         document.getElementById('TableGray').style.display = 'block';
@@ -1744,7 +1720,7 @@ debugger;
     }
 
     async function addUserToFinal() {
-
+        
         if (auxUserId == '') auxUserId = document.getElementById("input_adduser_name").value;
         var data = {
             HierarchyLevelName: auxLevel,
@@ -1961,7 +1937,7 @@ debugger;
     }
 
     async function changeLifeCycle(t) {
-
+        
         //console.log(t)
         let auxLevelName = t.getAttribute('LevelName');
         let auxLevelType = t.getAttribute('LevelType');
@@ -2125,7 +2101,7 @@ debugger;
         })
             .then(response => response.json())
             .then(res => {
-
+                
                 if(res.errorDescription != ''){
                     alert(res.errorDescription);
                 }
@@ -2139,7 +2115,7 @@ debugger;
     }
 
     function toggleVisibility(id) {
-
+        
         document.querySelectorAll('.txtsl'+id).forEach(function(element) {
             if (element.style.display === 'none') {
                 element.style.display = 'block';
